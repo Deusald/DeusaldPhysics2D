@@ -13,7 +13,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Box2d" />
+      <Folder Include="Box2d\Libs\Windows" />
     </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Box2d\Libs\Windows\x86_64\box2d.dll" />
+      <None Remove="SharpBox2D\Libs\x86\box2d.dll" />
+      <None Remove="SharpBox2D\Libs\x86_64\box2d.dll" />
+      <EmbeddedResource Include="Box2d\Libs\Windows\x86\box2d.dll" />
+    </ItemGroup>
+    
 
 </Project>
