@@ -28,6 +28,7 @@ namespace SharpBox2D
 {
     using System;
     using System.Text;
+    using Box2D;
 
     public struct Vector2 : IEquatable<Vector2>
     {
@@ -357,6 +358,21 @@ namespace SharpBox2D
             return new Vector2(cos * v.x + sin * v.y, -sin * v.x + cos * v.y);
         }
 
+        /// <summary>
+        /// Reduce length of vector by reductionLength value
+        /// </summary>
+        public void ShortenLength(float reductionLength)
+        {
+            if (magnitude <= reductionLength)
+            {
+                SetZero();
+                return;
+            }
+
+            Vector2 shorter = normalized * reductionLength;
+            this -= shorter;
+        }
+
         #endregion Other Math
 
         #region Equals
@@ -472,6 +488,16 @@ namespace SharpBox2D
 
         #endregion Operators
 
+        internal static Vector2 ConvertFromB2Vec(b2Vec2 vec2)
+        {
+            return new Vector2(vec2.x, vec2.y);
+        }
+
+        internal static b2Vec2 ConvertToB2Vec(Vector2 vector2)
+        {
+            return new b2Vec2(vector2.x, vector2.y);
+        }
+        
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder(24);
