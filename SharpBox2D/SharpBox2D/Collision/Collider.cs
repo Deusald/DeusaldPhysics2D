@@ -94,6 +94,10 @@ namespace SharpBox2D
         public object UserData { get; set; }
 
         internal b2Fixture Fixture { get; }
+        
+        public event IPhysics2D.OnCollisionEvent OnCollisionEnter;
+        
+        public event IPhysics2D.OnCollisionEvent OnCollisionExit;
 
         #endregion Public Variables
 
@@ -111,6 +115,16 @@ namespace SharpBox2D
         public void Destroy()
         {
             PhysicsObject.DestroyCollider(ColliderId);
+        }
+
+        internal void ExecuteOnCollisionEnter(ICollisionData collisionData)
+        {
+            OnCollisionEnter?.Invoke(collisionData);
+        }
+
+        internal void ExecuteOnCollisionExit(ICollisionData collisionData)
+        {
+            OnCollisionExit?.Invoke(collisionData);
         }
 
         #endregion Public Methods

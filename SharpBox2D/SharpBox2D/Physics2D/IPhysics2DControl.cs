@@ -30,8 +30,24 @@ namespace SharpBox2D
     /// </summary>
     public interface IPhysics2DControl : IPhysics2D
     {
-        public Dictionary<int, IPhysicsObject>.Enumerator PhysicsObjects { get; }
-        Vector2                                           Gravity        { get; set; }
-        void                                              Step();
+        /// <summary>
+        /// Get the enumerator for all PhysicsObjects that are present in the world
+        /// </summary>
+        Dictionary<int, IPhysicsObject>.Enumerator PhysicsObjects { get; }
+        
+        /// <summary>
+        /// Get or Set the world gravity
+        /// </summary>
+        Vector2                                    Gravity        { get; set; }
+        
+        /// <summary>
+        /// Simulate next physics step
+        /// </summary>
+        void                                       Step();
+        
+        /// <summary>
+        /// Get the PhysicsObject with given Id
+        /// </summary>
+        IPhysicsObject                             GetPhysicsObject(int physicsObjectId);
     }
 }

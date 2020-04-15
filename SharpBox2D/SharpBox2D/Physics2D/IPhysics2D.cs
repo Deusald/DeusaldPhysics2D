@@ -28,6 +28,10 @@ namespace SharpBox2D
     /// </summary>
     public interface IPhysics2D
     {
+        public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
+
+        public delegate void OnCollisionEvent(ICollisionData collisionData);
+
         /// <summary>
         /// Create new physics object in the world
         /// </summary>
@@ -38,9 +42,25 @@ namespace SharpBox2D
         /// </summary>
         void DestroyPhysicsObject(int objectId);
 
+        /// <summary>
+        /// This event will be triggered before the collision happen
+        /// You have opportunity to disable the collision
+        /// For example by making one side platform
+        /// </summary>
+        event PreCollisionEvent PreCollision;
+        
+        /// <summary>
+        /// This event will be triggered in the first frame of collision
+        /// </summary>
+        event OnCollisionEvent  OnCollisionEnter;
+        
+        /// <summary>
+        /// This event will be triggered at the moment when the colliders stop colliding
+        /// Will be also triggered when colliders were colliding and one of them has been destroyed
+        /// </summary>
+        event OnCollisionEvent  OnCollisionExit;
+
         #region Overlap Tests
-
-
 
         #endregion Overlap Tests
     }

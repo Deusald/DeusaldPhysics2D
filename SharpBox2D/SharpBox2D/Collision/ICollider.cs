@@ -96,5 +96,18 @@ namespace SharpBox2D
         /// Destroy this collider
         /// </summary>
         void Destroy();
+
+        /// <summary>
+        /// This event will be triggered in the first frame of collision
+        /// The ColliderA is always this collider
+        /// </summary>
+        event IPhysics2D.OnCollisionEvent OnCollisionEnter;
+        
+        /// <summary>
+        /// This event will be triggered at the moment when the colliders stop colliding
+        /// Will be also triggered when colliders were colliding and one of them has been destroyed
+        /// The ColliderA is always this collider
+        /// </summary>
+        event IPhysics2D.OnCollisionEvent OnCollisionExit;
     }
 }

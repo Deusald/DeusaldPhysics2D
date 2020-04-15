@@ -49,12 +49,18 @@ namespace SharpBox2D
         public Physics2DControl(uint physicsStepsPerSec, Vector2 gravity) : base(physicsStepsPerSec, gravity)
         {
             _PhysicsTimeStep = 1f / physicsStepsPerSec;
+            __World.SetContactListener(new CollisionListener(this));
         }
 
         public void Step()
         {
             __UpdateLinearVelocity?.Invoke();
             __World.Step(_PhysicsTimeStep, _VelocityIterations, _PositionIterations);
+        }
+
+        public IPhysicsObject GetPhysicsObject(int physicsObjectId)
+        {
+            return !__PhysicsObjects.ContainsKey(physicsObjectId) ? null : __PhysicsObjects[physicsObjectId];
         }
 
         #endregion Public Methods

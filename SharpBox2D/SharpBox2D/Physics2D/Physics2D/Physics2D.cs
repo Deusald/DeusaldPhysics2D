@@ -29,6 +29,14 @@ namespace SharpBox2D
 
     public class Physics2D : IPhysics2D
     {
+        #region Public Variables
+
+        public event IPhysics2D.PreCollisionEvent PreCollision;
+        public event IPhysics2D.OnCollisionEvent  OnCollisionEnter;
+        public event IPhysics2D.OnCollisionEvent  OnCollisionExit;
+
+        #endregion Public Variables
+
         #region Public Methods
 
         public IPhysicsObject CreatePhysicsObject(BodyType bodyType, Vector2 position, float rotation)
@@ -54,6 +62,21 @@ namespace SharpBox2D
             __UpdateLinearVelocity -= physicsObject.UpdateLinearVelocity;
             __World.DestroyBody(physicsObject.Body);
             __PhysicsObjects.Remove(objectId);
+        }
+
+        internal void ExecutePreCollision(ICollisionDataExtend collisionDataExtend)
+        {
+            PreCollision?.Invoke(collisionDataExtend);
+        }
+
+        internal void ExecuteOnCollisionEnter(ICollisionData collisionData)
+        {
+            OnCollisionEnter?.Invoke(collisionData);
+        }
+
+        internal void ExecuteOnCollisionExit(ICollisionData collisionData)
+        {
+            OnCollisionExit?.Invoke(collisionData);
         }
 
         #endregion Public Methods
