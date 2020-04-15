@@ -127,6 +127,33 @@ namespace SharpBox2D
             OnCollisionExit?.Invoke(collisionData);
         }
 
+        public void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 end, int childIndex = 0)
+        {
+            b2RayCastInput input = new b2RayCastInput
+            {
+                p1 = Vector2.ConvertToB2Vec(origin),
+                p2 = Vector2.ConvertToB2Vec(end),
+                maxFraction = 1f
+            };
+            
+            b2RayCastOutput output = new b2RayCastOutput();
+            bool result = Fixture.RayCast(output, input, childIndex);
+
+            if (result)
+            {
+                Vector2 point = Vector2.Lerp(origin, end, output.fraction);
+                callback.Invoke(true, point, Vector2.ConvertFromB2Vec(output.normal), output.fraction);
+            }
+            else
+                callback.Invoke(false, Vector2.zero, Vector2.zero, 0f);
+        }
+
+        public void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0)
+        {
+            Vector2 endPoint = origin + direction * distance;
+            RayCast(callback, origin, endPoint, childIndex);
+        }
+
         #endregion Public Methods
     }
 }

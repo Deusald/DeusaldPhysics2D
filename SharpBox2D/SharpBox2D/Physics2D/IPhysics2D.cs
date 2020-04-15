@@ -29,7 +29,9 @@ namespace SharpBox2D
     public interface IPhysics2D
     {
         public delegate float RayCastCallback(ICollider collider, Vector2 point, Vector2 normal, float fraction);
-        
+
+        public delegate void SingleRayCastCallback(bool hit, Vector2 point, Vector2 normal, float fraction);
+
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 
         public delegate void OnCollisionEvent(ICollisionData collisionData);
@@ -50,17 +52,17 @@ namespace SharpBox2D
         /// For example by making one side platform
         /// </summary>
         event PreCollisionEvent PreCollision;
-        
+
         /// <summary>
         /// This event will be triggered in the first frame of collision
         /// </summary>
-        event OnCollisionEvent  OnCollisionEnter;
-        
+        event OnCollisionEvent OnCollisionEnter;
+
         /// <summary>
         /// This event will be triggered at the moment when the colliders stop colliding
         /// Will be also triggered when colliders were colliding and one of them has been destroyed
         /// </summary>
-        event OnCollisionEvent  OnCollisionExit;
+        event OnCollisionEvent OnCollisionExit;
 
         /// <summary>
         /// Raycast the world

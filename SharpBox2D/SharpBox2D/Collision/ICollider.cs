@@ -109,5 +109,15 @@ namespace SharpBox2D
         /// The ColliderA is always this collider
         /// </summary>
         event IPhysics2D.OnCollisionEvent OnCollisionExit;
+        
+        /// <summary>
+        /// RayCast this collider
+        /// </summary>
+        void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 end, int childIndex = 0);
+        
+        /// <summary>
+        /// RayCast this collider
+        /// </summary>
+        void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0);
     }
 }
