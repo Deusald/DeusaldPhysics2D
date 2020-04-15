@@ -1,6 +1,6 @@
 namespace SharpBox2D
 {
-    using System;
+    using System.Collections.Generic;
     using Box2D;
 
     public class PhysicsObject : IPhysicsObject
@@ -9,15 +9,16 @@ namespace SharpBox2D
 
         #region Getters
 
-        public   int     PhysicsObjectId { get; }
-        public   bool    IsStatic        => _Body.Type == b2BodyType.b2_staticBody;
-        public   bool    IsKinematic     => _Body.Type == b2BodyType.b2_kinematicBody;
-        public   bool    IsDynamic       => _Body.Type == b2BodyType.b2_dynamicBody;
-        public   Vector2 WorldCenter     => Vector2.ConvertFromB2Vec(_Body.GetWorldCenter());
-        public   Vector2 LocalCenter     => Vector2.ConvertFromB2Vec(_Body.GetLocalCenter());
-        public   float   Mass            => _Body.GetMass();
-        public   float   Inertia         => _Body.GetInertia();
-        internal b2Body  Body            => _Body;
+        public   int                                   PhysicsObjectId { get; }
+        public   bool                                  IsStatic        => _Body.Type == b2BodyType.b2_staticBody;
+        public   bool                                  IsKinematic     => _Body.Type == b2BodyType.b2_kinematicBody;
+        public   bool                                  IsDynamic       => _Body.Type == b2BodyType.b2_dynamicBody;
+        public   Vector2                               WorldCenter     => Vector2.ConvertFromB2Vec(_Body.GetWorldCenter());
+        public   Vector2                               LocalCenter     => Vector2.ConvertFromB2Vec(_Body.GetLocalCenter());
+        public   float                                 Mass            => _Body.GetMass();
+        public   float                                 Inertia         => _Body.GetInertia();
+        public   Dictionary<int, ICollider>.Enumerator Colliders       => _Colliders.GetEnumerator();
+        internal b2Body                                Body            => _Body;
 
         #endregion Getters
 
@@ -121,11 +122,18 @@ namespace SharpBox2D
             _Body               = body;
             PhysicsObjectId     = myId;
             _PhysicsStepsPerSec = physicsStepsPerSec;
+            _NextColliderId     = 1;
+            _Colliders          = new Dictionary<int, ICollider>();
         }
 
         public void Destroy()
         {
             _Physics2D.DestroyPhysicsObject(PhysicsObjectId);
+        }
+
+        public ICollider GetCollider(int colliderId)
+        {
+            return !_Colliders.ContainsKey(colliderId) ? null : _Colliders[colliderId];
         }
 
         #region Movement, Rotation and Position
@@ -225,6 +233,30 @@ namespace SharpBox2D
 
         #endregion Movement, Rotation and Position
 
+        #region Add / Remove Colliders
+
+        public void DestroyCollider(int colliderId)
+        {
+            if (!_Colliders.ContainsKey(colliderId)) return;
+
+            Collider collider = (Collider) _Colliders[colliderId];
+            _Body.DestroyFixture(collider.Fixture);
+            _Colliders.Remove(colliderId);
+        }
+
+        public ICollider AddEdgeCollider(Vector2 start, Vector2 end)
+        {
+            b2EdgeShape shape = new b2EdgeShape();
+            shape.Set(Vector2.ConvertToB2Vec(start), Vector2.ConvertToB2Vec(end));
+            b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
+            int       colliderId = _NextColliderId++;
+            ICollider collider   = new Collider(fixture, this, colliderId);
+            _Colliders.Add(colliderId, collider);
+            return collider;
+        }
+
+        #endregion Add / Remove Colliders
+
         #endregion Public Methods
 
         #region Private Variables
@@ -232,10 +264,12 @@ namespace SharpBox2D
         private Vector2 _MovePositionTarget;
         private bool    _MovePosition;
         private Vector2 _PreviousLinearVelocity;
+        private int     _NextColliderId;
 
-        private readonly Physics2D _Physics2D;
-        private readonly b2Body    _Body;
-        private readonly uint      _PhysicsStepsPerSec;
+        private readonly Physics2D                  _Physics2D;
+        private readonly b2Body                     _Body;
+        private readonly uint                       _PhysicsStepsPerSec;
+        private readonly Dictionary<int, ICollider> _Colliders;
 
         #endregion Private Variables
     }

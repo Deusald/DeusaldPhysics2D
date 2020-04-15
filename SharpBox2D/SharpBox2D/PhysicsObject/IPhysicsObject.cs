@@ -1,5 +1,7 @@
 namespace SharpBox2D
 {
+    using System.Collections.Generic;
+
     public interface IPhysicsObject
     {
         #region Getters
@@ -55,6 +57,11 @@ namespace SharpBox2D
         /// Usually in kg-m^2. 
         /// </summary>
         float Inertia { get; }
+        
+        /// <summary>
+        /// Get the enumerator for all colliders attached to this physical object
+        /// </summary>
+        public Dictionary<int, ICollider>.Enumerator Colliders { get; }
 
         #endregion Getters
 
@@ -138,6 +145,11 @@ namespace SharpBox2D
         /// Destroy this Physics Object and remove it from the world
         /// </summary>
         void Destroy();
+
+        /// <summary>
+        /// Get collider attached to this physical object with given id
+        /// </summary>
+        ICollider GetCollider(int colliderId);
 
         #region Movement, Rotation and Position
 
@@ -224,6 +236,14 @@ namespace SharpBox2D
         Vector2 GetLinearVelocityFromLocalPoint(Vector2 localPoint);
 
         #endregion Movement, Rotation and Position
+
+        #region Add / Remove Colliders
+
+        void DestroyCollider(int colliderId);
+        
+        ICollider AddEdgeCollider(Vector2 start, Vector2 end);
+
+        #endregion Add / Remove Colliders
 
         #endregion Methods
     }
