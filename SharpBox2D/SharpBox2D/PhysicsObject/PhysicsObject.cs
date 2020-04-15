@@ -23,6 +23,7 @@
 
 namespace SharpBox2D
 {
+    using System;
     using System.Collections.Generic;
     using Box2D;
 
@@ -273,6 +274,7 @@ namespace SharpBox2D
             shape.Set(Vector2.ConvertToB2Vec(start), Vector2.ConvertToB2Vec(end));
             b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
             int       colliderId = _NextColliderId++;
+            fixture.SetUserData(new IntPtr(colliderId));
             ICollider collider   = new Collider(fixture, this, colliderId);
             _Colliders.Add(colliderId, collider);
             return collider;
@@ -293,6 +295,7 @@ namespace SharpBox2D
 
             b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
             int       colliderId = _NextColliderId++;
+            fixture.SetUserData(new IntPtr(colliderId));
             ICollider collider   = new Collider(fixture, this, colliderId);
             _Colliders.Add(colliderId, collider);
             return collider;
@@ -304,6 +307,7 @@ namespace SharpBox2D
             shape.SetAsBox(width, height, Vector2.ConvertToB2Vec(offset), angle);
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
+            fixture.SetUserData(new IntPtr(colliderId));
             ICollider collider   = new Collider(fixture, this, colliderId);
             _Colliders.Add(colliderId, collider);
             return collider;
@@ -324,6 +328,7 @@ namespace SharpBox2D
 
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
+            fixture.SetUserData(new IntPtr(colliderId));
             ICollider collider   = new Collider(fixture, this, colliderId);
             _Colliders.Add(colliderId, collider);
             return collider;
@@ -346,6 +351,7 @@ namespace SharpBox2D
             
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
+            fixture.SetUserData(new IntPtr(colliderId));
             ICollider collider   = new Collider(fixture, this, colliderId);
             _Colliders.Add(colliderId, collider);
             return collider;
