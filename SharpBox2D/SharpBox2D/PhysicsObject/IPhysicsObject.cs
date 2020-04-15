@@ -262,20 +262,44 @@ namespace SharpBox2D
 
         #region Add / Remove Colliders
 
+        /// <summary>
+        /// Destroy the attached collider with given Id
+        /// </summary>
         void DestroyCollider(int colliderId);
         
+        /// <summary>
+        /// Attach Edge collider to this PhysicsShape
+        /// </summary>
         ICollider AddEdgeCollider(Vector2 start, Vector2 end);
 
+        /// <summary>
+        /// Attach Chain collider to this PhysicsShape
+        /// </summary>
         ICollider AddChainCollider(Vector2[] vertices, bool loop);
 
+        /// <summary>
+        /// Attach Box collider to this PhysicsShape
+        /// </summary>
         ICollider AddBoxCollider(float width, float height, Vector2 offset, float angle, float density);
 
+        /// <summary>
+        /// Attach Box collider to this PhysicsShape
+        /// </summary>
         ICollider AddBoxCollider(float width, float height, float density = 1f);
 
+        /// <summary>
+        /// Attach Circle collider to this PhysicsShape
+        /// </summary>
         ICollider AddCircleCollider(float radius, Vector2 offset, float density);
 
+        /// <summary>
+        /// Attach Circle collider to this PhysicsShape
+        /// </summary>
         ICollider AddCircleCollider(float radius, float density = 1f);
 
+        /// <summary>
+        /// Attach Polygon collider to this PhysicsShape
+        /// </summary>
         ICollider AddPolygonCollider(Vector2[] vertices, float density);
 
         #endregion Add / Remove Colliders
