@@ -243,6 +243,18 @@ namespace SharpBox2D
         
         ICollider AddEdgeCollider(Vector2 start, Vector2 end);
 
+        ICollider AddChainCollider(Vector2[] vertices, bool loop);
+
+        ICollider AddBoxCollider(float width, float height, Vector2 offset, float angle, float density);
+
+        ICollider AddBoxCollider(float width, float height, float density = 1f);
+
+        ICollider AddCircleCollider(float radius, Vector2 offset, float density);
+
+        ICollider AddCircleCollider(float radius, float density = 1f);
+
+        ICollider AddPolygonCollider(Vector2[] vertices, float density);
+
         #endregion Add / Remove Colliders
 
         #endregion Methods

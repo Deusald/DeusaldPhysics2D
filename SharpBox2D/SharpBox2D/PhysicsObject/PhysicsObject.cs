@@ -255,6 +255,79 @@ namespace SharpBox2D
             return collider;
         }
 
+        public ICollider AddChainCollider(Vector2[] vertices, bool loop)
+        {
+            b2ChainShape shape = new b2ChainShape();
+            b2Vec2       array = Box2d.new_b2Vec2Array(vertices.Length);
+
+            for (int i = 0; i < vertices.Length; ++i)
+                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
+
+            if (loop)
+                shape.CreateLoop(array, vertices.Length);
+            else
+                shape.CreateChain(array, vertices.Length);
+
+            b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
+            int       colliderId = _NextColliderId++;
+            ICollider collider   = new Collider(fixture, this, colliderId);
+            _Colliders.Add(colliderId, collider);
+            return collider;
+        }
+
+        public ICollider AddBoxCollider(float width, float height, Vector2 offset, float angle, float density)
+        {
+            b2PolygonShape shape = new b2PolygonShape();
+            shape.SetAsBox(width, height, Vector2.ConvertToB2Vec(offset), angle);
+            b2Fixture fixture    = _Body.CreateFixture(shape, density);
+            int       colliderId = _NextColliderId++;
+            ICollider collider   = new Collider(fixture, this, colliderId);
+            _Colliders.Add(colliderId, collider);
+            return collider;
+        }
+
+        public ICollider AddBoxCollider(float width, float height, float density = 1f)
+        {
+            return AddBoxCollider(width, height, Vector2.zero, 0f, density);
+        }
+
+        public ICollider AddCircleCollider(float radius, Vector2 offset, float density)
+        {
+            b2CircleShape shape = new b2CircleShape
+            {
+                m_p      = Vector2.ConvertToB2Vec(offset),
+                m_radius = radius
+            };
+
+            b2Fixture fixture    = _Body.CreateFixture(shape, density);
+            int       colliderId = _NextColliderId++;
+            ICollider collider   = new Collider(fixture, this, colliderId);
+            _Colliders.Add(colliderId, collider);
+            return collider;
+        }
+
+        public ICollider AddCircleCollider(float radius, float density = 1f)
+        {
+            return AddCircleCollider(radius, Vector2.zero, density);
+        }
+
+        public ICollider AddPolygonCollider(Vector2[] vertices, float density)
+        {
+            b2PolygonShape shape = new b2PolygonShape();
+            b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
+
+            for (int i = 0; i < vertices.Length; ++i)
+                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
+            
+            shape.Set(array, vertices.Length);
+            
+            b2Fixture fixture    = _Body.CreateFixture(shape, density);
+            int       colliderId = _NextColliderId++;
+            ICollider collider   = new Collider(fixture, this, colliderId);
+            _Colliders.Add(colliderId, collider);
+            return collider;
+        }
+
         #endregion Add / Remove Colliders
 
         #endregion Public Methods
