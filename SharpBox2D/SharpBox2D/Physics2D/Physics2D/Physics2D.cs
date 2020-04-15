@@ -79,6 +79,18 @@ namespace SharpBox2D
             OnCollisionExit?.Invoke(collisionData);
         }
 
+        public void RayCast(IPhysics2D.RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
+        {
+            RaycastCallback raycastCallback = new RaycastCallback((IPhysics2DControl) this, callback, collisionMask);
+            __World.RayCast(raycastCallback, Vector2.ConvertToB2Vec(origin), Vector2.ConvertToB2Vec(end));
+        }
+
+        public void RayCast(IPhysics2D.RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF)
+        {
+            Vector2 endPoint = origin + direction * distance;
+            RayCast(callback, origin, endPoint, collisionMask);
+        }
+
         #endregion Public Methods
 
         #region Private Variables

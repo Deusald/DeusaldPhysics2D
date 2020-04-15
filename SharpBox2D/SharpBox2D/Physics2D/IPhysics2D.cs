@@ -28,6 +28,8 @@ namespace SharpBox2D
     /// </summary>
     public interface IPhysics2D
     {
+        public delegate float RayCastCallback(ICollider collider, Vector2 point, Vector2 normal, float fraction);
+        
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 
         public delegate void OnCollisionEvent(ICollisionData collisionData);
@@ -60,8 +62,33 @@ namespace SharpBox2D
         /// </summary>
         event OnCollisionEvent  OnCollisionExit;
 
-        #region Overlap Tests
+        /// <summary>
+        /// Raycast the world
+        /// </summary>
+        /// <param name="origin">The start point</param>
+        /// <param name="end">The end point of ray</param>
+        /// <param name="collisionMask">Mask for colliders</param>
+        /// <param name="callback">The callback for returning result.
+        /// return -1: ignore this collider and continue;
+        /// return 0: terminate the ray cast;
+        /// return fraction: clip the ray to this point;
+        /// return 1: don't clip the ray and continue;
+        /// </param>
+        void RayCast(RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF);
 
-        #endregion Overlap Tests
+        /// <summary>
+        /// Raycast the world
+        /// </summary>
+        /// <param name="origin">The start point</param>
+        /// <param name="direction">Ray direction - should be normalized</param>
+        /// <param name="distance">Distance of ray</param>
+        /// <param name="collisionMask">Mask for colliders</param>
+        /// <param name="callback">The callback for returning result.
+        /// return -1: ignore this collider and continue;
+        /// return 0: terminate the ray cast;
+        /// return fraction: clip the ray to this point;
+        /// return 1: don't clip the ray and continue;
+        /// </param>
+        void RayCast(RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF);
     }
 }
