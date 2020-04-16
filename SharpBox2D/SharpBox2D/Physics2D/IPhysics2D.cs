@@ -41,6 +41,8 @@ namespace SharpBox2D
         public delegate bool OverlapShapeCallback(ICollider collider, int childIndex);
         
         public delegate void SingleOverlapShapeCallback(bool hit, DistanceOutput distanceOutput);
+
+        public delegate void SingleShapeCast(bool hit, Vector2 point, Vector2 normal, float t);
         
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 

@@ -185,13 +185,13 @@ namespace SharpBox2D
         {
             bool hit = Fixture.TestPoint(point);
             callback.Invoke(hit, () => _Physics2D.GetDistance(_PointShape, 0, transform,
-                Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform()));
+                                                              Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform()));
         }
 
         internal void OverlapShape(IPhysics2D.SingleOverlapShapeCallback callback, b2Shape shape, b2Transform transform, int childIndex = 0)
         {
             DistanceOutput distanceOutput = _Physics2D.GetDistance(shape, 0, transform,
-                Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform());
+                                                                   Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform());
 
             callback.Invoke(distanceOutput.Distance <= 0, distanceOutput);
         }
@@ -206,8 +206,8 @@ namespace SharpBox2D
 
         public void OverlapCircle(IPhysics2D.SingleOverlapShapeCallback callback, float radius, Vector2 position, int childIndex = 0)
         {
-            b2CircleShape circle = new b2CircleShape {m_radius = radius};
-            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(0f));
+            b2CircleShape circle    = new b2CircleShape {m_radius = radius};
+            b2Transform   transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(0f));
             OverlapShape(callback, circle, transform, childIndex);
         }
 
@@ -218,10 +218,87 @@ namespace SharpBox2D
 
             for (int i = 0; i < vertices.Length; ++i)
                 Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
-            
+
             shape.Set(array, vertices.Length);
             b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(rotation));
             OverlapShape(callback, shape, transform, childIndex);
+        }
+
+        internal void ShapeCast(IPhysics2D.SingleShapeCast callback, b2Shape shape, b2Transform transform, b2Vec2 translation, int childIndex = 0)
+        {
+            b2DistanceProxy proxyFixed = new b2DistanceProxy();
+            proxyFixed.Set(Fixture.GetShape(), childIndex);
+            b2DistanceProxy proxyMoving = new b2DistanceProxy();
+            proxyMoving.Set(shape, 0);
+
+            b2ShapeCastInput input = new b2ShapeCastInput
+            {
+                proxyA       = proxyFixed,
+                proxyB       = proxyMoving,
+                transformA   = Fixture.GetBody().GetTransform(),
+                transformB   = transform,
+                translationB = translation
+            };
+
+            b2ShapeCastOutput output  = new b2ShapeCastOutput();
+            bool              success = Box2d.b2ShapeCast(output, input);
+            callback.Invoke(success, Vector2.ConvertFromB2Vec(output.point), Vector2.ConvertFromB2Vec(output.normal), output.lambda);
+        }
+
+        public void CircleCast(IPhysics2D.SingleShapeCast callback, Vector2 origin, float radius, Vector2 direction, float distance, int childIndex = 0)
+        {
+            b2CircleShape circle      = new b2CircleShape {m_radius = radius};
+            b2Transform   transform   = new b2Transform(Vector2.ConvertToB2Vec(origin), new b2Rot(0f));
+            b2Vec2        translation = Vector2.ConvertToB2Vec(direction * distance);
+            ShapeCast(callback, circle, transform, translation, childIndex);
+        }
+
+        public void CircleCast(IPhysics2D.SingleShapeCast callback, Vector2 origin, float radius, Vector2 end, int childIndex = 0)
+        {
+            Vector2 direction = end - origin;
+            float   distance  = direction.magnitude;
+            direction.Normalize();
+            CircleCast(callback, origin, radius, direction, distance, childIndex);
+        }
+
+        public void BoxCast(IPhysics2D.SingleShapeCast callback, float width, float height, Vector2 origin, float rotation, Vector2 direction, float distance, int childIndex = 0)
+        {
+            b2PolygonShape box = new b2PolygonShape();
+            box.SetAsBox(width, height, new b2Vec2(0f, 0f), 0f);
+            b2Transform transform   = new b2Transform(Vector2.ConvertToB2Vec(origin), new b2Rot(rotation));
+            b2Vec2      translation = Vector2.ConvertToB2Vec(direction * distance);
+            ShapeCast(callback, box, transform, translation, childIndex);
+        }
+
+        public void BoxCast(IPhysics2D.SingleShapeCast callback, float width, float height, Vector2 origin, float rotation, Vector2 end, int childIndex = 0)
+        {
+            Vector2 direction = end - origin;
+            float   distance  = direction.magnitude;
+            direction.Normalize();
+            BoxCast(callback, width, height, origin, rotation, direction, distance, childIndex);
+        }
+
+        public void PolygonCast(IPhysics2D.SingleShapeCast callback, Vector2[] vertices, Vector2 origin, float rotation, Vector2 direction, float distance, int childIndex = 0)
+        {
+            b2PolygonShape shape = new b2PolygonShape();
+            b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
+
+            for (int i = 0; i < vertices.Length; ++i)
+                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
+
+            shape.Set(array, vertices.Length);
+            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(origin), new b2Rot(rotation));
+            
+            b2Vec2 translation = Vector2.ConvertToB2Vec(direction * distance);
+            ShapeCast(callback, shape, transform, translation, childIndex);
+        }
+
+        public void PolygonCast(IPhysics2D.SingleShapeCast callback, Vector2[] vertices, Vector2 origin, float rotation, Vector2 end, int childIndex = 0)
+        {
+            Vector2 direction = end - origin;
+            float   distance  = direction.magnitude;
+            direction.Normalize();
+            PolygonCast(callback, vertices, origin, rotation, direction, distance, childIndex);
         }
 
         #endregion Public Methods
