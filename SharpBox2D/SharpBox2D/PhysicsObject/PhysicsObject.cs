@@ -275,7 +275,7 @@ namespace SharpBox2D
             b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId);
+            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -296,7 +296,7 @@ namespace SharpBox2D
             b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId);
+            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -308,7 +308,7 @@ namespace SharpBox2D
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId);
+            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -329,7 +329,7 @@ namespace SharpBox2D
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId);
+            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -352,7 +352,7 @@ namespace SharpBox2D
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId);
+            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }

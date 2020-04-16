@@ -38,6 +38,8 @@ namespace SharpBox2D
         
         public delegate bool OverlapShapeCallback(ICollider collider, CalculateDistanceCallback distanceCallback);
 
+        public delegate void SingleOverlapShapeCallback(bool hit, CalculateDistanceCallback distanceCallback);
+
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 
         public delegate void OnCollisionEvent(ICollisionData collisionData);
@@ -72,6 +74,7 @@ namespace SharpBox2D
 
         /// <summary>
         /// Return the distance and closest points between two colliders
+        /// </summary>
         DistanceOutput GetDistanceBetweenColliders(ICollider colliderA, ICollider colliderB, int childIndexA = 0, int childIndexB = 0);
         
         /// <summary>

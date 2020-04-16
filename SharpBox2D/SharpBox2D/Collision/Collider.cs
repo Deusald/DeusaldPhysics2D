@@ -94,22 +94,29 @@ namespace SharpBox2D
         public object UserData { get; set; }
 
         internal b2Fixture Fixture { get; }
-        
+
         public event IPhysics2D.OnCollisionEvent OnCollisionEnter;
-        
+
         public event IPhysics2D.OnCollisionEvent OnCollisionExit;
 
         #endregion Public Variables
 
         #region Public Methods
 
-        internal Collider(b2Fixture fixture, IPhysicsObject physicsObject, int colliderId)
+        internal Collider(b2Fixture fixture, IPhysicsObject physicsObject, int colliderId, Physics2D physics2D)
         {
             ShapeType     = (ShapeType) fixture.GetShapeType();
             PhysicsObject = physicsObject;
             ColliderId    = colliderId;
             ChildCount    = fixture.GetShape().GetChildCount();
-            Fixture      = fixture;
+            Fixture       = fixture;
+            _Physics2D    = physics2D;
+
+            _PointShape = new b2CircleShape
+            {
+                m_p      = new b2Vec2(0f, 0f),
+                m_radius = (float) Box2d.b2_linearSlop
+            };
         }
 
         public void Destroy()
@@ -131,13 +138,13 @@ namespace SharpBox2D
         {
             b2RayCastInput input = new b2RayCastInput
             {
-                p1 = Vector2.ConvertToB2Vec(origin),
-                p2 = Vector2.ConvertToB2Vec(end),
+                p1          = Vector2.ConvertToB2Vec(origin),
+                p2          = Vector2.ConvertToB2Vec(end),
                 maxFraction = 1f
             };
-            
+
             b2RayCastOutput output = new b2RayCastOutput();
-            bool result = Fixture.RayCast(output, input, childIndex);
+            bool            result = Fixture.RayCast(output, input, childIndex);
 
             if (result)
             {
@@ -167,11 +174,21 @@ namespace SharpBox2D
             return Box2d.b2TestOverlap(aabb, testAabb);
         }
 
-        public bool OverlapPoint(Vector2 point)
+        public void OverlapPoint(Vector2 point, IPhysics2D.SingleOverlapShapeCallback callback)
         {
-            return Fixture.TestPoint(Vector2.ConvertToB2Vec(point));
+            bool        hit            = Fixture.TestPoint(Vector2.ConvertToB2Vec(point));
+            b2Transform pointTransform = new b2Transform(new b2Vec2(point.x, point.y), new b2Rot(0f));
+            callback.Invoke(hit, () => _Physics2D.GetDistance(_PointShape, 0, pointTransform,
+                Fixture.GetShape(), 0, Fixture.GetBody().GetTransform()));
         }
 
         #endregion Public Methods
+
+        #region Private Variables
+
+        private readonly b2Shape   _PointShape;
+        private readonly Physics2D _Physics2D;
+
+        #endregion Private Variables
     }
 }

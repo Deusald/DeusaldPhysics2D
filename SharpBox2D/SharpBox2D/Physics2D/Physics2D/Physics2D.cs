@@ -135,19 +135,18 @@ namespace SharpBox2D
         public void OverlapPoint(IPhysics2D.OverlapShapeCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
         {
             Vector2     extends        = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
-            b2Transform pointTransform = new b2Transform(new b2Vec2(point.x, point.y), new b2Rot(0f));
-            
+
             OverlapArea(delegate(ICollider collider)
             {
-                if (collider.OverlapPoint(point))
-                    callback.Invoke(collider, delegate
-                    {
-                        Collider colliderCast = (Collider) collider;
-                        return GetDistance(_PointShape,      0, pointTransform,
-                            colliderCast.Fixture.GetShape(), 0, colliderCast.Fixture.GetBody().GetTransform());
-                    });
-
-                return true;
+                bool goNext = true;
+                
+                collider.OverlapPoint(point, delegate(bool hit, IPhysics2D.CalculateDistanceCallback distanceCallback) 
+                {
+                    if (hit)
+                        goNext = callback.Invoke(collider, distanceCallback);
+                });
+                
+                return goNext;
             }, point - extends, point + extends, collisionMask);
         }
 
@@ -159,7 +158,6 @@ namespace SharpBox2D
 
         private readonly b2BodyDef _BodyDef;
         private readonly uint      _PhysicsStepsPerSec;
-        private readonly b2Shape   _PointShape;
 
         // ReSharper disable InconsistentNaming
 
@@ -180,11 +178,6 @@ namespace SharpBox2D
             __PhysicsObjects     = new Dictionary<int, IPhysicsObject>();
             _PhysicsStepsPerSec  = physicsStepsPerSec;
             _NextPhysicsObjectId = 1;
-            _PointShape = new b2CircleShape
-            {
-                m_p      = new b2Vec2(0f, 0f),
-                m_radius = (float) Box2d.b2_linearSlop
-            };
 
             _BodyDef = new b2BodyDef
             {

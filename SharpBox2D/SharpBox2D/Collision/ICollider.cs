@@ -129,6 +129,6 @@ namespace SharpBox2D
         /// Test if given point is inside the collider
         /// Test will give results only on convex shapes
         /// </summary>
-        bool OverlapPoint(Vector2 point);
+        void OverlapPoint(Vector2 point, IPhysics2D.SingleOverlapShapeCallback callback);
     }
 }
