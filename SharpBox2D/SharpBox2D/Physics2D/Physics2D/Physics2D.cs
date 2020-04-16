@@ -91,6 +91,17 @@ namespace SharpBox2D
             RayCast(callback, origin, endPoint, collisionMask);
         }
 
+        public void OverlapArea(IPhysics2D.OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF)
+        {
+            OverlapCallback overlapCallback = new OverlapCallback((IPhysics2DControl) this, callback, collisionMask);
+            b2AABB aabb = new b2AABB
+            {
+                lowerBound = Vector2.ConvertToB2Vec(lowerBound),
+                upperBound = Vector2.ConvertToB2Vec(upperBound)
+            };
+            __World.QueryAABB(overlapCallback, aabb);
+        }
+
         #endregion Public Methods
 
         #region Private Variables

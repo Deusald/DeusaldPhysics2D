@@ -32,6 +32,10 @@ namespace SharpBox2D
 
         public delegate void SingleRayCastCallback(bool hit, Vector2 point, Vector2 normal, float fraction);
 
+        public delegate bool OverlapAreaCallback(ICollider collider);
+
+        public delegate void SingleOverlapAreaCallback(bool hit, ICollider collider);
+
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 
         public delegate void OnCollisionEvent(ICollisionData collisionData);
@@ -92,5 +96,11 @@ namespace SharpBox2D
         /// return 1: don't clip the ray and continue;
         /// </param>
         void RayCast(RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF);
+
+        /// <summary>
+        /// Get colliders that are in defined area
+        /// In callback return false to end the search
+        /// </summary>
+        void OverlapArea(OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF);
     }
 }
