@@ -115,7 +115,7 @@ namespace SharpBox2D
             _PointShape = new b2CircleShape
             {
                 m_p      = new b2Vec2(0f, 0f),
-                m_radius = (float) Box2d.b2_linearSlop
+                m_radius = float.Epsilon
             };
         }
 
