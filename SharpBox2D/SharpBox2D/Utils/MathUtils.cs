@@ -27,11 +27,28 @@ namespace SharpBox2D
 
     public static class MathUtils
     {
+        #region Time
+
+        public static float MinutesToSeconds(float minutes)
+        {
+            return minutes * 60f;
+        }
+
+        #endregion Time
+
         #region Float Utils
 
         public static float Lerp(float a, float b, float t)
         {
             return a + (b - a) * t;
+        }
+        
+        public static float InverseLerp(float a, float b, float value)
+        {
+            if (Math.Abs(b - a) < float.Epsilon)
+                return a;
+
+            return (value - a) / (b - a);
         }
 
         public static float RoundToDecimal(float value, int decimalPoint)
@@ -57,11 +74,29 @@ namespace SharpBox2D
 
         #region Consts
 
+        public const float Pi       = (float) Math.PI;
         public const float DegToRad = MathF.PI / 180f;
         public const float RadToDeg = 180f / MathF.PI;
 
         public const float EpsilonSquare = float.Epsilon * float.Epsilon;
 
         #endregion Consts
+        
+        #region Bits
+
+        public static uint NumberOfSetBits(uint mask)
+        {
+            uint count = 0;
+
+            while (mask > 0)
+            {
+                count +=  mask & 1;
+                mask  >>= 1;
+            }
+
+            return count;
+        }
+
+        #endregion Bits
     }
 }
