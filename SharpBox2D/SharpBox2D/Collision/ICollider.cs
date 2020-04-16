@@ -127,8 +127,26 @@ namespace SharpBox2D
         
         /// <summary>
         /// Test if given point is inside the collider
-        /// Test will give results only on convex shapes
+        /// CalculateDistanceCallback should be called only when there was no hit
         /// </summary>
-        void OverlapPoint(Vector2 point, IPhysics2D.SingleOverlapShapeCallback callback);
+        void OverlapPoint(IPhysics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0);
+        
+        /// <summary>
+        /// Test if given collider would overlap with given box shape
+        /// CalculateDistanceCallback should be called only when there was no hit
+        /// </summary>
+        void OverlapBox(IPhysics2D.SingleOverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, int childIndex = 0);
+        
+        /// <summary>
+        /// Test if given collider would overlap with given circle shape
+        /// CalculateDistanceCallback should be called only when there was no hit
+        /// </summary>
+        void OverlapCircle(IPhysics2D.SingleOverlapShapeCallback callback, float radius, Vector2 position, int childIndex = 0);
+        
+        /// <summary>
+        /// Test if given collider would overlap with given polygon shape
+        /// CalculateDistanceCallback should be called only when there was no hit
+        /// </summary>
+        void OverlapPolygon(IPhysics2D.SingleOverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, int childIndex = 0);
     }
 }

@@ -174,12 +174,54 @@ namespace SharpBox2D
             return Box2d.b2TestOverlap(aabb, testAabb);
         }
 
-        public void OverlapPoint(Vector2 point, IPhysics2D.SingleOverlapShapeCallback callback)
+        public void OverlapPoint(IPhysics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0)
         {
-            bool        hit            = Fixture.TestPoint(Vector2.ConvertToB2Vec(point));
-            b2Transform pointTransform = new b2Transform(new b2Vec2(point.x, point.y), new b2Rot(0f));
-            callback.Invoke(hit, () => _Physics2D.GetDistance(_PointShape, 0, pointTransform,
-                Fixture.GetShape(), 0, Fixture.GetBody().GetTransform()));
+            b2Vec2      vec2Point      = Vector2.ConvertToB2Vec(point);
+            b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
+            OverlapPoint(callback, vec2Point, pointTransform, childIndex);
+        }
+
+        internal void OverlapPoint(IPhysics2D.OverlapPointCallback callback, b2Vec2 point, b2Transform transform, int childIndex = 0)
+        {
+            bool hit = Fixture.TestPoint(point);
+            callback.Invoke(hit, () => _Physics2D.GetDistance(_PointShape, 0, transform,
+                Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform()));
+        }
+
+        internal void OverlapShape(IPhysics2D.SingleOverlapShapeCallback callback, b2Shape shape, b2Transform transform, int childIndex = 0)
+        {
+            DistanceOutput distanceOutput = _Physics2D.GetDistance(shape, 0, transform,
+                Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform());
+
+            callback.Invoke(distanceOutput.Distance <= 0, distanceOutput);
+        }
+
+        public void OverlapBox(IPhysics2D.SingleOverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, int childIndex = 0)
+        {
+            b2PolygonShape box = new b2PolygonShape();
+            box.SetAsBox(width, height, new b2Vec2(0f, 0f), 0f);
+            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(rotation));
+            OverlapShape(callback, box, transform, childIndex);
+        }
+
+        public void OverlapCircle(IPhysics2D.SingleOverlapShapeCallback callback, float radius, Vector2 position, int childIndex = 0)
+        {
+            b2CircleShape circle = new b2CircleShape {m_radius = radius};
+            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(0f));
+            OverlapShape(callback, circle, transform, childIndex);
+        }
+
+        public void OverlapPolygon(IPhysics2D.SingleOverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, int childIndex = 0)
+        {
+            b2PolygonShape shape = new b2PolygonShape();
+            b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
+
+            for (int i = 0; i < vertices.Length; ++i)
+                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
+            
+            shape.Set(array, vertices.Length);
+            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(rotation));
+            OverlapShape(callback, shape, transform, childIndex);
         }
 
         #endregion Public Methods

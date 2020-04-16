@@ -133,22 +133,60 @@ namespace SharpBox2D
             __World.QueryAABB(overlapCallback, aabb);
         }
 
-        public void OverlapPoint(IPhysics2D.OverlapShapeCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
+        public void OverlapPoint(IPhysics2D.OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
         {
-            Vector2 extends = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
+            b2Vec2      vec2Point      = Vector2.ConvertToB2Vec(point);
+            b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
 
             OverlapArea(delegate(ICollider collider)
             {
                 bool goNext = true;
 
-                collider.OverlapPoint(point, delegate(bool hit, IPhysics2D.CalculateDistanceCallback distanceCallback)
+                ((Collider) collider).OverlapPoint(delegate(bool hit, IPhysics2D.CalculateDistanceCallback distanceCallback)
                 {
                     if (hit)
-                        goNext = callback.Invoke(collider, distanceCallback);
-                });
+                        goNext = callback.Invoke(collider);
+                }, vec2Point, pointTransform);
 
                 return goNext;
-            }, point - extends, point + extends, collisionMask);
+            }, point - _PointExtends, point + _PointExtends, collisionMask);
+        }
+
+        public void OverlapBox(IPhysics2D.OverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, ushort collisionMask = 0xFFFF)
+        {
+            b2PolygonShape box = new b2PolygonShape();
+            box.SetAsBox(width, height, new b2Vec2(0f, 0f), 0f);
+            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(rotation));
+            b2AABB      aabb      = new b2AABB();
+            box.ComputeAABB(aabb, transform, 0);
+            OverlapShape(callback,                         box, transform, Vector2.ConvertFromB2Vec(aabb.lowerBound),
+                Vector2.ConvertFromB2Vec(aabb.upperBound), collisionMask);
+        }
+
+        public void OverlapCircle(IPhysics2D.OverlapShapeCallback callback, float radius, Vector2 position, ushort collisionMask = 0xFFFF)
+        {
+            b2CircleShape circle    = new b2CircleShape {m_radius = radius};
+            b2Transform   transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(0f));
+            b2AABB        aabb      = new b2AABB();
+            circle.ComputeAABB(aabb, transform, 0);
+            OverlapShape(callback,                         circle, transform, Vector2.ConvertFromB2Vec(aabb.lowerBound),
+                Vector2.ConvertFromB2Vec(aabb.upperBound), collisionMask);
+        }
+
+        public void OverlapPolygon(IPhysics2D.OverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, ushort collisionMask = 0xFFFF)
+        {
+            b2PolygonShape shape = new b2PolygonShape();
+            b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
+
+            for (int i = 0; i < vertices.Length; ++i)
+                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
+
+            shape.Set(array, vertices.Length);
+            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(rotation));
+            b2AABB      aabb      = new b2AABB();
+            shape.ComputeAABB(aabb, transform, 0);
+            OverlapShape(callback,                         shape, transform, Vector2.ConvertFromB2Vec(aabb.lowerBound),
+                Vector2.ConvertFromB2Vec(aabb.upperBound), collisionMask);
         }
 
         #endregion Public Methods
@@ -159,6 +197,7 @@ namespace SharpBox2D
 
         private readonly b2BodyDef _BodyDef;
         private readonly uint      _PhysicsStepsPerSec;
+        private readonly Vector2   _PointExtends;
 
         // ReSharper disable InconsistentNaming
 
@@ -179,6 +218,7 @@ namespace SharpBox2D
             __PhysicsObjects     = new Dictionary<int, IPhysicsObject>();
             _PhysicsStepsPerSec  = physicsStepsPerSec;
             _NextPhysicsObjectId = 1;
+            _PointExtends        = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
 
             _BodyDef = new b2BodyDef
             {
@@ -193,6 +233,29 @@ namespace SharpBox2D
                 enabled         = true,
                 gravityScale    = 1f
             };
+        }
+
+        private void OverlapShape(IPhysics2D.OverlapShapeCallback callback, b2Shape shape, b2Transform transform,
+            Vector2 lowerBound, Vector2 upperBound, ushort collisionMask)
+        {
+            OverlapArea(delegate(ICollider collider)
+            {
+                bool goNext = true;
+
+                for (int i = 0; i < collider.ChildCount; ++i)
+                {
+                    int innerI = i;
+                    ((Collider) collider).OverlapShape(delegate(bool hit, DistanceOutput output)
+                    {
+                        if (hit)
+                            goNext = goNext && callback.Invoke(collider, innerI);
+                    }, shape, transform, i);
+
+                    if (!goNext) break;
+                }
+
+                return goNext;
+            }, lowerBound, upperBound, collisionMask);
         }
 
         #endregion Private Methods

@@ -36,10 +36,12 @@ namespace SharpBox2D
 
         public delegate DistanceOutput CalculateDistanceCallback();
         
-        public delegate bool OverlapShapeCallback(ICollider collider, CalculateDistanceCallback distanceCallback);
+        public delegate void OverlapPointCallback(bool hit, CalculateDistanceCallback distanceCallback);
 
-        public delegate void SingleOverlapShapeCallback(bool hit, CalculateDistanceCallback distanceCallback);
-
+        public delegate bool OverlapShapeCallback(ICollider collider, int childIndex);
+        
+        public delegate void SingleOverlapShapeCallback(bool hit, DistanceOutput distanceOutput);
+        
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 
         public delegate void OnCollisionEvent(ICollisionData collisionData);
@@ -116,6 +118,24 @@ namespace SharpBox2D
         /// Get all colliders that have given points inside their shape
         /// In callback return false to end the search
         /// </summary>
-        void OverlapPoint(OverlapShapeCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
+        void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
+
+        /// <summary>
+        /// Get all colliders that would collide with defined box
+        /// In callback return false to end the search
+        /// </summary>
+        void OverlapBox(OverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, ushort collisionMask = 0xFFFF);
+        
+        /// <summary>
+        /// Get all colliders that would collide with defined circle
+        /// In callback return false to end the search
+        /// </summary>
+        void OverlapCircle(OverlapShapeCallback callback, float radius, Vector2 position, ushort collisionMask = 0xFFFF);
+        
+        /// <summary>
+        /// Get all colliders that would collide with defined polygon
+        /// In callback return false to end the search
+        /// </summary>
+        void OverlapPolygon(OverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, ushort collisionMask = 0xFFFF);
     }
 }
