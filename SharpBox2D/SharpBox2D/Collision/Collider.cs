@@ -154,6 +154,11 @@ namespace SharpBox2D
             RayCast(callback, origin, endPoint, childIndex);
         }
 
+        public bool OverlapPoint(Vector2 point)
+        {
+            return Fixture.TestPoint(Vector2.ConvertToB2Vec(point));
+        }
+
         #endregion Public Methods
     }
 }

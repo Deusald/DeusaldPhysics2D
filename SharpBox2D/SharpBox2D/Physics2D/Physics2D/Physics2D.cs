@@ -102,6 +102,17 @@ namespace SharpBox2D
             __World.QueryAABB(overlapCallback, aabb);
         }
 
+        public void OverlapPoint(IPhysics2D.OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
+        {
+            Vector2 extends = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
+            OverlapArea(collider =>
+            {
+                if (collider.OverlapPoint(point))
+                    callback.Invoke(collider);
+                return true;
+            }, point - extends, point + extends, collisionMask);
+        }
+
         #endregion Public Methods
 
         #region Private Variables

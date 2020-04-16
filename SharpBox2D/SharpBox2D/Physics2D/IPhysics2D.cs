@@ -34,8 +34,6 @@ namespace SharpBox2D
 
         public delegate bool OverlapAreaCallback(ICollider collider);
 
-        public delegate void SingleOverlapAreaCallback(bool hit, ICollider collider);
-
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 
         public delegate void OnCollisionEvent(ICollisionData collisionData);
@@ -102,5 +100,11 @@ namespace SharpBox2D
         /// In callback return false to end the search
         /// </summary>
         void OverlapArea(OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF);
+
+        /// <summary>
+        /// Get all colliders that have given points inside their shape
+        /// In callback return false to end the search
+        /// </summary>
+        void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
     }
 }

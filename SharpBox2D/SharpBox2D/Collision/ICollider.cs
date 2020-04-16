@@ -119,5 +119,11 @@ namespace SharpBox2D
         /// RayCast this collider
         /// </summary>
         void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0);
+
+        /// <summary>
+        /// Test if given point is inside the collider
+        /// Test will give results only on convex shapes
+        /// </summary>
+        bool OverlapPoint(Vector2 point);
     }
 }
