@@ -34,6 +34,10 @@ namespace SharpBox2D
 
         public delegate bool OverlapAreaCallback(ICollider collider);
 
+        public delegate DistanceOutput CalculateDistanceCallback();
+        
+        public delegate bool OverlapShapeCallback(ICollider collider, CalculateDistanceCallback distanceCallback);
+
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 
         public delegate void OnCollisionEvent(ICollisionData collisionData);
@@ -66,6 +70,10 @@ namespace SharpBox2D
         /// </summary>
         event OnCollisionEvent OnCollisionExit;
 
+        /// <summary>
+        /// Return the distance and closest points between two colliders
+        DistanceOutput GetDistanceBetweenColliders(ICollider colliderA, ICollider colliderB, int childIndexA = 0, int childIndexB = 0);
+        
         /// <summary>
         /// Raycast the world
         /// </summary>
@@ -105,6 +113,6 @@ namespace SharpBox2D
         /// Get all colliders that have given points inside their shape
         /// In callback return false to end the search
         /// </summary>
-        void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
+        void OverlapPoint(OverlapShapeCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
     }
 }

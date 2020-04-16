@@ -79,6 +79,36 @@ namespace SharpBox2D
             OnCollisionExit?.Invoke(collisionData);
         }
 
+        public DistanceOutput GetDistanceBetweenColliders(ICollider colliderA, ICollider colliderB, int childIndexA = 0, int childIndexB = 0)
+        {
+            Collider colliderACast = (Collider) colliderA;
+            Collider colliderBCast = (Collider) colliderB;
+            return GetDistance(colliderACast.Fixture.GetShape(), childIndexA, colliderACast.Fixture.GetBody().GetTransform(),
+                colliderBCast.Fixture.GetShape(),                childIndexB, colliderBCast.Fixture.GetBody().GetTransform());
+        }
+
+        internal DistanceOutput GetDistance(b2Shape shapeA, int childIndexA, b2Transform transformA, b2Shape shapeB, int childIndexB, b2Transform transformB)
+        {
+            b2DistanceOutput output = new b2DistanceOutput();
+            b2SimplexCache   cache  = new b2SimplexCache {count = 0};
+            b2DistanceProxy  proxyA = new b2DistanceProxy();
+            proxyA.Set(shapeA, childIndexA);
+            b2DistanceProxy proxyB = new b2DistanceProxy();
+            proxyB.Set(shapeB, childIndexB);
+
+            b2DistanceInput input = new b2DistanceInput
+            {
+                proxyA     = proxyA,
+                proxyB     = proxyB,
+                transformA = transformA,
+                transformB = transformB
+            };
+
+            Box2d.b2Distance(output, cache, input);
+            DistanceOutput finalOutput = new DistanceOutput(output.distance, Vector2.ConvertFromB2Vec(output.pointA), Vector2.ConvertFromB2Vec(output.pointB));
+            return finalOutput;
+        }
+
         public void RayCast(IPhysics2D.RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
         {
             RaycastCallback raycastCallback = new RaycastCallback((IPhysics2DControl) this, callback, collisionMask);
@@ -102,13 +132,21 @@ namespace SharpBox2D
             __World.QueryAABB(overlapCallback, aabb);
         }
 
-        public void OverlapPoint(IPhysics2D.OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
+        public void OverlapPoint(IPhysics2D.OverlapShapeCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
         {
-            Vector2 extends = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
-            OverlapArea(collider =>
+            Vector2     extends        = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
+            b2Transform pointTransform = new b2Transform(new b2Vec2(point.x, point.y), new b2Rot(0f));
+            
+            OverlapArea(delegate(ICollider collider)
             {
                 if (collider.OverlapPoint(point))
-                    callback.Invoke(collider);
+                    callback.Invoke(collider, delegate
+                    {
+                        Collider colliderCast = (Collider) collider;
+                        return GetDistance(_PointShape,      0, pointTransform,
+                            colliderCast.Fixture.GetShape(), 0, colliderCast.Fixture.GetBody().GetTransform());
+                    });
+
                 return true;
             }, point - extends, point + extends, collisionMask);
         }
@@ -121,6 +159,7 @@ namespace SharpBox2D
 
         private readonly b2BodyDef _BodyDef;
         private readonly uint      _PhysicsStepsPerSec;
+        private readonly b2Shape   _PointShape;
 
         // ReSharper disable InconsistentNaming
 
@@ -141,6 +180,11 @@ namespace SharpBox2D
             __PhysicsObjects     = new Dictionary<int, IPhysicsObject>();
             _PhysicsStepsPerSec  = physicsStepsPerSec;
             _NextPhysicsObjectId = 1;
+            _PointShape = new b2CircleShape
+            {
+                m_p      = new b2Vec2(0f, 0f),
+                m_radius = (float) Box2d.b2_linearSlop
+            };
 
             _BodyDef = new b2BodyDef
             {
