@@ -101,7 +101,8 @@ namespace SharpBox2D
                 proxyA     = proxyA,
                 proxyB     = proxyB,
                 transformA = transformA,
-                transformB = transformB
+                transformB = transformB,
+                useRadii   = true
             };
 
             Box2d.b2Distance(output, cache, input);
@@ -134,18 +135,18 @@ namespace SharpBox2D
 
         public void OverlapPoint(IPhysics2D.OverlapShapeCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
         {
-            Vector2     extends        = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
+            Vector2 extends = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
 
             OverlapArea(delegate(ICollider collider)
             {
                 bool goNext = true;
-                
-                collider.OverlapPoint(point, delegate(bool hit, IPhysics2D.CalculateDistanceCallback distanceCallback) 
+
+                collider.OverlapPoint(point, delegate(bool hit, IPhysics2D.CalculateDistanceCallback distanceCallback)
                 {
                     if (hit)
                         goNext = callback.Invoke(collider, distanceCallback);
                 });
-                
+
                 return goNext;
             }, point - extends, point + extends, collisionMask);
         }
