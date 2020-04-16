@@ -23,6 +23,7 @@
 
 namespace SharpBox2D
 {
+    using System;
     using System.Collections.Generic;
     using Box2D;
 
@@ -30,6 +31,8 @@ namespace SharpBox2D
     {
         #region Public Variables
 
+        public static readonly Version Version = new Version(0, 5, 0);
+        
         public Vector2 Gravity
         {
             get
