@@ -275,7 +275,7 @@ namespace SharpBox2D
             b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
+            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -296,19 +296,18 @@ namespace SharpBox2D
             b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
+            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
 
         public ICollider AddBoxCollider(float width, float height, Vector2 offset, float angle, float density)
         {
-            b2PolygonShape shape = new b2PolygonShape();
-            shape.SetAsBox(width, height, Vector2.ConvertToB2Vec(offset), angle);
+            b2Shape   shape      = Physics2D.GetBoxShape(width, height, offset, angle);
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
+            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -320,16 +319,11 @@ namespace SharpBox2D
 
         public ICollider AddCircleCollider(float radius, Vector2 offset, float density)
         {
-            b2CircleShape shape = new b2CircleShape
-            {
-                m_p      = Vector2.ConvertToB2Vec(offset),
-                m_radius = radius
-            };
-
+            b2Shape   shape      = Physics2D.GetCircleShape(radius, offset);
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
+            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -341,18 +335,11 @@ namespace SharpBox2D
 
         public ICollider AddPolygonCollider(Vector2[] vertices, float density)
         {
-            b2PolygonShape shape = new b2PolygonShape();
-            b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
-
-            for (int i = 0; i < vertices.Length; ++i)
-                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
-            
-            shape.Set(array, vertices.Length);
-            
+            b2Shape   shape      = Physics2D.GetPolygonShape(vertices);
             b2Fixture fixture    = _Body.CreateFixture(shape, density);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
-            ICollider collider   = new Collider(fixture, this, colliderId, _Physics2D);
+            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }

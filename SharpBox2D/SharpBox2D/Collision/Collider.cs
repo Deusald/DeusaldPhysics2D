@@ -198,29 +198,22 @@ namespace SharpBox2D
 
         public void OverlapBox(IPhysics2D.SingleOverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, int childIndex = 0)
         {
-            b2PolygonShape box = new b2PolygonShape();
-            box.SetAsBox(width, height, new b2Vec2(0f, 0f), 0f);
-            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(rotation));
+            b2Shape     box       = Physics2D.GetBoxShape(width, height, Vector2.zero, 0f);
+            b2Transform transform = Physics2D.GetNewTransform(position, rotation);
             OverlapShape(callback, box, transform, childIndex);
         }
 
         public void OverlapCircle(IPhysics2D.SingleOverlapShapeCallback callback, float radius, Vector2 position, int childIndex = 0)
         {
-            b2CircleShape circle    = new b2CircleShape {m_radius = radius};
-            b2Transform   transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(0f));
+            b2Shape     circle    = Physics2D.GetCircleShape(radius, Vector2.zero);
+            b2Transform transform = Physics2D.GetNewTransform(position, 0f);
             OverlapShape(callback, circle, transform, childIndex);
         }
 
         public void OverlapPolygon(IPhysics2D.SingleOverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, int childIndex = 0)
         {
-            b2PolygonShape shape = new b2PolygonShape();
-            b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
-
-            for (int i = 0; i < vertices.Length; ++i)
-                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
-
-            shape.Set(array, vertices.Length);
-            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(rotation));
+            b2Shape     shape     = Physics2D.GetPolygonShape(vertices);
+            b2Transform transform = Physics2D.GetNewTransform(position, rotation);
             OverlapShape(callback, shape, transform, childIndex);
         }
 
@@ -247,9 +240,9 @@ namespace SharpBox2D
 
         public void CircleCast(IPhysics2D.SingleShapeCast callback, Vector2 origin, float radius, Vector2 direction, float distance, int childIndex = 0)
         {
-            b2CircleShape circle      = new b2CircleShape {m_radius = radius};
-            b2Transform   transform   = new b2Transform(Vector2.ConvertToB2Vec(origin), new b2Rot(0f));
-            b2Vec2        translation = Vector2.ConvertToB2Vec(direction * distance);
+            b2Shape     circle      = Physics2D.GetCircleShape(radius, Vector2.zero);
+            b2Transform transform   = Physics2D.GetNewTransform(origin, 0f);
+            b2Vec2      translation = Vector2.ConvertToB2Vec(direction * distance);
             ShapeCast(callback, circle, transform, translation, childIndex);
         }
 
@@ -263,9 +256,8 @@ namespace SharpBox2D
 
         public void BoxCast(IPhysics2D.SingleShapeCast callback, float width, float height, Vector2 origin, float rotation, Vector2 direction, float distance, int childIndex = 0)
         {
-            b2PolygonShape box = new b2PolygonShape();
-            box.SetAsBox(width, height, new b2Vec2(0f, 0f), 0f);
-            b2Transform transform   = new b2Transform(Vector2.ConvertToB2Vec(origin), new b2Rot(rotation));
+            b2Shape     box         = Physics2D.GetBoxShape(width, height, Vector2.zero, 0f);
+            b2Transform transform   = Physics2D.GetNewTransform(origin, rotation);
             b2Vec2      translation = Vector2.ConvertToB2Vec(direction * distance);
             ShapeCast(callback, box, transform, translation, childIndex);
         }
@@ -280,16 +272,9 @@ namespace SharpBox2D
 
         public void PolygonCast(IPhysics2D.SingleShapeCast callback, Vector2[] vertices, Vector2 origin, float rotation, Vector2 direction, float distance, int childIndex = 0)
         {
-            b2PolygonShape shape = new b2PolygonShape();
-            b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
-
-            for (int i = 0; i < vertices.Length; ++i)
-                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
-
-            shape.Set(array, vertices.Length);
-            b2Transform transform = new b2Transform(Vector2.ConvertToB2Vec(origin), new b2Rot(rotation));
-            
-            b2Vec2 translation = Vector2.ConvertToB2Vec(direction * distance);
+            b2Shape     shape       = Physics2D.GetPolygonShape(vertices);
+            b2Transform transform   = Physics2D.GetNewTransform(origin, rotation);
+            b2Vec2      translation = Vector2.ConvertToB2Vec(direction * distance);
             ShapeCast(callback, shape, transform, translation, childIndex);
         }
 
