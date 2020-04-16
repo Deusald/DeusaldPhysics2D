@@ -372,6 +372,19 @@ namespace SharpBox2D
             Vector2 shorter = normalized * reductionLength;
             this -= shorter;
         }
+        
+        /// <summary>
+        /// Lerp between vectors using max distance delta
+        /// </summary>
+        public static Vector2 MoveTowards(Vector2 current, Vector2 target, float maxDistanceDelta)
+        {
+            Vector2 vector2   = target - current;
+            float   magnitude = vector2.magnitude;
+            if (magnitude <= (double) maxDistanceDelta || magnitude < double.Epsilon)
+                return target;
+
+            return current + vector2 / magnitude * maxDistanceDelta;
+        }
 
         #endregion Other Math
 
