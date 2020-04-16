@@ -154,6 +154,19 @@ namespace SharpBox2D
             RayCast(callback, origin, endPoint, childIndex);
         }
 
+        public bool OverlapArea(Vector2 lowerBound, Vector2 upperBound, int childIndex = 0)
+        {
+            b2AABB aabb = new b2AABB();
+            Fixture.GetShape().ComputeAABB(aabb, Fixture.GetBody().GetTransform(), childIndex);
+            b2AABB testAabb = new b2AABB
+            {
+                lowerBound = Vector2.ConvertToB2Vec(lowerBound),
+                upperBound = Vector2.ConvertToB2Vec(upperBound)
+            };
+
+            return Box2d.b2TestOverlap(aabb, testAabb);
+        }
+
         public bool OverlapPoint(Vector2 point)
         {
             return Fixture.TestPoint(Vector2.ConvertToB2Vec(point));
