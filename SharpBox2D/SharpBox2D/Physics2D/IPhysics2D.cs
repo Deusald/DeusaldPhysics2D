@@ -42,7 +42,9 @@ namespace SharpBox2D
         
         public delegate void SingleOverlapShapeCallback(bool hit, DistanceOutput distanceOutput);
 
-        public delegate void SingleShapeCast(bool hit, Vector2 point, Vector2 normal, float t);
+        public delegate bool ShapeCastCallback(ICollider collider, Vector2 point, Vector2 normal, float t, int childIndex);
+        
+        public delegate void SingleShapeCastCallback(bool hit, Vector2 point, Vector2 normal, float t);
         
         public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
 
@@ -123,21 +125,14 @@ namespace SharpBox2D
         void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
 
         /// <summary>
-        /// Get all colliders that would collide with defined box
+        /// Get all colliders that would collide with defined shape
         /// In callback return false to end the search
         /// </summary>
-        void OverlapBox(OverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, ushort collisionMask = 0xFFFF);
-        
+        void OverlapShape(OverlapShapeCallback callback, OverlapShapeInput input, ushort collisionMask = 0xFFFF);
+
         /// <summary>
-        /// Get all colliders that would collide with defined circle
-        /// In callback return false to end the search
+        /// Shoot a shape in given direction and return in callback all hit colliders
         /// </summary>
-        void OverlapCircle(OverlapShapeCallback callback, float radius, Vector2 position, ushort collisionMask = 0xFFFF);
-        
-        /// <summary>
-        /// Get all colliders that would collide with defined polygon
-        /// In callback return false to end the search
-        /// </summary>
-        void OverlapPolygon(OverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, ushort collisionMask = 0xFFFF);
+        void ShapeCast(ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF);
     }
 }

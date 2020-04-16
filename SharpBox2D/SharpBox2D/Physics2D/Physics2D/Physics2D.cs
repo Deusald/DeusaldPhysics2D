@@ -179,31 +179,50 @@ namespace SharpBox2D
             }, point - _PointExtends, point + _PointExtends, collisionMask);
         }
 
-        public void OverlapBox(IPhysics2D.OverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, ushort collisionMask = 0xFFFF)
+        public void OverlapShape(IPhysics2D.OverlapShapeCallback callback, OverlapShapeInput input, ushort collisionMask = 0xFFFF)
         {
-            b2Shape     box       = GetBoxShape(width, height, Vector2.zero, 0f);
-            b2Transform transform = GetNewTransform(position, rotation);
-            b2AABB      aabb      = new b2AABB();
-            box.ComputeAABB(aabb, transform, 0);
-            OverlapShape(callback, box, transform, aabb.lowerBound, aabb.upperBound, collisionMask);
+            OverlapArea(delegate(ICollider collider)
+            {
+                bool goNext = true;
+
+                for (int i = 0; i < collider.ChildCount; ++i)
+                {
+                    int innerI = i;
+                    ((Collider) collider).OverlapShape(delegate(bool hit, DistanceOutput output)
+                    {
+                        if (hit)
+                            goNext = goNext && callback.Invoke(collider, innerI);
+                    }, input, i);
+
+                    if (!goNext) break;
+                }
+
+                return goNext;
+            }, input.Aabb.lowerBound, input.Aabb.upperBound, collisionMask);
         }
 
-        public void OverlapCircle(IPhysics2D.OverlapShapeCallback callback, float radius, Vector2 position, ushort collisionMask = 0xFFFF)
+        public void ShapeCast(IPhysics2D.ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF)
         {
-            b2Shape     circle    = new b2CircleShape {m_radius = radius};
-            b2Transform transform = GetNewTransform(position, 0f);
-            b2AABB      aabb      = new b2AABB();
-            circle.ComputeAABB(aabb, transform, 0);
-            OverlapShape(callback, circle, transform, aabb.lowerBound, aabb.upperBound, collisionMask);
-        }
+            OverlapArea(delegate(ICollider collider)
+            {
+                bool goNext = true;
+                
+                for (int i = 0; i < collider.ChildCount; ++i)
+                {
+                    int innerI = i;
+                    
+                    ((Collider) collider).ShapeCast(delegate(bool hit, Vector2 point, Vector2 normal, float t)
+                    {
+                        if (hit)
+                            goNext = goNext && callback.Invoke(collider, point, normal, t, innerI);
+                    }, input, i);
 
-        public void OverlapPolygon(IPhysics2D.OverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, ushort collisionMask = 0xFFFF)
-        {
-            b2Shape     shape     = GetPolygonShape(vertices);
-            b2Transform transform = GetNewTransform(position, rotation);
-            b2AABB      aabb      = new b2AABB();
-            shape.ComputeAABB(aabb, transform, 0);
-            OverlapShape(callback, shape, transform, aabb.lowerBound, aabb.upperBound, collisionMask);
+                    if (!goNext) break;
+                }
+
+                return goNext;
+                
+            }, input.Aabb.lowerBound, input.Aabb.upperBound, collisionMask);
         }
 
         #endregion Public Methods
@@ -261,29 +280,6 @@ namespace SharpBox2D
                 upperBound = upperBound
             };
             __World.QueryAABB(overlapCallback, aabb);
-        }
-
-        private void OverlapShape(IPhysics2D.OverlapShapeCallback callback,   b2Shape shape,      b2Transform transform,
-                                  b2Vec2                          lowerBound, b2Vec2  upperBound, ushort      collisionMask)
-        {
-            OverlapArea(delegate(ICollider collider)
-            {
-                bool goNext = true;
-
-                for (int i = 0; i < collider.ChildCount; ++i)
-                {
-                    int innerI = i;
-                    ((Collider) collider).OverlapShape(delegate(bool hit, DistanceOutput output)
-                    {
-                        if (hit)
-                            goNext = goNext && callback.Invoke(collider, innerI);
-                    }, shape, transform, i);
-
-                    if (!goNext) break;
-                }
-
-                return goNext;
-            }, lowerBound, upperBound, collisionMask);
         }
 
         #endregion Private Methods

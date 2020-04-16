@@ -188,102 +188,33 @@ namespace SharpBox2D
                                                               Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform()));
         }
 
-        internal void OverlapShape(IPhysics2D.SingleOverlapShapeCallback callback, b2Shape shape, b2Transform transform, int childIndex = 0)
+        public void OverlapShape(IPhysics2D.SingleOverlapShapeCallback callback, OverlapShapeInput input, int childIndex = 0)
         {
-            DistanceOutput distanceOutput = _Physics2D.GetDistance(shape, 0, transform,
+            DistanceOutput distanceOutput = _Physics2D.GetDistance(input.Shape, 0, input.Transform,
                                                                    Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform());
 
             callback.Invoke(distanceOutput.Distance <= 0, distanceOutput);
         }
 
-        public void OverlapBox(IPhysics2D.SingleOverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, int childIndex = 0)
-        {
-            b2Shape     box       = Physics2D.GetBoxShape(width, height, Vector2.zero, 0f);
-            b2Transform transform = Physics2D.GetNewTransform(position, rotation);
-            OverlapShape(callback, box, transform, childIndex);
-        }
-
-        public void OverlapCircle(IPhysics2D.SingleOverlapShapeCallback callback, float radius, Vector2 position, int childIndex = 0)
-        {
-            b2Shape     circle    = Physics2D.GetCircleShape(radius, Vector2.zero);
-            b2Transform transform = Physics2D.GetNewTransform(position, 0f);
-            OverlapShape(callback, circle, transform, childIndex);
-        }
-
-        public void OverlapPolygon(IPhysics2D.SingleOverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, int childIndex = 0)
-        {
-            b2Shape     shape     = Physics2D.GetPolygonShape(vertices);
-            b2Transform transform = Physics2D.GetNewTransform(position, rotation);
-            OverlapShape(callback, shape, transform, childIndex);
-        }
-
-        internal void ShapeCast(IPhysics2D.SingleShapeCast callback, b2Shape shape, b2Transform transform, b2Vec2 translation, int childIndex = 0)
+        public void ShapeCast(IPhysics2D.SingleShapeCastCallback callback, ShapeCastInput input, int childIndex = 0)
         {
             b2DistanceProxy proxyFixed = new b2DistanceProxy();
             proxyFixed.Set(Fixture.GetShape(), childIndex);
             b2DistanceProxy proxyMoving = new b2DistanceProxy();
-            proxyMoving.Set(shape, 0);
+            proxyMoving.Set(input.Shape, 0);
 
-            b2ShapeCastInput input = new b2ShapeCastInput
+            b2ShapeCastInput castInput = new b2ShapeCastInput
             {
                 proxyA       = proxyFixed,
                 proxyB       = proxyMoving,
                 transformA   = Fixture.GetBody().GetTransform(),
-                transformB   = transform,
-                translationB = translation
+                transformB   = input.Transform,
+                translationB = input.Translation
             };
 
             b2ShapeCastOutput output  = new b2ShapeCastOutput();
-            bool              success = Box2d.b2ShapeCast(output, input);
+            bool              success = Box2d.b2ShapeCast(output, castInput);
             callback.Invoke(success, Vector2.ConvertFromB2Vec(output.point), Vector2.ConvertFromB2Vec(output.normal), output.lambda);
-        }
-
-        public void CircleCast(IPhysics2D.SingleShapeCast callback, Vector2 origin, float radius, Vector2 direction, float distance, int childIndex = 0)
-        {
-            b2Shape     circle      = Physics2D.GetCircleShape(radius, Vector2.zero);
-            b2Transform transform   = Physics2D.GetNewTransform(origin, 0f);
-            b2Vec2      translation = Vector2.ConvertToB2Vec(direction * distance);
-            ShapeCast(callback, circle, transform, translation, childIndex);
-        }
-
-        public void CircleCast(IPhysics2D.SingleShapeCast callback, Vector2 origin, float radius, Vector2 end, int childIndex = 0)
-        {
-            Vector2 direction = end - origin;
-            float   distance  = direction.magnitude;
-            direction.Normalize();
-            CircleCast(callback, origin, radius, direction, distance, childIndex);
-        }
-
-        public void BoxCast(IPhysics2D.SingleShapeCast callback, float width, float height, Vector2 origin, float rotation, Vector2 direction, float distance, int childIndex = 0)
-        {
-            b2Shape     box         = Physics2D.GetBoxShape(width, height, Vector2.zero, 0f);
-            b2Transform transform   = Physics2D.GetNewTransform(origin, rotation);
-            b2Vec2      translation = Vector2.ConvertToB2Vec(direction * distance);
-            ShapeCast(callback, box, transform, translation, childIndex);
-        }
-
-        public void BoxCast(IPhysics2D.SingleShapeCast callback, float width, float height, Vector2 origin, float rotation, Vector2 end, int childIndex = 0)
-        {
-            Vector2 direction = end - origin;
-            float   distance  = direction.magnitude;
-            direction.Normalize();
-            BoxCast(callback, width, height, origin, rotation, direction, distance, childIndex);
-        }
-
-        public void PolygonCast(IPhysics2D.SingleShapeCast callback, Vector2[] vertices, Vector2 origin, float rotation, Vector2 direction, float distance, int childIndex = 0)
-        {
-            b2Shape     shape       = Physics2D.GetPolygonShape(vertices);
-            b2Transform transform   = Physics2D.GetNewTransform(origin, rotation);
-            b2Vec2      translation = Vector2.ConvertToB2Vec(direction * distance);
-            ShapeCast(callback, shape, transform, translation, childIndex);
-        }
-
-        public void PolygonCast(IPhysics2D.SingleShapeCast callback, Vector2[] vertices, Vector2 origin, float rotation, Vector2 end, int childIndex = 0)
-        {
-            Vector2 direction = end - origin;
-            float   distance  = direction.magnitude;
-            direction.Normalize();
-            PolygonCast(callback, vertices, origin, rotation, direction, distance, childIndex);
         }
 
         #endregion Public Methods

@@ -132,51 +132,14 @@ namespace SharpBox2D
         void OverlapPoint(IPhysics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0);
 
         /// <summary>
-        /// Test if given collider would overlap with given box shape
+        /// Test if given collider would overlap with given shape
         /// CalculateDistanceCallback should be called only when there was no hit
         /// </summary>
-        void OverlapBox(IPhysics2D.SingleOverlapShapeCallback callback, float width, float height, Vector2 position, float rotation, int childIndex = 0);
+        void OverlapShape(IPhysics2D.SingleOverlapShapeCallback callback, OverlapShapeInput input, int childIndex = 0);
 
         /// <summary>
-        /// Test if given collider would overlap with given circle shape
-        /// CalculateDistanceCallback should be called only when there was no hit
+        /// Shoot a shape in given direction and return if it would collide with this collider
         /// </summary>
-        void OverlapCircle(IPhysics2D.SingleOverlapShapeCallback callback, float radius, Vector2 position, int childIndex = 0);
-
-        /// <summary>
-        /// Test if given collider would overlap with given polygon shape
-        /// CalculateDistanceCallback should be called only when there was no hit
-        /// </summary>
-        void OverlapPolygon(IPhysics2D.SingleOverlapShapeCallback callback, Vector2[] vertices, Vector2 position, float rotation, int childIndex = 0);
-
-        /// <summary>
-        /// Shoot a circle in given direction and return if it would collide with this collider
-        /// </summary>
-        void CircleCast(IPhysics2D.SingleShapeCast callback, Vector2 origin, float radius, Vector2 direction, float distance, int childIndex = 0);
-
-        /// <summary>
-        /// Shoot a circle that will move from origin to end and return if it would collide with this collider
-        /// </summary>
-        void CircleCast(IPhysics2D.SingleShapeCast callback, Vector2 origin, float radius, Vector2 end, int childIndex = 0);
-
-        /// <summary>
-        /// Shoot a box in given direction and return if it would collide with this collider
-        /// </summary>
-        void BoxCast(IPhysics2D.SingleShapeCast callback, float width, float height, Vector2 origin, float rotation, Vector2 direction, float distance, int childIndex = 0);
-
-        /// <summary>
-        /// Shoot a box that will move from origin to end and return if it would collide with this collider
-        /// </summary>
-        void BoxCast(IPhysics2D.SingleShapeCast callback, float width, float height, Vector2 origin, float rotation, Vector2 end, int childIndex = 0);
-
-        /// <summary>
-        /// Shoot a polygon in given direction and return if it would collide with this collider
-        /// </summary>
-        void PolygonCast(IPhysics2D.SingleShapeCast callback, Vector2[] vertices, Vector2 origin, float rotation, Vector2 direction, float distance, int childIndex = 0);
-        
-        /// <summary>
-        /// Shoot a polygon that will move from origin to end and return if it would collide with this collider
-        /// </summary>
-        void PolygonCast(IPhysics2D.SingleShapeCast callback, Vector2[] vertices, Vector2 origin, float rotation, Vector2 end, int childIndex = 0);
+        void ShapeCast(IPhysics2D.SingleShapeCastCallback callback, ShapeCastInput input, int childIndex = 0);
     }
 }
