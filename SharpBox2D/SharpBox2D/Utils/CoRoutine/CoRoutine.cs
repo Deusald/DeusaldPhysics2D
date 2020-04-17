@@ -23,7 +23,6 @@
 
 namespace SharpBox2D
 {
-    using System;
     using System.Collections.Generic;
 
     public class CoRoutine
