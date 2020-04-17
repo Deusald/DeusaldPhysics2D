@@ -1,6 +1,7 @@
 namespace SharpBox2D.Nav2D
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     internal class Triangulation
     {
@@ -10,14 +11,17 @@ namespace SharpBox2D.Nav2D
         {
             _Nodes      = nodes;
             _DownBorder = new Triangle(new Node(lowerBound), new Node(lowerBound.x, upperBound.y), new Node(upperBound));
-            _TopBorder  = new Triangle(new Node(lowerBound), new Node(upperBound),                 new Node(upperBound.x, lowerBound.y));
+            _TopBorder  = new Triangle(new Node(lowerBound), new Node(upperBound), new Node(upperBound.x, lowerBound.y));
         }
 
         public void Triangulate()
         {
             HashSet<Triangle> triangles = new HashSet<Triangle> {_DownBorder, _TopBorder};
 
-            foreach (var node in _Nodes) { }
+            foreach (var node in _Nodes)
+            {
+                HashSet<Triangle> badTriangles = FindBadTriangles(node, triangles);
+            }
         }
 
         #endregion Public Methods
@@ -43,6 +47,21 @@ namespace SharpBox2D.Nav2D
             }
 
             return result;
+        }
+
+        private List<Edge> FindHoleBoundaries(HashSet<Triangle> badTriangles)
+        {
+            List<Edge> edges = new List<Edge>();
+
+            foreach (var triangle in badTriangles)
+            {
+                edges.Add(new Edge(triangle.Points[0], triangle.Points[1]));
+                edges.Add(new Edge(triangle.Points[1], triangle.Points[2]));
+                edges.Add(new Edge(triangle.Points[2], triangle.Points[0]));
+            }
+            
+            var boundaryEdges = edges.GroupBy(o => o).Where(o => o.Count() == 1).Select(o => o.First());
+            return boundaryEdges.ToList();
         }
 
         #endregion Private Methods
