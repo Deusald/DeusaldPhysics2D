@@ -154,3 +154,4 @@ $RECYCLE.BIN/
 #############
 .vs
 packages
+SharpBox2D/SharpBox2D/Test.cs
