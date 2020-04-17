@@ -38,11 +38,71 @@ namespace SharpBox2D
 
         #region Float Utils
 
+        public static float Round(float value)
+        {
+            return (float) Math.Round(value);
+        }
+
+        public static float Floor(float value)
+        {
+            return (float) Math.Floor(value);
+        }
+
+        public static float Ceiling(float value)
+        {
+            return (float) Math.Ceiling(value);
+        }
+
+        public static float Clamp(float value, float min, float max)
+        {
+            return Math.Min(Math.Max(value, min), max);
+        }
+
+        public static int Clamp(int value, int min, int max)
+        {
+            return Math.Min(Math.Max(value, min), max);
+        }
+
+        public static float Pow(float x, float y)
+        {
+            return (float) Math.Pow(x, y);
+        }
+
+        public static float Sqrt(float x)
+        {
+            return (float) Math.Sqrt(x);
+        }
+
+        public static float Min(float a, float b)
+        {
+            return a < b ? a : b;
+        }
+
+        public static float Max(float a, float b)
+        {
+            return a > b ? a : b;
+        }
+
+        public static float Abs(float a)
+        {
+            return a >= 0 ? a : -a;
+        }
+
+        public static float Sin(float a)
+        {
+            return (float) Math.Sin(a);
+        }
+
+        public static float Cos(float a)
+        {
+            return (float) Math.Cos(a);
+        }
+        
         public static float Lerp(float a, float b, float t)
         {
             return a + (b - a) * t;
         }
-        
+
         public static float InverseLerp(float a, float b, float value)
         {
             if (Math.Abs(b - a) < float.Epsilon)
@@ -53,9 +113,9 @@ namespace SharpBox2D
 
         public static float RoundToDecimal(float value, int decimalPoint)
         {
-            float decimalPow = MathF.Pow(10f, decimalPoint);
+            float decimalPow = Pow(10f, decimalPoint);
             value =  value * decimalPow;
-            value =  MathF.Round(value);
+            value =  Round(value);
             value /= decimalPow;
             return value;
         }
@@ -75,13 +135,13 @@ namespace SharpBox2D
         #region Consts
 
         public const float Pi       = (float) Math.PI;
-        public const float DegToRad = MathF.PI / 180f;
-        public const float RadToDeg = 180f / MathF.PI;
+        public const float DegToRad = (float) Math.PI / 180f;
+        public const float RadToDeg = 180f / (float) Math.PI;
 
         public const float EpsilonSquare = float.Epsilon * float.Epsilon;
 
         #endregion Consts
-        
+
         #region Bits
 
         public static uint NumberOfSetBits(uint mask)

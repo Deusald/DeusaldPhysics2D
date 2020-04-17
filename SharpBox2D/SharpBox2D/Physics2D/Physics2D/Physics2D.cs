@@ -29,11 +29,37 @@ namespace SharpBox2D
 
     public class Physics2D : IPhysics2D
     {
+        #region Public Types
+
+        public delegate float RayCastCallback(ICollider collider, Vector2 point, Vector2 normal, float fraction);
+
+        public delegate void SingleRayCastCallback(bool hit, Vector2 point, Vector2 normal, float fraction);
+
+        public delegate bool OverlapAreaCallback(ICollider collider);
+
+        public delegate DistanceOutput CalculateDistanceCallback();
+
+        public delegate void OverlapPointCallback(bool hit, CalculateDistanceCallback distanceCallback);
+
+        public delegate bool OverlapShapeCallback(ICollider collider, int childIndex);
+
+        public delegate void SingleOverlapShapeCallback(bool hit, DistanceOutput distanceOutput);
+
+        public delegate bool ShapeCastCallback(ICollider collider, Vector2 point, Vector2 normal, float t, int childIndex);
+
+        public delegate void SingleShapeCastCallback(bool hit, Vector2 point, Vector2 normal, float t);
+
+        public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
+
+        public delegate void OnCollisionEvent(ICollisionData collisionData);
+
+        #endregion Public Types
+        
         #region Public Variables
 
-        public event IPhysics2D.PreCollisionEvent PreCollision;
-        public event IPhysics2D.OnCollisionEvent  OnCollisionEnter;
-        public event IPhysics2D.OnCollisionEvent  OnCollisionExit;
+        public event PreCollisionEvent PreCollision;
+        public event OnCollisionEvent  OnCollisionEnter;
+        public event OnCollisionEvent  OnCollisionExit;
 
         #endregion Public Variables
 
@@ -143,24 +169,24 @@ namespace SharpBox2D
             return finalOutput;
         }
 
-        public void RayCast(IPhysics2D.RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
+        public void RayCast(RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
         {
             RaycastCallback raycastCallback = new RaycastCallback((IPhysics2DControl) this, callback, collisionMask);
             __World.RayCast(raycastCallback, Vector2.ConvertToB2Vec(origin), Vector2.ConvertToB2Vec(end));
         }
 
-        public void RayCast(IPhysics2D.RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF)
+        public void RayCast(RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF)
         {
             Vector2 endPoint = origin + direction * distance;
             RayCast(callback, origin, endPoint, collisionMask);
         }
 
-        public void OverlapArea(IPhysics2D.OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF)
+        public void OverlapArea(OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF)
         {
             OverlapArea(callback, Vector2.ConvertToB2Vec(lowerBound), Vector2.ConvertToB2Vec(upperBound), collisionMask);
         }
 
-        public void OverlapPoint(IPhysics2D.OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
+        public void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
         {
             b2Vec2      vec2Point      = Vector2.ConvertToB2Vec(point);
             b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
@@ -169,7 +195,7 @@ namespace SharpBox2D
             {
                 bool goNext = true;
 
-                ((Collider) collider).OverlapPoint(delegate(bool hit, IPhysics2D.CalculateDistanceCallback distanceCallback)
+                ((Collider) collider).OverlapPoint(delegate(bool hit, CalculateDistanceCallback distanceCallback)
                 {
                     if (hit)
                         goNext = callback.Invoke(collider);
@@ -179,7 +205,7 @@ namespace SharpBox2D
             }, point - _PointExtends, point + _PointExtends, collisionMask);
         }
 
-        public void OverlapShape(IPhysics2D.OverlapShapeCallback callback, OverlapShapeInput input, ushort collisionMask = 0xFFFF)
+        public void OverlapShape(OverlapShapeCallback callback, OverlapShapeInput input, ushort collisionMask = 0xFFFF)
         {
             OverlapArea(delegate(ICollider collider)
             {
@@ -201,7 +227,7 @@ namespace SharpBox2D
             }, input.Aabb.lowerBound, input.Aabb.upperBound, collisionMask);
         }
 
-        public void ShapeCast(IPhysics2D.ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF)
+        public void ShapeCast(ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF)
         {
             OverlapArea(delegate(ICollider collider)
             {
@@ -271,7 +297,7 @@ namespace SharpBox2D
             };
         }
 
-        private void OverlapArea(IPhysics2D.OverlapAreaCallback callback, b2Vec2 lowerBound, b2Vec2 upperBound, ushort collisionMask = 0xFFFF)
+        private void OverlapArea(OverlapAreaCallback callback, b2Vec2 lowerBound, b2Vec2 upperBound, ushort collisionMask = 0xFFFF)
         {
             OverlapCallback overlapCallback = new OverlapCallback((IPhysics2DControl) this, callback, collisionMask);
             b2AABB aabb = new b2AABB

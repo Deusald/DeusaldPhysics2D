@@ -28,28 +28,6 @@ namespace SharpBox2D
     /// </summary>
     public interface IPhysics2D
     {
-        public delegate float RayCastCallback(ICollider collider, Vector2 point, Vector2 normal, float fraction);
-
-        public delegate void SingleRayCastCallback(bool hit, Vector2 point, Vector2 normal, float fraction);
-
-        public delegate bool OverlapAreaCallback(ICollider collider);
-
-        public delegate DistanceOutput CalculateDistanceCallback();
-        
-        public delegate void OverlapPointCallback(bool hit, CalculateDistanceCallback distanceCallback);
-
-        public delegate bool OverlapShapeCallback(ICollider collider, int childIndex);
-        
-        public delegate void SingleOverlapShapeCallback(bool hit, DistanceOutput distanceOutput);
-
-        public delegate bool ShapeCastCallback(ICollider collider, Vector2 point, Vector2 normal, float t, int childIndex);
-        
-        public delegate void SingleShapeCastCallback(bool hit, Vector2 point, Vector2 normal, float t);
-        
-        public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
-
-        public delegate void OnCollisionEvent(ICollisionData collisionData);
-
         /// <summary>
         /// Create new physics object in the world
         /// </summary>
@@ -65,18 +43,18 @@ namespace SharpBox2D
         /// You have opportunity to disable the collision
         /// For example by making one side platform
         /// </summary>
-        event PreCollisionEvent PreCollision;
+        event Physics2D.PreCollisionEvent PreCollision;
 
         /// <summary>
         /// This event will be triggered in the first frame of collision
         /// </summary>
-        event OnCollisionEvent OnCollisionEnter;
+        event Physics2D.OnCollisionEvent OnCollisionEnter;
 
         /// <summary>
         /// This event will be triggered at the moment when the colliders stop colliding
         /// Will be also triggered when colliders were colliding and one of them has been destroyed
         /// </summary>
-        event OnCollisionEvent OnCollisionExit;
+        event Physics2D.OnCollisionEvent OnCollisionExit;
 
         /// <summary>
         /// Return the distance and closest points between two colliders
@@ -95,7 +73,7 @@ namespace SharpBox2D
         /// return fraction: clip the ray to this point;
         /// return 1: don't clip the ray and continue;
         /// </param>
-        void RayCast(RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF);
+        void RayCast(Physics2D.RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Raycast the world
@@ -110,29 +88,29 @@ namespace SharpBox2D
         /// return fraction: clip the ray to this point;
         /// return 1: don't clip the ray and continue;
         /// </param>
-        void RayCast(RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF);
+        void RayCast(Physics2D.RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Get colliders that are in defined area
         /// In callback return false to end the search
         /// </summary>
-        void OverlapArea(OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF);
+        void OverlapArea(Physics2D.OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Get all colliders that have given points inside their shape
         /// In callback return false to end the search
         /// </summary>
-        void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
+        void OverlapPoint(Physics2D.OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Get all colliders that would collide with defined shape
         /// In callback return false to end the search
         /// </summary>
-        void OverlapShape(OverlapShapeCallback callback, OverlapShapeInput input, ushort collisionMask = 0xFFFF);
+        void OverlapShape(Physics2D.OverlapShapeCallback callback, OverlapShapeInput input, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Shoot a shape in given direction and return in callback all hit colliders
         /// </summary>
-        void ShapeCast(ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF);
+        void ShapeCast(Physics2D.ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF);
     }
 }

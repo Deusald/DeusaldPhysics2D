@@ -95,9 +95,9 @@ namespace SharpBox2D
 
         internal b2Fixture Fixture { get; }
 
-        public event IPhysics2D.OnCollisionEvent OnCollisionEnter;
+        public event Physics2D.OnCollisionEvent OnCollisionEnter;
 
-        public event IPhysics2D.OnCollisionEvent OnCollisionExit;
+        public event Physics2D.OnCollisionEvent OnCollisionExit;
 
         #endregion Public Variables
 
@@ -134,7 +134,7 @@ namespace SharpBox2D
             OnCollisionExit?.Invoke(collisionData);
         }
 
-        public void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 end, int childIndex = 0)
+        public void RayCast(Physics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 end, int childIndex = 0)
         {
             b2RayCastInput input = new b2RayCastInput
             {
@@ -155,7 +155,7 @@ namespace SharpBox2D
                 callback.Invoke(false, Vector2.zero, Vector2.zero, 0f);
         }
 
-        public void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0)
+        public void RayCast(Physics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0)
         {
             Vector2 endPoint = origin + direction * distance;
             RayCast(callback, origin, endPoint, childIndex);
@@ -174,21 +174,21 @@ namespace SharpBox2D
             return Box2d.b2TestOverlap(aabb, testAabb);
         }
 
-        public void OverlapPoint(IPhysics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0)
+        public void OverlapPoint(Physics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0)
         {
             b2Vec2      vec2Point      = Vector2.ConvertToB2Vec(point);
             b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
             OverlapPoint(callback, vec2Point, pointTransform, childIndex);
         }
 
-        internal void OverlapPoint(IPhysics2D.OverlapPointCallback callback, b2Vec2 point, b2Transform transform, int childIndex = 0)
+        internal void OverlapPoint(Physics2D.OverlapPointCallback callback, b2Vec2 point, b2Transform transform, int childIndex = 0)
         {
             bool hit = Fixture.TestPoint(point);
             callback.Invoke(hit, () => _Physics2D.GetDistance(_PointShape, 0, transform,
                                                               Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform()));
         }
 
-        public void OverlapShape(IPhysics2D.SingleOverlapShapeCallback callback, OverlapShapeInput input, int childIndex = 0)
+        public void OverlapShape(Physics2D.SingleOverlapShapeCallback callback, OverlapShapeInput input, int childIndex = 0)
         {
             DistanceOutput distanceOutput = _Physics2D.GetDistance(input.Shape, 0, input.Transform,
                                                                    Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform());
@@ -196,7 +196,7 @@ namespace SharpBox2D
             callback.Invoke(distanceOutput.Distance <= 0, distanceOutput);
         }
 
-        public void ShapeCast(IPhysics2D.SingleShapeCastCallback callback, ShapeCastInput input, int childIndex = 0)
+        public void ShapeCast(Physics2D.SingleShapeCastCallback callback, ShapeCastInput input, int childIndex = 0)
         {
             b2DistanceProxy proxyFixed = new b2DistanceProxy();
             proxyFixed.Set(Fixture.GetShape(), childIndex);

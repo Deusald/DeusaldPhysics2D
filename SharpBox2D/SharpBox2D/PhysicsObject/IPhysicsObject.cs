@@ -84,7 +84,7 @@ namespace SharpBox2D
         /// <summary>
         /// Get the enumerator for all colliders attached to this physical object
         /// </summary>
-        public Dictionary<int, ICollider>.Enumerator Colliders { get; }
+        Dictionary<int, ICollider>.Enumerator Colliders { get; }
 
         #endregion Getters
 

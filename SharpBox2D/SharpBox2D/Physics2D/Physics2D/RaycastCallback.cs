@@ -29,7 +29,7 @@ namespace SharpBox2D
     {
         #region Public Methods
 
-        internal RaycastCallback(IPhysics2DControl physics2DControl, IPhysics2D.RayCastCallback callback, ushort collisionMask)
+        internal RaycastCallback(IPhysics2DControl physics2DControl, Physics2D.RayCastCallback callback, ushort collisionMask)
         {
             _Physics2DControl = physics2DControl;
             _Callback         = callback;
@@ -49,7 +49,7 @@ namespace SharpBox2D
 
         private readonly ushort                     _CollisionMask;
         private readonly IPhysics2DControl          _Physics2DControl;
-        private readonly IPhysics2D.RayCastCallback _Callback;
+        private readonly Physics2D.RayCastCallback _Callback;
 
         #endregion Private Variables
     }

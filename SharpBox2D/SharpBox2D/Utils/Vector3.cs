@@ -119,7 +119,7 @@ namespace SharpBox2D
             }
         }
 
-        public bool isValid => float.IsFinite(x) && float.IsFinite(y) && float.IsFinite(z);
+        public bool isValid => !float.IsInfinity(x) && !float.IsInfinity(y) && !float.IsInfinity(z);
 
         #endregion Properties
 
@@ -233,7 +233,7 @@ namespace SharpBox2D
 
         public float Length()
         {
-            return MathF.Sqrt(DistanceSquared(this, zero));
+            return MathUtils.Sqrt(DistanceSquared(this, zero));
         }
 
         public float LengthSquared()
@@ -276,7 +276,7 @@ namespace SharpBox2D
 
         public static float Distance(Vector3 a, Vector3 b)
         {
-            return MathF.Sqrt(DistanceSquared(a, b));
+            return MathUtils.Sqrt(DistanceSquared(a, b));
         }
 
         public float Distance(Vector3 vector1)
@@ -330,9 +330,9 @@ namespace SharpBox2D
         public static Vector3 Clamp(Vector3 a, Vector3 min, Vector3 max)
         {
             return new Vector3(
-                Math.Clamp(a.x, min.x, max.x),
-                Math.Clamp(a.y, min.y, max.y),
-                Math.Clamp(a.z, min.z, max.z));
+                MathUtils.Clamp(a.x, min.x, max.x),
+                MathUtils.Clamp(a.y, min.y, max.y),
+                MathUtils.Clamp(a.z, min.z, max.z));
         }
 
         public static Vector3 Lerp(Vector3 a, Vector3 b, float t)
@@ -346,17 +346,17 @@ namespace SharpBox2D
         public static Vector3 Max(Vector3 a, Vector3 b)
         {
             return new Vector3(
-                MathF.Max(a.x, b.x),
-                MathF.Max(a.y, b.y),
-                MathF.Max(a.z, b.z));
+                MathUtils.Max(a.x, b.x),
+                MathUtils.Max(a.y, b.y),
+                MathUtils.Max(a.z, b.z));
         }
 
         public static Vector3 Min(Vector3 a, Vector3 b)
         {
             return new Vector3(
-                MathF.Min(a.x, b.x),
-                MathF.Min(a.y, b.y),
-                MathF.Min(a.z, b.z));
+                MathUtils.Min(a.x, b.x),
+                MathUtils.Min(a.y, b.y),
+                MathUtils.Min(a.z, b.z));
         }
 
         #endregion Other Math
@@ -375,7 +375,7 @@ namespace SharpBox2D
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(x, y, z);
+            return Tuple.Create(x, y, z).GetHashCode();
         }
 
         #endregion Equals

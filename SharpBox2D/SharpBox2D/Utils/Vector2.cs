@@ -94,7 +94,7 @@ namespace SharpBox2D
             }
         }
 
-        public bool isValid => float.IsFinite(x) && float.IsFinite(y);
+        public bool isValid => !float.IsInfinity(x) && !float.IsInfinity(y);
 
         // Get the skew vector such that dot(skew_vec, other) == cross(vec, other)
         // https://brilliant.org/wiki/3d-coordinate-geometry-skew-lines/
@@ -198,7 +198,7 @@ namespace SharpBox2D
 
         public float Length()
         {
-            return MathF.Sqrt(DistanceSquared(this, zero));
+            return MathUtils.Sqrt(DistanceSquared(this, zero));
         }
 
         public float LengthSquared()
@@ -246,7 +246,7 @@ namespace SharpBox2D
 
         public static float Distance(Vector2 a, Vector2 b)
         {
-            return MathF.Sqrt(DistanceSquared(a, b));
+            return MathUtils.Sqrt(DistanceSquared(a, b));
         }
 
         public float Distance(Vector2 b)
@@ -299,8 +299,8 @@ namespace SharpBox2D
         public static Vector2 Clamp(Vector2 a, Vector2 min, Vector2 max)
         {
             return new Vector2(
-                Math.Clamp(a.x, min.x, max.x),
-                Math.Clamp(a.y, min.y, max.y));
+                MathUtils.Clamp(a.x, min.x, max.x),
+                MathUtils.Clamp(a.y, min.y, max.y));
         }
 
         public static Vector2 Lerp(Vector2 a, Vector2 b, float t)
@@ -313,28 +313,28 @@ namespace SharpBox2D
         public static Vector2 Max(Vector2 a, Vector2 b)
         {
             return new Vector2(
-                MathF.Max(a.x, b.x),
-                MathF.Max(a.y, b.y));
+                MathUtils.Max(a.x, b.x),
+                MathUtils.Max(a.y, b.y));
         }
 
         public static Vector2 Min(Vector2 a, Vector2 b)
         {
             return new Vector2(
-                MathF.Min(a.x, b.x),
-                MathF.Min(a.y, b.y));
+                MathUtils.Min(a.x, b.x),
+                MathUtils.Min(a.y, b.y));
         }
 
         public static Vector2 Abs(Vector2 a)
         {
-            return new Vector2(MathF.Abs(a.x), MathF.Abs(a.y));
+            return new Vector2(MathUtils.Abs(a.x), MathUtils.Abs(a.y));
         }
 
         public void RoundToDecimal(int decimalPoint)
         {
-            float decimalPow = MathF.Pow(10f, decimalPoint);
+            float decimalPow = MathUtils.Pow(10f, decimalPoint);
             this =  this * decimalPow;
-            x    =  MathF.Round(x);
-            y    =  MathF.Round(y);
+            x    = MathUtils.Round(x);
+            y    = MathUtils.Round(y);
             this /= decimalPow;
         }
 
@@ -343,8 +343,8 @@ namespace SharpBox2D
         /// </summary>
         public static Vector2 Rotate(float angle, Vector2 v)
         {
-            float sin = MathF.Sin(angle);
-            float cos = MathF.Cos(angle);
+            float sin = MathUtils.Sin(angle);
+            float cos = MathUtils.Cos(angle);
             return new Vector2(cos * v.x - sin * v.y, sin * v.x + cos * v.y);
         }
 
@@ -353,8 +353,8 @@ namespace SharpBox2D
         /// </summary>
         public static Vector2 RotateInverse(float angle, Vector2 v)
         {
-            float sin = MathF.Sin(angle);
-            float cos = MathF.Cos(angle);
+            float sin = MathUtils.Sin(angle);
+            float cos = MathUtils.Cos(angle);
             return new Vector2(cos * v.x + sin * v.y, -sin * v.x + cos * v.y);
         }
 
@@ -402,7 +402,7 @@ namespace SharpBox2D
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(x, y);
+            return Tuple.Create(x, y).GetHashCode();
         }
 
         #endregion Equals

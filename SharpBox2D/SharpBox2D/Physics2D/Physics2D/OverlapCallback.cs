@@ -29,7 +29,7 @@ namespace SharpBox2D
     {
         #region Public Methods
 
-        internal OverlapCallback(IPhysics2DControl physics2DControl, IPhysics2D.OverlapAreaCallback callback, ushort collisionMask)
+        internal OverlapCallback(IPhysics2DControl physics2DControl, Physics2D.OverlapAreaCallback callback, ushort collisionMask)
         {
             _Physics2DControl = physics2DControl;
             _CollisionMask    = collisionMask;
@@ -49,7 +49,7 @@ namespace SharpBox2D
 
         private readonly ushort                         _CollisionMask;
         private readonly IPhysics2DControl              _Physics2DControl;
-        private readonly IPhysics2D.OverlapAreaCallback _Callback;
+        private readonly Physics2D.OverlapAreaCallback _Callback;
 
         #endregion Private Variables
     }

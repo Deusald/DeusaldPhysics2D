@@ -101,24 +101,24 @@ namespace SharpBox2D
         /// This event will be triggered in the first frame of collision
         /// The ColliderA is always this collider
         /// </summary>
-        event IPhysics2D.OnCollisionEvent OnCollisionEnter;
+        event Physics2D.OnCollisionEvent OnCollisionEnter;
 
         /// <summary>
         /// This event will be triggered at the moment when the colliders stop colliding
         /// Will be also triggered when colliders were colliding and one of them has been destroyed
         /// The ColliderA is always this collider
         /// </summary>
-        event IPhysics2D.OnCollisionEvent OnCollisionExit;
+        event Physics2D.OnCollisionEvent OnCollisionExit;
 
         /// <summary>
         /// RayCast this collider
         /// </summary>
-        void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 end, int childIndex = 0);
+        void RayCast(Physics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 end, int childIndex = 0);
 
         /// <summary>
         /// RayCast this collider
         /// </summary>
-        void RayCast(IPhysics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0);
+        void RayCast(Physics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0);
 
         /// <summary>
         /// Test if this collider aabb overlap with given aabb
@@ -129,17 +129,17 @@ namespace SharpBox2D
         /// Test if given point is inside the collider
         /// CalculateDistanceCallback should be called only when there was no hit
         /// </summary>
-        void OverlapPoint(IPhysics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0);
+        void OverlapPoint(Physics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0);
 
         /// <summary>
         /// Test if given collider would overlap with given shape
         /// CalculateDistanceCallback should be called only when there was no hit
         /// </summary>
-        void OverlapShape(IPhysics2D.SingleOverlapShapeCallback callback, OverlapShapeInput input, int childIndex = 0);
+        void OverlapShape(Physics2D.SingleOverlapShapeCallback callback, OverlapShapeInput input, int childIndex = 0);
 
         /// <summary>
         /// Shoot a shape in given direction and return if it would collide with this collider
         /// </summary>
-        void ShapeCast(IPhysics2D.SingleShapeCastCallback callback, ShapeCastInput input, int childIndex = 0);
+        void ShapeCast(Physics2D.SingleShapeCastCallback callback, ShapeCastInput input, int childIndex = 0);
     }
 }
