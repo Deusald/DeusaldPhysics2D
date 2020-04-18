@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <Folder Include="Box2d\Libs\Windows" />
-      <Folder Include="SharpBox2D\Utils\Nav2D" />
     </ItemGroup>
 
     <ItemGroup>
