@@ -29,6 +29,5 @@ namespace SharpBox2D
         internal Aabb[] LeftFill  { get; }
         internal Aabb[] Middle    { get; }
         internal Aabb[] RightFill { get; }
-        internal Aabb   Main      { get; }
     }
 }

@@ -24,6 +24,7 @@
 namespace SharpBox2D
 {
     using System;
+    using System.Collections.Generic;
 
     public class Nav2D
     {
@@ -38,18 +39,75 @@ namespace SharpBox2D
         /// <param name="agentsRadius"></param>
         public Nav2D(Vector2 lowerWorldBound, Vector2 upperWorldBound, int polygonAccuracy, float[] agentsRadius)
         {
-            if (polygonAccuracy % 2 != 0)
+            if (polygonAccuracy % 2 != 1)
                 throw new Exception("Polygon accuracy must be an odd number!");
-            
-            _World = new Aabb(lowerWorldBound, upperWorldBound);
+
+            _World  = new Aabb(lowerWorldBound, upperWorldBound);
+            _Points = new List<Point>(100);
+
+            _Points.Add(new Point(_World.LowerBound, _World));
+
+            Aabb testBox = new Aabb(new Vector2(-1f, -1f), new Vector2(1f, 1f));
+            testBox.FillPoints(ref _Points);
+            _Points.Sort(PointsComparison);
         }
 
         #endregion Public Methods
-        
+
         #region Private Variables
 
-        private Aabb _World;
+        private readonly Aabb        _World;
+        private readonly List<Point> _Points;
 
         #endregion Private Variables
+
+        #region Private Methods
+
+        private int PointsComparison(Point x, Point y)
+        {
+            if (x.Y == y.Y)
+            {
+                if (x.X == y.X) return 0;
+
+                if (x.X < y.X) return -1;
+
+                return 1;
+            }
+
+            if (x.Y < y.Y) return -1;
+
+            return 1;
+        }
+
+        private void CreateNodes()
+        {
+            if (_Points.Count == 0) return;
+
+            LinkedList<Point> tmpList              = new LinkedList<Point>(_Points);
+            LinkedList<Point> pointsToAddAtNextLvl = new LinkedList<Point>();
+            List<Node>        nodes                = new List<Node>(tmpList.Count);
+
+            if (tmpList.First == null || tmpList.Last == null) return;
+
+            var currentPoint = tmpList.First;
+            int currentLvl   = currentPoint.Value.Y;
+
+            while (currentPoint != null)
+            {
+                Node node = new Node {DownLeft = currentPoint.Value};
+
+                if (currentPoint.Next.Value.Y != currentLvl)
+                {
+                    Point bottomRight = new Point(_World.UpperBound.x, currentLvl);
+                    
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+
+        #endregion Private Methods
     }
 }

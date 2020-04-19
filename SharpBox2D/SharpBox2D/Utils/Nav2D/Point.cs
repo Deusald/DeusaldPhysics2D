@@ -23,43 +23,38 @@
 
 namespace SharpBox2D
 {
-    using System.Collections.Generic;
-
-    internal class Aabb
+    internal class Point
     {
         #region Public Variables
 
-        public Vector2 LowerBound;
-        public Vector2 UpperBound;
-        public Vector2 Center;
+        public int       X;
+        public int       Y;
+        public Aabb      Aabb;
+        public INavShape Shape;
 
         #endregion Public Variables
 
         #region Public Methods
 
-        public Aabb(Vector2 lowerBound, Vector2 upperBound)
+        public Point(Vector2 position, Aabb aabb)
         {
-            LowerBound = lowerBound;
-            UpperBound = upperBound;
-            RecalculateCenter();
-        }
-        
-        public void RecalculateCenter()
-        {
-            Center.x = (LowerBound.x + UpperBound.x) / 2f;
-            Center.y = (LowerBound.y + UpperBound.y) / 2f;
+            X    = (int) (position.x * 100f);
+            Y    = (int) (position.y * 100f);
+            Aabb = aabb;
         }
 
-        public void FillPoints(ref List<Point> points)
+        public Point(float x, float y, Aabb aabb)
         {
-            Point downLeftWorld  = new Point(LowerBound, this);
-            Point downRightWorld = new Point(UpperBound.x, LowerBound.y, this);
-            Point upLeftWorld    = new Point(LowerBound.x, UpperBound.y, this);
-            Point upRightWorld   = new Point(UpperBound, this);
-            points.Add(downLeftWorld);
-            points.Add(downRightWorld);
-            points.Add(upLeftWorld);
-            points.Add(upRightWorld);
+            X    = (int) (x * 100f);
+            Y    = (int) (y * 100f);
+            Aabb = aabb;
+        }
+
+        public Point(float x, int y)
+        {
+            X    = (int) (x * 100f);
+            Y    = y;
+            Aabb = null;
         }
 
         #endregion Public Methods
