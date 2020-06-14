@@ -21,10 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    using System.Collections.Generic;
-
     public interface IPhysicsObject
     {
         #region Getters
@@ -80,7 +81,7 @@ namespace SharpBox2D
         /// Usually in kg-m^2. 
         /// </summary>
         float Inertia { get; }
-        
+
         /// <summary>
         /// Get the enumerator for all colliders attached to this physical object
         /// </summary>
@@ -266,7 +267,7 @@ namespace SharpBox2D
         /// Destroy the attached collider with given Id
         /// </summary>
         void DestroyCollider(int colliderId);
-        
+
         /// <summary>
         /// Attach Edge collider to this PhysicsShape
         /// </summary>

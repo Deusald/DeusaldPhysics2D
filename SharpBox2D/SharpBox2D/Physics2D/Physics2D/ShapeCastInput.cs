@@ -21,104 +21,105 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using Box2D;
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    using Box2D;
-
     public class ShapeCastInput
     {
-        #region Public Variables
+        #region Variables
 
-        internal          b2Shape     Shape;
-        internal          b2Vec2      Translation;
-        internal readonly b2Transform Transform;
-        internal readonly b2AABB      Aabb;
+        internal          b2Shape     shape;
+        internal          b2Vec2      translation;
+        internal readonly b2Transform transform;
+        internal readonly b2AABB      aabb;
 
-        #endregion Public Variables
+        private readonly b2Transform _EndTransform;
+        private readonly b2AABB      _End;
 
-        #region Public Methods
+        #endregion Variables
+
+        #region Init Methods
 
         public ShapeCastInput()
         {
-            Transform     = Physics2D.GetNewTransform(Vector2.zero, 0f);
-            _EndTransform = Physics2D.GetNewTransform(Vector2.zero, 0f);
-            Aabb          = new b2AABB();
+            transform     = Physics2D.GetNewTransform(Vector2.Zero, 0f);
+            _EndTransform = Physics2D.GetNewTransform(Vector2.Zero, 0f);
+            aabb          = new b2AABB();
             _End          = new b2AABB();
         }
 
+        #endregion Init Methods
+
+        #region Public Methods
+
         public void SetAsCircle(float radius)
         {
-            Shape = Physics2D.GetCircleShape(radius, Vector2.zero);
+            shape = Physics2D.GetCircleShape(radius, Vector2.Zero);
         }
 
         public void SetAsBox(float width, float height)
         {
-            Shape = Physics2D.GetBoxShape(width, height, Vector2.zero, 0f);
+            shape = Physics2D.GetBoxShape(width, height, Vector2.Zero, 0f);
         }
 
         public void SetAsPolygon(Vector2[] vertices)
         {
-            Shape = Physics2D.GetPolygonShape(vertices);
+            shape = Physics2D.GetPolygonShape(vertices);
         }
 
         public void SetTranslation(Vector2 origin, float rotation, Vector2 end)
         {
-            Transform.p = Vector2.ConvertToB2Vec(origin);
-            Transform.q.Set(rotation);
-            _EndTransform.p = Vector2.ConvertToB2Vec(end);
+            transform.p = SharpBoxUtils.ConvertToB2Vec(origin);
+            transform.q.Set(rotation);
+            _EndTransform.p = SharpBoxUtils.ConvertToB2Vec(end);
             _EndTransform.q.Set(rotation);
-            Translation = Vector2.ConvertToB2Vec(end - origin);
+            translation = SharpBoxUtils.ConvertToB2Vec(end - origin);
             FillAabb();
         }
 
         public void SetTranslation(Vector2 origin, float rotation, Vector2 direction, float distance)
         {
-            Transform.p = Vector2.ConvertToB2Vec(origin);
-            Transform.q.Set(rotation);
-            Vector2 translation = direction * distance;
-            _EndTransform.p = Vector2.ConvertToB2Vec(origin + translation);
+            transform.p = SharpBoxUtils.ConvertToB2Vec(origin);
+            transform.q.Set(rotation);
+            Vector2 trans = direction * distance;
+            _EndTransform.p = SharpBoxUtils.ConvertToB2Vec(origin + trans);
             _EndTransform.q.Set(rotation);
-            Translation = Vector2.ConvertToB2Vec(translation);
+            translation = SharpBoxUtils.ConvertToB2Vec(trans);
             FillAabb();
         }
 
         public void SetTranslation(Vector2 origin, Vector2 end)
         {
-            Transform.p = Vector2.ConvertToB2Vec(origin);
-            Transform.q.Set(0f);
-            _EndTransform.p = Vector2.ConvertToB2Vec(end);
+            transform.p = SharpBoxUtils.ConvertToB2Vec(origin);
+            transform.q.Set(0f);
+            _EndTransform.p = SharpBoxUtils.ConvertToB2Vec(end);
             _EndTransform.q.Set(0f);
-            Translation = Vector2.ConvertToB2Vec(end - origin);
+            translation = SharpBoxUtils.ConvertToB2Vec(end - origin);
             FillAabb();
         }
 
         public void SetTranslation(Vector2 origin, Vector2 direction, float distance)
         {
-            Transform.p = Vector2.ConvertToB2Vec(origin);
-            Transform.q.Set(0f);
-            Vector2 translation = direction * distance;
-            _EndTransform.p = Vector2.ConvertToB2Vec(origin + translation);
+            transform.p = SharpBoxUtils.ConvertToB2Vec(origin);
+            transform.q.Set(0f);
+            Vector2 trans = direction * distance;
+            _EndTransform.p = SharpBoxUtils.ConvertToB2Vec(origin + trans);
             _EndTransform.q.Set(0f);
-            Translation = Vector2.ConvertToB2Vec(translation);
+            translation = SharpBoxUtils.ConvertToB2Vec(trans);
             FillAabb();
         }
 
         #endregion Public Methods
 
-        #region Private Variables
-
-        private readonly b2Transform _EndTransform;
-        private readonly b2AABB      _End;
-
-        #endregion Private Variables
-
         #region Private Methods
 
         private void FillAabb()
         {
-            Shape.ComputeAABB(Aabb, Transform, 0);
-            Shape.ComputeAABB(_End, _EndTransform, 0);
-            Aabb.Combine(_End);
+            shape.ComputeAABB(aabb, transform,     0);
+            shape.ComputeAABB(_End, _EndTransform, 0);
+            aabb.Combine(_End);
         }
 
         #endregion Private Methods

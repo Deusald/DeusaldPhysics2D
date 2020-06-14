@@ -21,15 +21,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
+using System.Collections.Generic;
+using Box2D;
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    using System;
-    using System.Collections.Generic;
-    using Box2D;
-
     public class Physics2D : IPhysics2D
     {
-        #region Public Types
+        #region Types
 
         public delegate float RayCastCallback(ICollider collider, Vector2 point, Vector2 normal, float fraction);
 
@@ -53,15 +54,56 @@ namespace SharpBox2D
 
         public delegate void OnCollisionEvent(ICollisionData collisionData);
 
-        #endregion Public Types
-        
-        #region Public Variables
+        #endregion Types
+
+        #region Variables
 
         public event PreCollisionEvent PreCollision;
         public event OnCollisionEvent  OnCollisionEnter;
         public event OnCollisionEvent  OnCollisionExit;
 
-        #endregion Public Variables
+        private int _NextPhysicsObjectId;
+
+        // ReSharper disable InconsistentNaming
+
+        private protected          Action                          _UpdateLinearVelocity;
+        private protected readonly b2World                         _World;
+        private protected readonly Dictionary<int, IPhysicsObject> _PhysicsObjects;
+
+        // ReSharper restore InconsistentNaming
+
+        private readonly b2BodyDef _BodyDef;
+        private readonly uint      _PhysicsStepsPerSec;
+        private readonly Vector2   _PointExtends;
+
+        #endregion Variables
+
+        #region Init Methods
+
+        protected Physics2D(uint physicsStepsPerSec, Vector2 gravity)
+        {
+            _World               = new b2World(new b2Vec2(gravity.x, gravity.y));
+            _PhysicsObjects      = new Dictionary<int, IPhysicsObject>();
+            _PhysicsStepsPerSec  = physicsStepsPerSec;
+            _NextPhysicsObjectId = 1;
+            _PointExtends        = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
+
+            _BodyDef = new b2BodyDef
+            {
+                linearVelocity  = new b2Vec2(0f, 0f),
+                angularVelocity = 0f,
+                linearDamping   = 0f,
+                angularDamping  = 0f,
+                allowSleep      = true,
+                awake           = true,
+                fixedRotation   = false,
+                bullet          = false,
+                enabled         = true,
+                gravityScale    = 1f
+            };
+        }
+
+        #endregion Init Methods
 
         #region Public Methods
 
@@ -69,27 +111,27 @@ namespace SharpBox2D
         {
             int newId = _NextPhysicsObjectId++;
             _BodyDef.type     = (b2BodyType) bodyType;
-            _BodyDef.position = Vector2.ConvertToB2Vec(position);
+            _BodyDef.position = SharpBoxUtils.ConvertToB2Vec(position);
             _BodyDef.angle    = rotation;
             _BodyDef.userData = new IntPtr(newId);
 
-            b2Body        body      = __World.CreateBody(_BodyDef);
+            b2Body        body      = _World.CreateBody(_BodyDef);
             PhysicsObject newObject = new PhysicsObject(this, body, newId, _PhysicsStepsPerSec);
-            __UpdateLinearVelocity += newObject.UpdateLinearVelocity;
-            __PhysicsObjects.Add(newId, newObject);
+            _UpdateLinearVelocity += newObject.UpdateLinearVelocity;
+            _PhysicsObjects.Add(newId, newObject);
             return newObject;
         }
 
         internal static b2Transform GetNewTransform(Vector2 position, float rotation)
         {
-            return new b2Transform(Vector2.ConvertToB2Vec(position), new b2Rot(rotation));
+            return new b2Transform(SharpBoxUtils.ConvertToB2Vec(position), new b2Rot(rotation));
         }
 
         internal static b2Shape GetCircleShape(float radius, Vector2 offset)
         {
             return new b2CircleShape
             {
-                m_p      = Vector2.ConvertToB2Vec(offset),
+                m_p      = SharpBoxUtils.ConvertToB2Vec(offset),
                 m_radius = radius
             };
         }
@@ -97,7 +139,7 @@ namespace SharpBox2D
         internal static b2Shape GetBoxShape(float width, float height, Vector2 offset, float rotation)
         {
             b2PolygonShape shape = new b2PolygonShape();
-            shape.SetAsBox(width, height, Vector2.ConvertToB2Vec(offset), rotation);
+            shape.SetAsBox(width, height, SharpBoxUtils.ConvertToB2Vec(offset), rotation);
             return shape;
         }
 
@@ -107,7 +149,7 @@ namespace SharpBox2D
             b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
 
             for (int i = 0; i < vertices.Length; ++i)
-                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
+                Box2d.b2Vec2Array_setitem(array, i, SharpBoxUtils.ConvertToB2Vec(vertices[i]));
 
             shape.Set(array, vertices.Length);
             return shape;
@@ -115,12 +157,12 @@ namespace SharpBox2D
 
         public void DestroyPhysicsObject(int objectId)
         {
-            if (!__PhysicsObjects.ContainsKey(objectId)) return;
+            if (!_PhysicsObjects.ContainsKey(objectId)) return;
 
-            PhysicsObject physicsObject = (PhysicsObject) __PhysicsObjects[objectId];
-            __UpdateLinearVelocity -= physicsObject.UpdateLinearVelocity;
-            __World.DestroyBody(physicsObject.Body);
-            __PhysicsObjects.Remove(objectId);
+            PhysicsObject physicsObject = (PhysicsObject) _PhysicsObjects[objectId];
+            _UpdateLinearVelocity -= physicsObject.UpdateLinearVelocity;
+            _World.DestroyBody(physicsObject.Body);
+            _PhysicsObjects.Remove(objectId);
         }
 
         internal void ExecutePreCollision(ICollisionDataExtend collisionDataExtend)
@@ -143,7 +185,7 @@ namespace SharpBox2D
             Collider colliderACast = (Collider) colliderA;
             Collider colliderBCast = (Collider) colliderB;
             return GetDistance(colliderACast.Fixture.GetShape(), childIndexA, colliderACast.Fixture.GetBody().GetTransform(),
-                               colliderBCast.Fixture.GetShape(), childIndexB, colliderBCast.Fixture.GetBody().GetTransform());
+                colliderBCast.Fixture.GetShape(),                childIndexB, colliderBCast.Fixture.GetBody().GetTransform());
         }
 
         internal DistanceOutput GetDistance(b2Shape shapeA, int childIndexA, b2Transform transformA, b2Shape shapeB, int childIndexB, b2Transform transformB)
@@ -165,14 +207,15 @@ namespace SharpBox2D
             };
 
             Box2d.b2Distance(output, cache, input);
-            DistanceOutput finalOutput = new DistanceOutput(output.distance, Vector2.ConvertFromB2Vec(output.pointA), Vector2.ConvertFromB2Vec(output.pointB));
+            DistanceOutput finalOutput =
+                new DistanceOutput(output.distance, SharpBoxUtils.ConvertFromB2Vec(output.pointA), SharpBoxUtils.ConvertFromB2Vec(output.pointB));
             return finalOutput;
         }
 
         public void RayCast(RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
         {
             RaycastCallback raycastCallback = new RaycastCallback((IPhysics2DControl) this, callback, collisionMask);
-            __World.RayCast(raycastCallback, Vector2.ConvertToB2Vec(origin), Vector2.ConvertToB2Vec(end));
+            _World.RayCast(raycastCallback, SharpBoxUtils.ConvertToB2Vec(origin), SharpBoxUtils.ConvertToB2Vec(end));
         }
 
         public void RayCast(RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF)
@@ -183,12 +226,12 @@ namespace SharpBox2D
 
         public void OverlapArea(OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF)
         {
-            OverlapArea(callback, Vector2.ConvertToB2Vec(lowerBound), Vector2.ConvertToB2Vec(upperBound), collisionMask);
+            OverlapArea(callback, SharpBoxUtils.ConvertToB2Vec(lowerBound), SharpBoxUtils.ConvertToB2Vec(upperBound), collisionMask);
         }
 
         public void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
         {
-            b2Vec2      vec2Point      = Vector2.ConvertToB2Vec(point);
+            b2Vec2      vec2Point      = SharpBoxUtils.ConvertToB2Vec(point);
             b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
 
             OverlapArea(delegate(ICollider collider)
@@ -224,7 +267,7 @@ namespace SharpBox2D
                 }
 
                 return goNext;
-            }, input.Aabb.lowerBound, input.Aabb.upperBound, collisionMask);
+            }, input.aabb.lowerBound, input.aabb.upperBound, collisionMask);
         }
 
         public void ShapeCast(ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF)
@@ -232,11 +275,11 @@ namespace SharpBox2D
             OverlapArea(delegate(ICollider collider)
             {
                 bool goNext = true;
-                
+
                 for (int i = 0; i < collider.ChildCount; ++i)
                 {
                     int innerI = i;
-                    
+
                     ((Collider) collider).ShapeCast(delegate(bool hit, Vector2 point, Vector2 normal, float t)
                     {
                         if (hit)
@@ -247,55 +290,12 @@ namespace SharpBox2D
                 }
 
                 return goNext;
-                
-            }, input.Aabb.lowerBound, input.Aabb.upperBound, collisionMask);
+            }, input.aabb.lowerBound, input.aabb.upperBound, collisionMask);
         }
 
         #endregion Public Methods
 
-        #region Private Variables
-
-        private int _NextPhysicsObjectId;
-
-        private readonly b2BodyDef _BodyDef;
-        private readonly uint      _PhysicsStepsPerSec;
-        private readonly Vector2   _PointExtends;
-
-        // ReSharper disable InconsistentNaming
-
-        private protected Action __UpdateLinearVelocity;
-
-        private protected readonly b2World                         __World;
-        private protected readonly Dictionary<int, IPhysicsObject> __PhysicsObjects;
-
-        // ReSharper restore InconsistentNaming
-
-        #endregion Private Variables
-
         #region Private Methods
-
-        protected Physics2D(uint physicsStepsPerSec, Vector2 gravity)
-        {
-            __World              = new b2World(new b2Vec2(gravity.x, gravity.y));
-            __PhysicsObjects     = new Dictionary<int, IPhysicsObject>();
-            _PhysicsStepsPerSec  = physicsStepsPerSec;
-            _NextPhysicsObjectId = 1;
-            _PointExtends        = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
-
-            _BodyDef = new b2BodyDef
-            {
-                linearVelocity  = new b2Vec2(0f, 0f),
-                angularVelocity = 0f,
-                linearDamping   = 0f,
-                angularDamping  = 0f,
-                allowSleep      = true,
-                awake           = true,
-                fixedRotation   = false,
-                bullet          = false,
-                enabled         = true,
-                gravityScale    = 1f
-            };
-        }
 
         private void OverlapArea(OverlapAreaCallback callback, b2Vec2 lowerBound, b2Vec2 upperBound, ushort collisionMask = 0xFFFF)
         {
@@ -305,7 +305,7 @@ namespace SharpBox2D
                 lowerBound = lowerBound,
                 upperBound = upperBound
             };
-            __World.QueryAABB(overlapCallback, aabb);
+            _World.QueryAABB(overlapCallback, aabb);
         }
 
         #endregion Private Methods

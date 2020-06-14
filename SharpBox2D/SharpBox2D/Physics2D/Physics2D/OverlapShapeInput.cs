@@ -21,59 +21,64 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using Box2D;
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    using Box2D;
-
     public class OverlapShapeInput
     {
         #region Public Variables
 
-        internal          b2Shape     Shape;
-        internal readonly b2Transform Transform;
-        internal readonly b2AABB      Aabb;
+        internal          b2Shape     shape;
+        internal readonly b2Transform transform;
+        internal readonly b2AABB      aabb;
 
         #endregion Public Variables
 
-        #region Public Methods
+        #region Init Methods
 
         public OverlapShapeInput()
         {
-            Transform = Physics2D.GetNewTransform(Vector2.zero, 0f);
-            Aabb      = new b2AABB();
+            transform = Physics2D.GetNewTransform(Vector2.Zero, 0f);
+            aabb      = new b2AABB();
         }
+
+        #endregion Init Methods
+
+        #region Public Methods
 
         public void SetAsCircle(float radius)
         {
-            Shape = Physics2D.GetCircleShape(radius, Vector2.zero);
+            shape = Physics2D.GetCircleShape(radius, Vector2.Zero);
         }
 
         public void SetAsBox(float width, float height)
         {
-            Shape = Physics2D.GetBoxShape(width, height, Vector2.zero, 0f);
+            shape = Physics2D.GetBoxShape(width, height, Vector2.Zero, 0f);
         }
 
         public void SetAsPolygon(Vector2[] vertices)
         {
-            Shape = Physics2D.GetPolygonShape(vertices);
+            shape = Physics2D.GetPolygonShape(vertices);
         }
 
         public void SetTransform(Vector2 position, float rotation)
         {
-            Transform.p = Vector2.ConvertToB2Vec(position);
-            Transform.q.Set(rotation);
+            transform.p = SharpBoxUtils.ConvertToB2Vec(position);
+            transform.q.Set(rotation);
             FillAabb();
         }
 
         public void SetPosition(Vector2 position)
         {
-            Transform.p = Vector2.ConvertToB2Vec(position);
+            transform.p = SharpBoxUtils.ConvertToB2Vec(position);
             FillAabb();
         }
 
         public void SetRotation(float rotation)
         {
-            Transform.q.Set(rotation);
+            transform.q.Set(rotation);
             FillAabb();
         }
 
@@ -83,7 +88,7 @@ namespace SharpBox2D
 
         private void FillAabb()
         {
-            Shape.ComputeAABB(Aabb, Transform, 0);
+            shape.ComputeAABB(aabb, transform, 0);
         }
 
         #endregion Private Methods

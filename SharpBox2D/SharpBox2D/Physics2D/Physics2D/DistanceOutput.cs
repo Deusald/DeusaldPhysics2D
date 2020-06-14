@@ -21,30 +21,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    public struct DistanceOutput
+    public readonly struct DistanceOutput
     {
         /// <summary>
         /// Distance between shapes
         /// </summary>
-        public readonly float Distance;
+        public readonly float distance;
 
         /// <summary>
         /// Closest point on shape A
         /// </summary>
-        public readonly Vector2 PointA;
+        public readonly Vector2 pointA;
 
         /// <summary>
         /// Closest point on shape B
         /// </summary>
-        public readonly Vector2 PointB;
+        public readonly Vector2 pointB;
 
         public DistanceOutput(float distance, Vector2 pointA, Vector2 pointB)
         {
-            Distance = distance;
-            PointA   = pointA;
-            PointB   = pointB;
+            this.distance = distance;
+            this.pointA   = pointA;
+            this.pointB   = pointB;
         }
     }
 }

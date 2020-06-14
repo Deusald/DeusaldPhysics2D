@@ -21,19 +21,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using Box2D;
+
 namespace SharpBox2D
 {
-    using System;
-    using Box2D;
-
     internal class CollisionListener : b2ContactListener
     {
-        #region Public Methods
+        #region Variables
+
+        private readonly Physics2DControl _Physics2DControl;
+
+        #endregion Private Variables
+
+        #region Init Methods
 
         public CollisionListener(Physics2DControl physics2DControl)
         {
             _Physics2DControl = physics2DControl;
         }
+
+        #endregion Init Methods
+
+        #region Public Methods
 
         public override void BeginContact(b2Contact contact)
         {
@@ -61,12 +70,6 @@ namespace SharpBox2D
         }
 
         #endregion Public Methods
-
-        #region Private Variables
-
-        private readonly Physics2DControl _Physics2DControl;
-
-        #endregion Private Variables
 
         #region Private Methods
 

@@ -22,39 +22,20 @@
 // SOFTWARE.
 
 using Box2D;
+using DeusaldSharp;
 
 namespace SharpBox2D
 {
-    internal class OverlapCallback : b2QueryCallback
+    internal static class SharpBoxUtils
     {
-        #region Variables
-
-        private readonly ushort                        _CollisionMask;
-        private readonly IPhysics2DControl             _Physics2DControl;
-        private readonly Physics2D.OverlapAreaCallback _Callback;
-
-        #endregion Variables
-
-        #region Init Methods
-
-        internal OverlapCallback(IPhysics2DControl physics2DControl, Physics2D.OverlapAreaCallback callback, ushort collisionMask)
+        internal static Vector2 ConvertFromB2Vec(b2Vec2 vec2)
         {
-            _Physics2DControl = physics2DControl;
-            _CollisionMask    = collisionMask;
-            _Callback         = callback;
+            return new Vector2(vec2.x, vec2.y);
         }
 
-        #endregion Init Methods
-
-        #region Public Methods
-
-        public override bool ReportFixture(b2Fixture fixture)
+        internal static b2Vec2 ConvertToB2Vec(Vector2 vector2)
         {
-            if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return true;
-            ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().ToInt32()).GetCollider(fixture.GetUserData().ToInt32());
-            return _Callback.Invoke(collider);
+            return new b2Vec2(vector2.x, vector2.y);
         }
-
-        #endregion Public Methods
     }
 }

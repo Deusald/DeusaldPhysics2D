@@ -22,6 +22,12 @@
       <None Remove="SharpBox2D\Libs\x86_64\box2d.dll" />
       <EmbeddedResource Include="Box2d\Libs\Windows\x86\box2d.dll" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="DeusaldSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>Dlls\netcoreapp3.1\DeusaldSharp.dll</HintPath>
+      </Reference>
+    </ItemGroup>
     
 
 </Project>

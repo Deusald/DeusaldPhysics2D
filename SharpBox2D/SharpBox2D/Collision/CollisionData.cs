@@ -21,13 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using Box2D;
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    using Box2D;
-
     public class CollisionData : ICollisionData, ICollisionDataExtend
     {
-        #region Public Variables
+        #region Variables
+
+        private bool                 _DetailsCalculated;
+        private TypeVector2<Vector2> _ContactPoints;
+        private Vector2              _Normal;
+        private bool                 _Swapped;
+
+        private readonly b2Contact      _Contact;
+        private readonly IPhysicsObject _PhysicsObjectA;
+        private readonly ICollider      _ColliderA;
+        private readonly int            _ChildIndexA;
+        private readonly IPhysicsObject _PhysicsObjectB;
+        private readonly ICollider      _ColliderB;
+        private readonly int            _ChildIndexB;
+
+        #endregion Variables
+
+        #region Properties
 
         public IPhysicsObject PhysicsObjectA  => _Swapped ? _PhysicsObjectB : _PhysicsObjectA;
         public ICollider      ColliderA       => _Swapped ? _ColliderB : _ColliderA;
@@ -55,16 +73,16 @@ namespace SharpBox2D
                 if (!_DetailsCalculated)
                     CalculateDetails();
 
-                return _Swapped ? _Normal.negated : _Normal;
+                return _Swapped ? _Normal.Negated : _Normal;
             }
         }
 
-        #endregion Public Variables
+        #endregion Properties
 
-        #region Public Methods
+        #region Init Methods
 
         internal CollisionData(b2Contact contact, IPhysicsObject physicsObjectA, ICollider colliderA, int childIndexA,
-            IPhysicsObject physicsObjectB, ICollider colliderB, int childIndexB)
+                               IPhysicsObject physicsObjectB, ICollider colliderB, int childIndexB)
         {
             _Contact           = contact;
             _PhysicsObjectA    = physicsObjectA;
@@ -78,6 +96,10 @@ namespace SharpBox2D
             ContactDisabled    = false;
         }
 
+        #endregion Init Methods
+
+        #region Public Methods
+
         internal void Swap()
         {
             _Swapped = true;
@@ -90,23 +112,6 @@ namespace SharpBox2D
 
         #endregion Public Methods
 
-        #region Private Variables
-
-        private bool                 _DetailsCalculated;
-        private TypeVector2<Vector2> _ContactPoints;
-        private Vector2              _Normal;
-        private bool                 _Swapped;
-
-        private readonly b2Contact      _Contact;
-        private readonly IPhysicsObject _PhysicsObjectA;
-        private readonly ICollider      _ColliderA;
-        private readonly int            _ChildIndexA;
-        private readonly IPhysicsObject _PhysicsObjectB;
-        private readonly ICollider      _ColliderB;
-        private readonly int            _ChildIndexB;
-
-        #endregion Private Variables
-
         #region Private Methods
 
         private void CalculateDetails()
@@ -117,9 +122,9 @@ namespace SharpBox2D
             b2WorldManifold worldManifold = new b2WorldManifold();
             _Contact.GetWorldManifold(worldManifold);
 
-            _Normal          = Vector2.ConvertFromB2Vec(worldManifold.normal);
-            _ContactPoints.x = Vector2.ConvertFromB2Vec(Box2d.b2Vec2Array_getitem(worldManifold.points, 0));
-            _ContactPoints.y = Vector2.ConvertFromB2Vec(Box2d.b2Vec2Array_getitem(worldManifold.points, 1));
+            _Normal          = SharpBoxUtils.ConvertFromB2Vec(worldManifold.normal);
+            _ContactPoints.x = SharpBoxUtils.ConvertFromB2Vec(Box2d.b2Vec2Array_getitem(worldManifold.points, 0));
+            _ContactPoints.y = SharpBoxUtils.ConvertFromB2Vec(Box2d.b2Vec2Array_getitem(worldManifold.points, 1));
         }
 
         #endregion Private Methods

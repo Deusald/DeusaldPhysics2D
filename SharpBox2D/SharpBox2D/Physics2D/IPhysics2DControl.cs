@@ -21,10 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Interface that describe control interactions over the physics world
     /// </summary>
@@ -34,20 +35,20 @@ namespace SharpBox2D
         /// Get the enumerator for all PhysicsObjects that are present in the world
         /// </summary>
         Dictionary<int, IPhysicsObject>.Enumerator PhysicsObjects { get; }
-        
+
         /// <summary>
         /// Get or Set the world gravity
         /// </summary>
-        Vector2                                    Gravity        { get; set; }
-        
+        Vector2 Gravity { get; set; }
+
         /// <summary>
         /// Simulate next physics step
         /// </summary>
-        void                                       Step();
-        
+        void Step();
+
         /// <summary>
         /// Get the PhysicsObject with given Id
         /// </summary>
-        IPhysicsObject                             GetPhysicsObject(int physicsObjectId);
+        IPhysicsObject GetPhysicsObject(int physicsObjectId);
     }
 }

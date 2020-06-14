@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
     public interface ICollisionData
@@ -61,10 +63,10 @@ namespace SharpBox2D
         /// Points where colliders have contact
         /// </summary>
         TypeVector2<Vector2> ContactPoints { get; }
-        
+
         /// <summary>
         /// Normal vector of collision form ColliderA to ColliderB
         /// </summary>
-        Vector2       Normal        { get; }
+        Vector2 Normal { get; }
     }
 }

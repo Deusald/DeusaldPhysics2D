@@ -21,13 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using Box2D;
+
 namespace SharpBox2D
 {
-    using Box2D;
-
     internal class RaycastCallback : b2RayCastCallback
     {
-        #region Public Methods
+        #region Variables
+
+        private readonly ushort                    _CollisionMask;
+        private readonly IPhysics2DControl         _Physics2DControl;
+        private readonly Physics2D.RayCastCallback _Callback;
+
+        #endregion Variables
+
+        #region Init Methods
 
         internal RaycastCallback(IPhysics2DControl physics2DControl, Physics2D.RayCastCallback callback, ushort collisionMask)
         {
@@ -36,21 +44,17 @@ namespace SharpBox2D
             _CollisionMask    = collisionMask;
         }
 
+        #endregion Init Methods
+
+        #region Public Methods
+
         public override float ReportFixture(b2Fixture fixture, b2Vec2 point, b2Vec2 normal, float fraction)
         {
             if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return -1f;
             ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().ToInt32()).GetCollider(fixture.GetUserData().ToInt32());
-            return _Callback.Invoke(collider, Vector2.ConvertFromB2Vec(point), Vector2.ConvertFromB2Vec(normal), fraction);
+            return _Callback.Invoke(collider, SharpBoxUtils.ConvertFromB2Vec(point), SharpBoxUtils.ConvertFromB2Vec(normal), fraction);
         }
 
         #endregion Public Methods
-
-        #region Private Variables
-
-        private readonly ushort                     _CollisionMask;
-        private readonly IPhysics2DControl          _Physics2DControl;
-        private readonly Physics2D.RayCastCallback _Callback;
-
-        #endregion Private Variables
     }
 }

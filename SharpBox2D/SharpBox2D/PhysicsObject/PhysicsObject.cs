@@ -21,15 +21,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
+using System.Collections.Generic;
+using Box2D;
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    using System;
-    using System.Collections.Generic;
-    using Box2D;
-
     public class PhysicsObject : IPhysicsObject
     {
-        #region Public Variables
+        #region Variables
+
+        private Vector2 _MovePositionTarget;
+        private bool    _MovePosition;
+        private Vector2 _PreviousLinearVelocity;
+        private int     _NextColliderId;
+
+        private readonly Physics2D                  _Physics2D;
+        private readonly b2Body                     _Body;
+        private readonly uint                       _PhysicsStepsPerSec;
+        private readonly Dictionary<int, ICollider> _Colliders;
+
+        #endregion Variables
+
+        #region Properties
 
         #region Getters
 
@@ -37,8 +52,8 @@ namespace SharpBox2D
         public   bool                                  IsStatic        => _Body.Type == b2BodyType.b2_staticBody;
         public   bool                                  IsKinematic     => _Body.Type == b2BodyType.b2_kinematicBody;
         public   bool                                  IsDynamic       => _Body.Type == b2BodyType.b2_dynamicBody;
-        public   Vector2                               WorldCenter     => Vector2.ConvertFromB2Vec(_Body.GetWorldCenter());
-        public   Vector2                               LocalCenter     => Vector2.ConvertFromB2Vec(_Body.GetLocalCenter());
+        public   Vector2                               WorldCenter     => SharpBoxUtils.ConvertFromB2Vec(_Body.GetWorldCenter());
+        public   Vector2                               LocalCenter     => SharpBoxUtils.ConvertFromB2Vec(_Body.GetLocalCenter());
         public   float                                 Mass            => _Body.GetMass();
         public   float                                 Inertia         => _Body.GetInertia();
         public   Dictionary<int, ICollider>.Enumerator Colliders       => _Colliders.GetEnumerator();
@@ -50,8 +65,8 @@ namespace SharpBox2D
 
         public Vector2 Position
         {
-            get => Vector2.ConvertFromB2Vec(_Body.GetPosition());
-            set => _Body.SetTransform(Vector2.ConvertToB2Vec(value), _Body.GetAngle());
+            get => SharpBoxUtils.ConvertFromB2Vec(_Body.GetPosition());
+            set => _Body.SetTransform(SharpBoxUtils.ConvertToB2Vec(value), _Body.GetAngle());
         }
 
         public float Rotation
@@ -62,13 +77,13 @@ namespace SharpBox2D
 
         public Vector2 LinearVelocity
         {
-            get => _MovePosition ? _PreviousLinearVelocity : Vector2.ConvertFromB2Vec(_Body.GetLinearVelocity());
+            get => _MovePosition ? _PreviousLinearVelocity : SharpBoxUtils.ConvertFromB2Vec(_Body.GetLinearVelocity());
             set
             {
                 if (_MovePosition)
                     _PreviousLinearVelocity = value;
                 else
-                    _Body.SetLinearVelocity(Vector2.ConvertToB2Vec(value));
+                    _Body.SetLinearVelocity(SharpBoxUtils.ConvertToB2Vec(value));
             }
         }
 
@@ -136,9 +151,9 @@ namespace SharpBox2D
 
         #endregion Getters And Setters
 
-        #endregion Public Variables
+        #endregion Properties
 
-        #region Public Methods
+        #region Init Methods
 
         internal PhysicsObject(Physics2D physics2D, b2Body body, int myId, uint physicsStepsPerSec)
         {
@@ -149,6 +164,10 @@ namespace SharpBox2D
             _NextColliderId     = 1;
             _Colliders          = new Dictionary<int, ICollider>();
         }
+
+        #endregion Init Methods
+
+        #region Public Methods
 
         public void Destroy()
         {
@@ -164,7 +183,7 @@ namespace SharpBox2D
 
         public void SetTransform(Vector2 position, float angle)
         {
-            _Body.SetTransform(Vector2.ConvertToB2Vec(position), angle);
+            _Body.SetTransform(SharpBoxUtils.ConvertToB2Vec(position), angle);
         }
 
         public void MovePosition(Vector2 position)
@@ -173,18 +192,18 @@ namespace SharpBox2D
 
             if (_MovePosition) return;
 
-            _PreviousLinearVelocity = Vector2.ConvertFromB2Vec(_Body.GetLinearVelocity());
+            _PreviousLinearVelocity = SharpBoxUtils.ConvertFromB2Vec(_Body.GetLinearVelocity());
             _MovePosition           = true;
         }
 
         public void ApplyForce(Vector2 force, Vector2 point)
         {
-            _Body.ApplyForce(Vector2.ConvertToB2Vec(force), Vector2.ConvertToB2Vec(point), true);
+            _Body.ApplyForce(SharpBoxUtils.ConvertToB2Vec(force), SharpBoxUtils.ConvertToB2Vec(point), true);
         }
 
         public void ApplyForceToCenter(Vector2 force)
         {
-            _Body.ApplyForceToCenter(Vector2.ConvertToB2Vec(force), true);
+            _Body.ApplyForceToCenter(SharpBoxUtils.ConvertToB2Vec(force), true);
         }
 
         public void ApplyTorque(float torque)
@@ -194,12 +213,12 @@ namespace SharpBox2D
 
         public void ApplyLinearImpulse(Vector2 impulse, Vector2 point)
         {
-            _Body.ApplyLinearImpulse(Vector2.ConvertToB2Vec(impulse), Vector2.ConvertToB2Vec(point), true);
+            _Body.ApplyLinearImpulse(SharpBoxUtils.ConvertToB2Vec(impulse), SharpBoxUtils.ConvertToB2Vec(point), true);
         }
 
         public void ApplyLinearImpulseToCenter(Vector2 impulse)
         {
-            _Body.ApplyLinearImpulseToCenter(Vector2.ConvertToB2Vec(impulse), true);
+            _Body.ApplyLinearImpulseToCenter(SharpBoxUtils.ConvertToB2Vec(impulse), true);
         }
 
         public void ApplyAngularImpulse(float impulse)
@@ -209,32 +228,32 @@ namespace SharpBox2D
 
         public Vector2 GetWorldPoint(Vector2 localPoint)
         {
-            return Vector2.ConvertFromB2Vec(_Body.GetWorldPoint(Vector2.ConvertToB2Vec(localPoint)));
+            return SharpBoxUtils.ConvertFromB2Vec(_Body.GetWorldPoint(SharpBoxUtils.ConvertToB2Vec(localPoint)));
         }
 
         public Vector2 GetWorldVector(Vector2 localVector)
         {
-            return Vector2.ConvertFromB2Vec(_Body.GetWorldVector(Vector2.ConvertToB2Vec(localVector)));
+            return SharpBoxUtils.ConvertFromB2Vec(_Body.GetWorldVector(SharpBoxUtils.ConvertToB2Vec(localVector)));
         }
 
         public Vector2 GetLocalPoint(Vector2 worldPoint)
         {
-            return Vector2.ConvertFromB2Vec(_Body.GetLocalPoint(Vector2.ConvertToB2Vec(worldPoint)));
+            return SharpBoxUtils.ConvertFromB2Vec(_Body.GetLocalPoint(SharpBoxUtils.ConvertToB2Vec(worldPoint)));
         }
 
         public Vector2 GetLocalVector(Vector2 worldVector)
         {
-            return Vector2.ConvertFromB2Vec(_Body.GetLocalVector(Vector2.ConvertToB2Vec(worldVector)));
+            return SharpBoxUtils.ConvertFromB2Vec(_Body.GetLocalVector(SharpBoxUtils.ConvertToB2Vec(worldVector)));
         }
 
         public Vector2 GetLinearVelocityFromWorldPoint(Vector2 worldPoint)
         {
-            return Vector2.ConvertFromB2Vec(_Body.GetLinearVelocityFromWorldPoint(Vector2.ConvertToB2Vec(worldPoint)));
+            return SharpBoxUtils.ConvertFromB2Vec(_Body.GetLinearVelocityFromWorldPoint(SharpBoxUtils.ConvertToB2Vec(worldPoint)));
         }
 
         public Vector2 GetLinearVelocityFromLocalPoint(Vector2 localPoint)
         {
-            return Vector2.ConvertFromB2Vec(_Body.GetLinearVelocityFromWorldPoint(Vector2.ConvertToB2Vec(localPoint)));
+            return SharpBoxUtils.ConvertFromB2Vec(_Body.GetLinearVelocityFromWorldPoint(SharpBoxUtils.ConvertToB2Vec(localPoint)));
         }
 
         internal void UpdateLinearVelocity()
@@ -246,13 +265,13 @@ namespace SharpBox2D
             if (position == _MovePositionTarget)
             {
                 _MovePosition = false;
-                _Body.SetLinearVelocity(Vector2.ConvertToB2Vec(_PreviousLinearVelocity));
+                _Body.SetLinearVelocity(SharpBoxUtils.ConvertToB2Vec(_PreviousLinearVelocity));
                 return;
             }
 
             Vector2 moveToPointVelocity = _MovePositionTarget - position;
             moveToPointVelocity *= _PhysicsStepsPerSec;
-            _Body.SetLinearVelocity(Vector2.ConvertToB2Vec(moveToPointVelocity));
+            _Body.SetLinearVelocity(SharpBoxUtils.ConvertToB2Vec(moveToPointVelocity));
         }
 
         #endregion Movement, Rotation and Position
@@ -271,7 +290,7 @@ namespace SharpBox2D
         public ICollider AddEdgeCollider(Vector2 start, Vector2 end)
         {
             b2EdgeShape shape = new b2EdgeShape();
-            shape.Set(Vector2.ConvertToB2Vec(start), Vector2.ConvertToB2Vec(end));
+            shape.Set(SharpBoxUtils.ConvertToB2Vec(start), SharpBoxUtils.ConvertToB2Vec(end));
             b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
             int       colliderId = _NextColliderId++;
             fixture.SetUserData(new IntPtr(colliderId));
@@ -286,7 +305,7 @@ namespace SharpBox2D
             b2Vec2       array = Box2d.new_b2Vec2Array(vertices.Length);
 
             for (int i = 0; i < vertices.Length; ++i)
-                Box2d.b2Vec2Array_setitem(array, i, Vector2.ConvertToB2Vec(vertices[i]));
+                Box2d.b2Vec2Array_setitem(array, i, SharpBoxUtils.ConvertToB2Vec(vertices[i]));
 
             if (loop)
                 shape.CreateLoop(array, vertices.Length);
@@ -314,7 +333,7 @@ namespace SharpBox2D
 
         public ICollider AddBoxCollider(float width, float height, float density = 1f)
         {
-            return AddBoxCollider(width, height, Vector2.zero, 0f, density);
+            return AddBoxCollider(width, height, Vector2.Zero, 0f, density);
         }
 
         public ICollider AddCircleCollider(float radius, Vector2 offset, float density)
@@ -330,7 +349,7 @@ namespace SharpBox2D
 
         public ICollider AddCircleCollider(float radius, float density = 1f)
         {
-            return AddCircleCollider(radius, Vector2.zero, density);
+            return AddCircleCollider(radius, Vector2.Zero, density);
         }
 
         public ICollider AddPolygonCollider(Vector2[] vertices, float density)
@@ -347,19 +366,5 @@ namespace SharpBox2D
         #endregion Add / Remove Colliders
 
         #endregion Public Methods
-
-        #region Private Variables
-
-        private Vector2 _MovePositionTarget;
-        private bool    _MovePosition;
-        private Vector2 _PreviousLinearVelocity;
-        private int     _NextColliderId;
-
-        private readonly Physics2D                  _Physics2D;
-        private readonly b2Body                     _Body;
-        private readonly uint                       _PhysicsStepsPerSec;
-        private readonly Dictionary<int, ICollider> _Colliders;
-
-        #endregion Private Variables
     }
 }

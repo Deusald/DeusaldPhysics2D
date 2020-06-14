@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
     /// <summary>
@@ -60,7 +62,7 @@ namespace SharpBox2D
         /// Return the distance and closest points between two colliders
         /// </summary>
         DistanceOutput GetDistanceBetweenColliders(ICollider colliderA, ICollider colliderB, int childIndexA = 0, int childIndexB = 0);
-        
+
         /// <summary>
         /// Raycast the world
         /// </summary>

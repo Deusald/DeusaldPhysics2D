@@ -21,13 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using Box2D;
+using DeusaldSharp;
+
 namespace SharpBox2D
 {
-    using Box2D;
-
     public class Collider : ICollider
     {
-        #region Public Variables
+        #region Variables
+
+        private readonly b2Shape   _PointShape;
+        private readonly Physics2D _Physics2D;
+
+        #endregion Variables
+
+        #region Properties
 
         public ShapeType      ShapeType     { get; }
         public IPhysicsObject PhysicsObject { get; }
@@ -99,9 +107,9 @@ namespace SharpBox2D
 
         public event Physics2D.OnCollisionEvent OnCollisionExit;
 
-        #endregion Public Variables
+        #endregion Properties
 
-        #region Public Methods
+        #region Init Methods
 
         internal Collider(b2Fixture fixture, IPhysicsObject physicsObject, int colliderId, Physics2D physics2D)
         {
@@ -118,6 +126,10 @@ namespace SharpBox2D
                 m_radius = float.Epsilon
             };
         }
+
+        #endregion Init Methods
+
+        #region Public Methods
 
         public void Destroy()
         {
@@ -138,8 +150,8 @@ namespace SharpBox2D
         {
             b2RayCastInput input = new b2RayCastInput
             {
-                p1          = Vector2.ConvertToB2Vec(origin),
-                p2          = Vector2.ConvertToB2Vec(end),
+                p1          = SharpBoxUtils.ConvertToB2Vec(origin),
+                p2          = SharpBoxUtils.ConvertToB2Vec(end),
                 maxFraction = 1f
             };
 
@@ -149,10 +161,10 @@ namespace SharpBox2D
             if (result)
             {
                 Vector2 point = Vector2.Lerp(origin, end, output.fraction);
-                callback.Invoke(true, point, Vector2.ConvertFromB2Vec(output.normal), output.fraction);
+                callback.Invoke(true, point, SharpBoxUtils.ConvertFromB2Vec(output.normal), output.fraction);
             }
             else
-                callback.Invoke(false, Vector2.zero, Vector2.zero, 0f);
+                callback.Invoke(false, Vector2.Zero, Vector2.Zero, 0f);
         }
 
         public void RayCast(Physics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0)
@@ -167,8 +179,8 @@ namespace SharpBox2D
             Fixture.GetShape().ComputeAABB(aabb, Fixture.GetBody().GetTransform(), childIndex);
             b2AABB testAabb = new b2AABB
             {
-                lowerBound = Vector2.ConvertToB2Vec(lowerBound),
-                upperBound = Vector2.ConvertToB2Vec(upperBound)
+                lowerBound = SharpBoxUtils.ConvertToB2Vec(lowerBound),
+                upperBound = SharpBoxUtils.ConvertToB2Vec(upperBound)
             };
 
             return Box2d.b2TestOverlap(aabb, testAabb);
@@ -176,7 +188,7 @@ namespace SharpBox2D
 
         public void OverlapPoint(Physics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0)
         {
-            b2Vec2      vec2Point      = Vector2.ConvertToB2Vec(point);
+            b2Vec2      vec2Point      = SharpBoxUtils.ConvertToB2Vec(point);
             b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
             OverlapPoint(callback, vec2Point, pointTransform, childIndex);
         }
@@ -185,15 +197,15 @@ namespace SharpBox2D
         {
             bool hit = Fixture.TestPoint(point);
             callback.Invoke(hit, () => _Physics2D.GetDistance(_PointShape, 0, transform,
-                                                              Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform()));
+                Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform()));
         }
 
         public void OverlapShape(Physics2D.SingleOverlapShapeCallback callback, OverlapShapeInput input, int childIndex = 0)
         {
-            DistanceOutput distanceOutput = _Physics2D.GetDistance(input.Shape, 0, input.Transform,
-                                                                   Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform());
+            DistanceOutput distanceOutput = _Physics2D.GetDistance(input.shape, 0, input.transform,
+                Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform());
 
-            callback.Invoke(distanceOutput.Distance <= 0, distanceOutput);
+            callback.Invoke(distanceOutput.distance <= 0, distanceOutput);
         }
 
         public void ShapeCast(Physics2D.SingleShapeCastCallback callback, ShapeCastInput input, int childIndex = 0)
@@ -201,29 +213,22 @@ namespace SharpBox2D
             b2DistanceProxy proxyFixed = new b2DistanceProxy();
             proxyFixed.Set(Fixture.GetShape(), childIndex);
             b2DistanceProxy proxyMoving = new b2DistanceProxy();
-            proxyMoving.Set(input.Shape, 0);
+            proxyMoving.Set(input.shape, 0);
 
             b2ShapeCastInput castInput = new b2ShapeCastInput
             {
                 proxyA       = proxyFixed,
                 proxyB       = proxyMoving,
                 transformA   = Fixture.GetBody().GetTransform(),
-                transformB   = input.Transform,
-                translationB = input.Translation
+                transformB   = input.transform,
+                translationB = input.translation
             };
 
             b2ShapeCastOutput output  = new b2ShapeCastOutput();
             bool              success = Box2d.b2ShapeCast(output, castInput);
-            callback.Invoke(success, Vector2.ConvertFromB2Vec(output.point), Vector2.ConvertFromB2Vec(output.normal), output.lambda);
+            callback.Invoke(success, SharpBoxUtils.ConvertFromB2Vec(output.point), SharpBoxUtils.ConvertFromB2Vec(output.normal), output.lambda);
         }
 
         #endregion Public Methods
-
-        #region Private Variables
-
-        private readonly b2Shape   _PointShape;
-        private readonly Physics2D _Physics2D;
-
-        #endregion Private Variables
     }
 }

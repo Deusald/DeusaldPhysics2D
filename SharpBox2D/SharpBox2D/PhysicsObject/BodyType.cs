@@ -34,7 +34,7 @@ namespace SharpBox2D
         /// A static body has zero velocity. Static bodies do not collide with other static or kinematic bodies.
         /// </summary>
         Static,
-        
+
         /// <summary>
         /// A kinematic body moves under simulation according to its velocity. Kinematic bodies do not respond to forces.
         /// They can be moved manually by the user, but normally a kinematic body is moved by setting its velocity.
@@ -42,7 +42,7 @@ namespace SharpBox2D
         /// Kinematic bodies do not collide with other kinematic or static bodies.
         /// </summary>
         Kinematic,
-        
+
         /// <summary>
         /// A dynamic body is fully simulated. They can be moved manually by the user, but normally
         /// they move according to forces. A dynamic body can collide with all body types.
