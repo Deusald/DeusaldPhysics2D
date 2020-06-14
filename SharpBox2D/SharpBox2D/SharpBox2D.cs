@@ -21,13 +21,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using Box2D;
 using DeusaldSharp;
 
-namespace SharpBox2D
+namespace SharpBox2D.SharpBox2D
 {
-    internal static class SharpBoxUtils
+    public static class SharpBox2D
     {
+        public static readonly Version Version = new Version(1, 0, 0);
+        
         internal static Vector2 ConvertFromB2Vec(b2Vec2 vec2)
         {
             return new Vector2(vec2.x, vec2.y);

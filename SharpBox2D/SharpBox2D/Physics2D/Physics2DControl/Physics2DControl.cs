@@ -21,7 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using Box2D;
 using DeusaldSharp;
@@ -31,8 +30,6 @@ namespace SharpBox2D
     public class Physics2DControl : Physics2D, IPhysics2DControl
     {
         #region Variables
-
-        public static readonly Version Version = new Version(1, 0, 0);
 
         private readonly float _PhysicsTimeStep;
 
