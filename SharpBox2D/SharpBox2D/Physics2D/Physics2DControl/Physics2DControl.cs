@@ -32,7 +32,7 @@ namespace SharpBox2D
     {
         #region Variables
 
-        public static readonly Version Version = new Version(0, 5, 0);
+        public static readonly Version Version = new Version(1, 0, 0);
 
         private readonly float _PhysicsTimeStep;
 
