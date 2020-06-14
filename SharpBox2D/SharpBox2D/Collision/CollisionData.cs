@@ -122,9 +122,9 @@ namespace SharpBox2D
             b2WorldManifold worldManifold = new b2WorldManifold();
             _Contact.GetWorldManifold(worldManifold);
 
-            _Normal          = SharpBoxUtils.ConvertFromB2Vec(worldManifold.normal);
-            _ContactPoints.x = SharpBoxUtils.ConvertFromB2Vec(Box2d.b2Vec2Array_getitem(worldManifold.points, 0));
-            _ContactPoints.y = SharpBoxUtils.ConvertFromB2Vec(Box2d.b2Vec2Array_getitem(worldManifold.points, 1));
+            _Normal          = SharpBox2D.ConvertFromB2Vec(worldManifold.normal);
+            _ContactPoints.x = SharpBox2D.ConvertFromB2Vec(Box2d.b2Vec2Array_getitem(worldManifold.points, 0));
+            _ContactPoints.y = SharpBox2D.ConvertFromB2Vec(Box2d.b2Vec2Array_getitem(worldManifold.points, 1));
         }
 
         #endregion Private Methods

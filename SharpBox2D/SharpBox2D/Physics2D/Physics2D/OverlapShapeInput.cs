@@ -65,14 +65,14 @@ namespace SharpBox2D
 
         public void SetTransform(Vector2 position, float rotation)
         {
-            transform.p = SharpBoxUtils.ConvertToB2Vec(position);
+            transform.p = SharpBox2D.ConvertToB2Vec(position);
             transform.q.Set(rotation);
             FillAabb();
         }
 
         public void SetPosition(Vector2 position)
         {
-            transform.p = SharpBoxUtils.ConvertToB2Vec(position);
+            transform.p = SharpBox2D.ConvertToB2Vec(position);
             FillAabb();
         }
 

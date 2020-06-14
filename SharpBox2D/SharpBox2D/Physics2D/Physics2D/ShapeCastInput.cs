@@ -71,43 +71,43 @@ namespace SharpBox2D
 
         public void SetTranslation(Vector2 origin, float rotation, Vector2 end)
         {
-            transform.p = SharpBoxUtils.ConvertToB2Vec(origin);
+            transform.p = SharpBox2D.ConvertToB2Vec(origin);
             transform.q.Set(rotation);
-            _EndTransform.p = SharpBoxUtils.ConvertToB2Vec(end);
+            _EndTransform.p = SharpBox2D.ConvertToB2Vec(end);
             _EndTransform.q.Set(rotation);
-            translation = SharpBoxUtils.ConvertToB2Vec(end - origin);
+            translation = SharpBox2D.ConvertToB2Vec(end - origin);
             FillAabb();
         }
 
         public void SetTranslation(Vector2 origin, float rotation, Vector2 direction, float distance)
         {
-            transform.p = SharpBoxUtils.ConvertToB2Vec(origin);
+            transform.p = SharpBox2D.ConvertToB2Vec(origin);
             transform.q.Set(rotation);
             Vector2 trans = direction * distance;
-            _EndTransform.p = SharpBoxUtils.ConvertToB2Vec(origin + trans);
+            _EndTransform.p = SharpBox2D.ConvertToB2Vec(origin + trans);
             _EndTransform.q.Set(rotation);
-            translation = SharpBoxUtils.ConvertToB2Vec(trans);
+            translation = SharpBox2D.ConvertToB2Vec(trans);
             FillAabb();
         }
 
         public void SetTranslation(Vector2 origin, Vector2 end)
         {
-            transform.p = SharpBoxUtils.ConvertToB2Vec(origin);
+            transform.p = SharpBox2D.ConvertToB2Vec(origin);
             transform.q.Set(0f);
-            _EndTransform.p = SharpBoxUtils.ConvertToB2Vec(end);
+            _EndTransform.p = SharpBox2D.ConvertToB2Vec(end);
             _EndTransform.q.Set(0f);
-            translation = SharpBoxUtils.ConvertToB2Vec(end - origin);
+            translation = SharpBox2D.ConvertToB2Vec(end - origin);
             FillAabb();
         }
 
         public void SetTranslation(Vector2 origin, Vector2 direction, float distance)
         {
-            transform.p = SharpBoxUtils.ConvertToB2Vec(origin);
+            transform.p = SharpBox2D.ConvertToB2Vec(origin);
             transform.q.Set(0f);
             Vector2 trans = direction * distance;
-            _EndTransform.p = SharpBoxUtils.ConvertToB2Vec(origin + trans);
+            _EndTransform.p = SharpBox2D.ConvertToB2Vec(origin + trans);
             _EndTransform.q.Set(0f);
-            translation = SharpBoxUtils.ConvertToB2Vec(trans);
+            translation = SharpBox2D.ConvertToB2Vec(trans);
             FillAabb();
         }
 

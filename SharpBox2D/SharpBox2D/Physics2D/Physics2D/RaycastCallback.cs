@@ -52,7 +52,7 @@ namespace SharpBox2D
         {
             if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return -1f;
             ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().ToInt32()).GetCollider(fixture.GetUserData().ToInt32());
-            return _Callback.Invoke(collider, SharpBoxUtils.ConvertFromB2Vec(point), SharpBoxUtils.ConvertFromB2Vec(normal), fraction);
+            return _Callback.Invoke(collider, SharpBox2D.ConvertFromB2Vec(point), SharpBox2D.ConvertFromB2Vec(normal), fraction);
         }
 
         #endregion Public Methods

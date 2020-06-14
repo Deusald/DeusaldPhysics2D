@@ -25,7 +25,7 @@ using System;
 using Box2D;
 using DeusaldSharp;
 
-namespace SharpBox2D.SharpBox2D
+namespace SharpBox2D
 {
     public static class SharpBox2D
     {

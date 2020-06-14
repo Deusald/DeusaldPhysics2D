@@ -150,8 +150,8 @@ namespace SharpBox2D
         {
             b2RayCastInput input = new b2RayCastInput
             {
-                p1          = SharpBoxUtils.ConvertToB2Vec(origin),
-                p2          = SharpBoxUtils.ConvertToB2Vec(end),
+                p1          = SharpBox2D.ConvertToB2Vec(origin),
+                p2          = SharpBox2D.ConvertToB2Vec(end),
                 maxFraction = 1f
             };
 
@@ -161,7 +161,7 @@ namespace SharpBox2D
             if (result)
             {
                 Vector2 point = Vector2.Lerp(origin, end, output.fraction);
-                callback.Invoke(true, point, SharpBoxUtils.ConvertFromB2Vec(output.normal), output.fraction);
+                callback.Invoke(true, point, SharpBox2D.ConvertFromB2Vec(output.normal), output.fraction);
             }
             else
                 callback.Invoke(false, Vector2.Zero, Vector2.Zero, 0f);
@@ -179,8 +179,8 @@ namespace SharpBox2D
             Fixture.GetShape().ComputeAABB(aabb, Fixture.GetBody().GetTransform(), childIndex);
             b2AABB testAabb = new b2AABB
             {
-                lowerBound = SharpBoxUtils.ConvertToB2Vec(lowerBound),
-                upperBound = SharpBoxUtils.ConvertToB2Vec(upperBound)
+                lowerBound = SharpBox2D.ConvertToB2Vec(lowerBound),
+                upperBound = SharpBox2D.ConvertToB2Vec(upperBound)
             };
 
             return Box2d.b2TestOverlap(aabb, testAabb);
@@ -188,7 +188,7 @@ namespace SharpBox2D
 
         public void OverlapPoint(Physics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0)
         {
-            b2Vec2      vec2Point      = SharpBoxUtils.ConvertToB2Vec(point);
+            b2Vec2      vec2Point      = SharpBox2D.ConvertToB2Vec(point);
             b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
             OverlapPoint(callback, vec2Point, pointTransform, childIndex);
         }
@@ -226,7 +226,7 @@ namespace SharpBox2D
 
             b2ShapeCastOutput output  = new b2ShapeCastOutput();
             bool              success = Box2d.b2ShapeCast(output, castInput);
-            callback.Invoke(success, SharpBoxUtils.ConvertFromB2Vec(output.point), SharpBoxUtils.ConvertFromB2Vec(output.normal), output.lambda);
+            callback.Invoke(success, SharpBox2D.ConvertFromB2Vec(output.point), SharpBox2D.ConvertFromB2Vec(output.normal), output.lambda);
         }
 
         #endregion Public Methods
