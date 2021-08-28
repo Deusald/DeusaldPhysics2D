@@ -1,3 +1,6 @@
+## Deusald C# .gitattributes
+## Version: 1.0.0
+
 # Auto detect text files and perform LF normalization
 * text=auto
 

@@ -1,6 +1,6 @@
-#################
-## Visual Studio
-#################
+## Deusald C# .gitignore
+## Version: 1.0.1
+
 # User-specific files
 *.suo
 *.user
@@ -8,7 +8,6 @@
 .idea
 
 # Build results
-
 [Dd]ebug/
 [Rr]elease/
 x64/
@@ -41,7 +40,6 @@ build/
 *.vssscc
 .builds
 *.pidb
-*.log
 *.scc
 
 # Visual C++ cache files
@@ -154,4 +152,5 @@ $RECYCLE.BIN/
 #############
 .vs
 packages
-SharpBox2D/SharpBox2D/Test.cs
+
+# Ignore project specific:
