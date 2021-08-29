@@ -29,14 +29,14 @@ namespace SharpBox2D
 {
     public static class SharpBox2D
     {
-        public static readonly Version Version = new Version(1, 1, 0);
+        public static readonly Version Version = new Version(0, 9, 0);
         
-        internal static Vector2 ConvertFromB2Vec(b2Vec2 vec2)
+        internal static Vector2 ToVector2(this b2Vec2 vec2)
         {
             return new Vector2(vec2.x, vec2.y);
         }
 
-        internal static b2Vec2 ConvertToB2Vec(Vector2 vector2)
+        internal static b2Vec2 ToB2Vec2(this Vector2 vector2)
         {
             return new b2Vec2(vector2.x, vector2.y);
         }
