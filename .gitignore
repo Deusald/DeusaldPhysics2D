@@ -156,4 +156,4 @@ packages
 
 # Ignore project specific:
 !/UnityPackage.Net48/*meta
-!/UnityPackage.NetStandard2.1/*meta
+!/UnityPackage.NetStandard2.0/*meta
