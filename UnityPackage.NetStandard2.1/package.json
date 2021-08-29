@@ -1,0 +1,16 @@
+{
+  "name": "com.deusald.sharpbox2d",
+  "version": "0.9.0",
+  "displayName": "Sharp Box2D",
+  "description": "Sharp Box2D unity package.",
+  "documentationUrl": "https://github.com/Deusald/SharpBox2D",
+  "changelogUrl": "https://github.com/Deusald/SharpBox2D",
+  "licensesUrl": "https://github.com/Deusald/SharpBox2D",
+  "keywords": [],
+  "author": {
+    "name": "Adam Deusald Orli\u0144ski",
+    "email": "deusald@gmail.com",
+    "url": "https://www.deusald.com"
+  },
+  "type": "library"
+}
