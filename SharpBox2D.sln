@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpBox2D", "SharpBox2D\SharpBox2D.csproj", "{1EC164D5-90AD-4BDC-A77B-6850031E8A15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpBox2DTests", "SharpBox2DTests\SharpBox2DTests.csproj", "{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{1EC164D5-90AD-4BDC-A77B-6850031E8A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EC164D5-90AD-4BDC-A77B-6850031E8A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EC164D5-90AD-4BDC-A77B-6850031E8A15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

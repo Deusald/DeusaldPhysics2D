@@ -110,10 +110,10 @@ namespace SharpBox2D
         public IPhysicsObject CreatePhysicsObject(BodyType bodyType, Vector2 position, float rotation)
         {
             int newId = _NextPhysicsObjectId++;
-            _BodyDef.type     = (b2BodyType) bodyType;
-            _BodyDef.position = SharpBox2D.ConvertToB2Vec(position);
-            _BodyDef.angle    = rotation;
-            _BodyDef.userData = new IntPtr(newId);
+            _BodyDef.type          = (b2BodyType) bodyType;
+            _BodyDef.position      = SharpBox2D.ToB2Vec2(position);
+            _BodyDef.angle         = rotation;
+            _BodyDef.userData.data = newId;
 
             b2Body        body      = _World.CreateBody(_BodyDef);
             PhysicsObject newObject = new PhysicsObject(this, body, newId, _PhysicsStepsPerSec);
@@ -124,14 +124,14 @@ namespace SharpBox2D
 
         internal static b2Transform GetNewTransform(Vector2 position, float rotation)
         {
-            return new b2Transform(SharpBox2D.ConvertToB2Vec(position), new b2Rot(rotation));
+            return new b2Transform(SharpBox2D.ToB2Vec2(position), new b2Rot(rotation));
         }
 
         internal static b2Shape GetCircleShape(float radius, Vector2 offset)
         {
             return new b2CircleShape
             {
-                m_p      = SharpBox2D.ConvertToB2Vec(offset),
+                m_p      = SharpBox2D.ToB2Vec2(offset),
                 m_radius = radius
             };
         }
@@ -139,7 +139,7 @@ namespace SharpBox2D
         internal static b2Shape GetBoxShape(float width, float height, Vector2 offset, float rotation)
         {
             b2PolygonShape shape = new b2PolygonShape();
-            shape.SetAsBox(width, height, SharpBox2D.ConvertToB2Vec(offset), rotation);
+            shape.SetAsBox(width, height, SharpBox2D.ToB2Vec2(offset), rotation);
             return shape;
         }
 
@@ -149,7 +149,7 @@ namespace SharpBox2D
             b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
 
             for (int i = 0; i < vertices.Length; ++i)
-                Box2d.b2Vec2Array_setitem(array, i, SharpBox2D.ConvertToB2Vec(vertices[i]));
+                Box2d.b2Vec2Array_setitem(array, i, SharpBox2D.ToB2Vec2(vertices[i]));
 
             shape.Set(array, vertices.Length);
             return shape;
@@ -208,14 +208,14 @@ namespace SharpBox2D
 
             Box2d.b2Distance(output, cache, input);
             DistanceOutput finalOutput =
-                new DistanceOutput(output.distance, SharpBox2D.ConvertFromB2Vec(output.pointA), SharpBox2D.ConvertFromB2Vec(output.pointB));
+                new DistanceOutput(output.distance, SharpBox2D.ToVector2(output.pointA), SharpBox2D.ToVector2(output.pointB));
             return finalOutput;
         }
 
         public void RayCast(RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
         {
             RaycastCallback raycastCallback = new RaycastCallback((IPhysics2DControl) this, callback, collisionMask);
-            _World.RayCast(raycastCallback, SharpBox2D.ConvertToB2Vec(origin), SharpBox2D.ConvertToB2Vec(end));
+            _World.RayCast(raycastCallback, SharpBox2D.ToB2Vec2(origin), SharpBox2D.ToB2Vec2(end));
         }
 
         public void RayCast(RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF)
@@ -226,12 +226,12 @@ namespace SharpBox2D
 
         public void OverlapArea(OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF)
         {
-            OverlapArea(callback, SharpBox2D.ConvertToB2Vec(lowerBound), SharpBox2D.ConvertToB2Vec(upperBound), collisionMask);
+            OverlapArea(callback, SharpBox2D.ToB2Vec2(lowerBound), SharpBox2D.ToB2Vec2(upperBound), collisionMask);
         }
 
         public void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
         {
-            b2Vec2      vec2Point      = SharpBox2D.ConvertToB2Vec(point);
+            b2Vec2      vec2Point      = SharpBox2D.ToB2Vec2(point);
             b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
 
             OverlapArea(delegate(ICollider collider)

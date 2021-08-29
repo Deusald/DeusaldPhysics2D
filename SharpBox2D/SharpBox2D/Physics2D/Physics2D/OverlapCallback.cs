@@ -51,7 +51,7 @@ namespace SharpBox2D
         public override bool ReportFixture(b2Fixture fixture)
         {
             if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return true;
-            ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().ToInt32()).GetCollider(fixture.GetUserData().ToInt32());
+            ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().data).GetCollider(fixture.GetUserData().data);
             return _Callback.Invoke(collider);
         }
 

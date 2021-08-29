@@ -10,20 +10,20 @@
 
 namespace Box2D {
 
-internal class b2RayCastInput : global::System.IDisposable {
+internal class b2BodyUserData : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal b2RayCastInput(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal b2BodyUserData(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(b2RayCastInput obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(b2BodyUserData obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~b2RayCastInput() {
+  ~b2BodyUserData() {
     Dispose(false);
   }
 
@@ -37,46 +37,36 @@ internal class b2RayCastInput : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          Box2dPINVOKE.delete_b2RayCastInput(swigCPtr);
+          Box2dPINVOKE.delete_b2BodyUserData(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public b2Vec2 p1 {
+  public b2BodyUserData() : this(Box2dPINVOKE.new_b2BodyUserData(), true) {
+  }
+
+  public SWIGTYPE_p_uintptr_t pointer {
     set {
-      Box2dPINVOKE.b2RayCastInput_p1_set(swigCPtr, b2Vec2.getCPtr(value));
+      Box2dPINVOKE.b2BodyUserData_pointer_set(swigCPtr, SWIGTYPE_p_uintptr_t.getCPtr(value));
+      if (Box2dPINVOKE.SWIGPendingException.Pending) throw Box2dPINVOKE.SWIGPendingException.Retrieve();
     } 
     get {
-      global::System.IntPtr cPtr = Box2dPINVOKE.b2RayCastInput_p1_get(swigCPtr);
-      b2Vec2 ret = (cPtr == global::System.IntPtr.Zero) ? null : new b2Vec2(cPtr, false);
+      SWIGTYPE_p_uintptr_t ret = new SWIGTYPE_p_uintptr_t(Box2dPINVOKE.b2BodyUserData_pointer_get(swigCPtr), true);
+      if (Box2dPINVOKE.SWIGPendingException.Pending) throw Box2dPINVOKE.SWIGPendingException.Retrieve();
       return ret;
     } 
   }
 
-  public b2Vec2 p2 {
+  public int data {
     set {
-      Box2dPINVOKE.b2RayCastInput_p2_set(swigCPtr, b2Vec2.getCPtr(value));
+      Box2dPINVOKE.b2BodyUserData_data_set(swigCPtr, value);
     } 
     get {
-      global::System.IntPtr cPtr = Box2dPINVOKE.b2RayCastInput_p2_get(swigCPtr);
-      b2Vec2 ret = (cPtr == global::System.IntPtr.Zero) ? null : new b2Vec2(cPtr, false);
+      int ret = Box2dPINVOKE.b2BodyUserData_data_get(swigCPtr);
       return ret;
     } 
-  }
-
-  public float maxFraction {
-    set {
-      Box2dPINVOKE.b2RayCastInput_maxFraction_set(swigCPtr, value);
-    } 
-    get {
-      float ret = Box2dPINVOKE.b2RayCastInput_maxFraction_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public b2RayCastInput() : this(Box2dPINVOKE.new_b2RayCastInput(), true) {
   }
 
 }

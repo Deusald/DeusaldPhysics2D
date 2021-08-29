@@ -75,10 +75,10 @@ namespace SharpBox2D
 
         private CollisionData GetCollisionData(b2Contact contact)
         {
-            int colliderAId      = contact.GetFixtureA().GetUserData().ToInt32();
-            int colliderBId      = contact.GetFixtureB().GetUserData().ToInt32();
-            int physicsObjectAId = contact.GetFixtureA().GetBody().GetUserData().ToInt32();
-            int physicsObjectBId = contact.GetFixtureB().GetBody().GetUserData().ToInt32();
+            int colliderAId      = contact.GetFixtureA().GetUserData().data;
+            int colliderBId      = contact.GetFixtureB().GetUserData().data;
+            int physicsObjectAId = contact.GetFixtureA().GetBody().GetUserData().data;
+            int physicsObjectBId = contact.GetFixtureB().GetBody().GetUserData().data;
             int childIndexA      = contact.GetChildIndexA();
             int childIndexB      = contact.GetChildIndexB();
 

@@ -1,7 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFrameworks>net48;netcoreapp3.1;netstandard2.1</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.9.0</PackageVersion>
+        <Title>SharpBox2D</Title>
+        <Authors>Adam "Deusald" Orliński</Authors>
+        <Description>Box2d C# port using native C++ library. This port is more like an interface to interact with box2d. Interface is build to be eazy in use.</Description>
+        <Copyright>Copyright ©Adam "Deusald" Orliński 2020</Copyright>
+        <PackageProjectUrl>https://github.com/Deusald/SharpBox2D</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/Deusald/SharpBox2D/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/Deusald/SharpBox2D</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageTags>C# Box2d Physics</PackageTags>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -13,6 +24,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Box2d\Generated" />
       <Folder Include="Box2d\Libs\Windows" />
     </ItemGroup>
 
@@ -27,6 +39,10 @@
       <Reference Include="DeusaldSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>Dlls\netcoreapp3.1\DeusaldSharp.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DeusaldSharp" Version="5.0.1" />
     </ItemGroup>
     
 

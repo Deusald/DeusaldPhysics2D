@@ -37,6 +37,8 @@ namespace Box2D
             Windows, Linux, MacOS, Android, iOS
         }
         
+        public static readonly Version Version = new Version(2, 4, 1);
+        
         public static void LoadNativeLibrary(System system)
         {
             string libName = "";

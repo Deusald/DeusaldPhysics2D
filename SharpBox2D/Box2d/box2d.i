@@ -379,6 +379,18 @@
 //b2WorldManifold
 %typemap(csclassmodifiers) b2WorldManifold "internal class"
 
+//b2BodyUserData
+%typemap(csclassmodifiers) b2BodyUserData "internal class"
+
+//b2FixtureUserData
+%typemap(csclassmodifiers) b2FixtureUserData "internal class"
+
+//b2JointUserData
+%typemap(csclassmodifiers) b2JointUserData "internal class"
+
+//SWIGTYPE
+%typemap(csclassmodifiers) SWIGTYPE* "internal class"
+
 //Box2D
 %pragma(csharp) moduleclassmodifiers="internal class"
 %ignore b2ContactRegister;
