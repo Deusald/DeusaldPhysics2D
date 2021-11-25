@@ -34,7 +34,7 @@ namespace Box2D
     {
         public enum System
         {
-            Windows, Linux, MacOS, Android, iOS
+            Windows
         }
         
         public static readonly Version Version = new Version(2, 4, 1);
@@ -48,15 +48,6 @@ namespace Box2D
                 case System.Windows:
                 {
                     libName = "box2d.dll";
-                    break;
-                }
-
-                case System.Linux:
-                case System.MacOS:
-                case System.Android:
-                case System.iOS:
-                {
-                    libName = "box2d.so";
                     break;
                 }
             }

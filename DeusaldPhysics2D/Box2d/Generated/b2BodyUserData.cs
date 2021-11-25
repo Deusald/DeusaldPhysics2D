@@ -44,6 +44,16 @@ internal class b2BodyUserData : global::System.IDisposable {
     }
   }
 
+  public int data {
+    set {
+      Box2dPINVOKE.b2BodyUserData_data_set(swigCPtr, value);
+    } 
+    get {
+      int ret = Box2dPINVOKE.b2BodyUserData_data_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public b2BodyUserData() : this(Box2dPINVOKE.new_b2BodyUserData(), true) {
   }
 
@@ -55,16 +65,6 @@ internal class b2BodyUserData : global::System.IDisposable {
     get {
       SWIGTYPE_p_uintptr_t ret = new SWIGTYPE_p_uintptr_t(Box2dPINVOKE.b2BodyUserData_pointer_get(swigCPtr), true);
       if (Box2dPINVOKE.SWIGPendingException.Pending) throw Box2dPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } 
-  }
-
-  public int data {
-    set {
-      Box2dPINVOKE.b2BodyUserData_data_set(swigCPtr, value);
-    } 
-    get {
-      int ret = Box2dPINVOKE.b2BodyUserData_data_get(swigCPtr);
       return ret;
     } 
   }

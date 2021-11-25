@@ -229,6 +229,12 @@ class Box2dPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2_maxPolygonVertices_get")]
   public static extern int b2_maxPolygonVertices_get();
 
+  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2BodyUserData_data_set")]
+  public static extern void b2BodyUserData_data_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2BodyUserData_data_get")]
+  public static extern int b2BodyUserData_data_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_new_b2BodyUserData")]
   public static extern global::System.IntPtr new_b2BodyUserData();
 
@@ -238,14 +244,14 @@ class Box2dPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2BodyUserData_pointer_get")]
   public static extern global::System.IntPtr b2BodyUserData_pointer_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2BodyUserData_data_set")]
-  public static extern void b2BodyUserData_data_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2BodyUserData_data_get")]
-  public static extern int b2BodyUserData_data_get(global::System.Runtime.InteropServices.HandleRef jarg1);
-
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_delete_b2BodyUserData")]
   public static extern void delete_b2BodyUserData(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2FixtureUserData_data_set")]
+  public static extern void b2FixtureUserData_data_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2FixtureUserData_data_get")]
+  public static extern int b2FixtureUserData_data_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_new_b2FixtureUserData")]
   public static extern global::System.IntPtr new_b2FixtureUserData();
@@ -256,14 +262,14 @@ class Box2dPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2FixtureUserData_pointer_get")]
   public static extern global::System.IntPtr b2FixtureUserData_pointer_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2FixtureUserData_data_set")]
-  public static extern void b2FixtureUserData_data_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2FixtureUserData_data_get")]
-  public static extern int b2FixtureUserData_data_get(global::System.Runtime.InteropServices.HandleRef jarg1);
-
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_delete_b2FixtureUserData")]
   public static extern void delete_b2FixtureUserData(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2JointUserData_data_set")]
+  public static extern void b2JointUserData_data_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2JointUserData_data_get")]
+  public static extern int b2JointUserData_data_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_new_b2JointUserData")]
   public static extern global::System.IntPtr new_b2JointUserData();
@@ -273,12 +279,6 @@ class Box2dPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2JointUserData_pointer_get")]
   public static extern global::System.IntPtr b2JointUserData_pointer_get(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2JointUserData_data_set")]
-  public static extern void b2JointUserData_data_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_b2JointUserData_data_get")]
-  public static extern int b2JointUserData_data_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("box2d", EntryPoint="CSharp_Box2D_delete_b2JointUserData")]
   public static extern void delete_b2JointUserData(global::System.Runtime.InteropServices.HandleRef jarg1);

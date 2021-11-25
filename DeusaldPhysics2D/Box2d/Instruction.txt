@@ -1,4 +1,6 @@
 How to rebuild the dlls and generated C# files.
+
+BEFORE BUILD
 1. Download and install SWIG (http://www.swig.org/)
 2. Download the Box2d repo for official github (https://github.com/erincatto/box2d)
 3. Put the "box2d.i" file in "box2d/include/box2d" directory
@@ -6,13 +8,15 @@ How to rebuild the dlls and generated C# files.
 5. Open the box2d project
 6. In box2d.h file add #include "b2_distance.h" after #include "b2_world_callbacks.h" line
 7. In b2_settings.h file add "int data;" to all b2*UserData (Body/Fixture/Joint). Init data in constructor to 0.
-7. Move "Box2D_wrap.cxx" file from box2d/include/box2d to box2d/src
-8. In "src/CMakeList.txt" add the Box2D_wrap.cxx to the BOX2D_SOURCE_FILES and add ../include/box2d/Box2D_wrap.h to the BOX2D_HEADER_FILES
-9. In CMakeLists.txt (main folder) set to OFF options for building tests and testbed. Set to ON building as shared library.
-10. Open terminal/console nad navigate to that folder (ex. cd Documents/Projects/C++/box2d/include/box2d)
-11. Execute the command: swig -csharp -includeall -ignoremissing -namespace Box2D -dllimport box2d -outdir Generated -c++ Box2D.i
-12. Build the Dll (To make 64 bit library choose Architecture x64 under CLion Settings/Build, Execution, Deployment/Toolchains)
-13. Replace the appropriate library in this project
-14. Delete all the files from Generated dictionary in this project
-15. Copy new generated files from "box2d/include/box2d/Generated" to this project Generated folder
-16. Change the access modifier in SWIGTYPE_p_float to internal
+8. Open terminal/console nad navigate to that folder (ex. cd Documents/Projects/C++/box2d/include/box2d)
+9. Execute the command: swig -csharp -includeall -ignoremissing -namespace Box2D -dllimport box2d -outdir Generated -c++ Box2D.i
+10. Move "Box2D_wrap.cxx" file from box2d/include/box2d to box2d/src
+11. In "src/CMakeList.txt" add the Box2D_wrap.cxx to the BOX2D_SOURCE_FILES and add ../include/box2d/Box2D_wrap.h to the BOX2D_HEADER_FILES
+12. In CMakeLists.txt (main folder) set to OFF options for building tests and testbed. Set to ON building as shared library.
+13. Delete all the files from Generated dictionary in this project
+14. Copy new generated files from "box2d/include/box2d/Generated" to this project Generated folder
+15. Change the access modifier in SWIGTYPE_p_float to internal
+
+WINDOWS
+1. Build the Dll using CLion or other method (To make 64 bit library choose Architecture x64 under CLion Settings/Build, Execution, Deployment/Toolchains)
+2. Replace the appropriate library in this project

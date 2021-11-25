@@ -39,8 +39,8 @@
     </ItemGroup>
 
     <Target Name="CopyToUnityPackage" AfterTargets="AfterBuild">
-        <Copy SourceFiles="$(ProjectDir)bin/Release/net48/SharpBox2D.dll" DestinationFolder="$(ProjectDir)/../UnityPackage.Net48" />
-        <Copy SourceFiles="$(ProjectDir)bin/Release/netstandard2.0/SharpBox2D.dll" DestinationFolder="$(ProjectDir)/../UnityPackage.NetStandard2.0" />
+        <Copy SourceFiles="$(ProjectDir)bin/Release/net48/DeusaldPhysics2D.dll" DestinationFolder="$(ProjectDir)/../UnityPackage.Net48" />
+        <Copy SourceFiles="$(ProjectDir)bin/Release/netstandard2.0/DeusaldPhysics2D.dll" DestinationFolder="$(ProjectDir)/../UnityPackage.NetStandard2.0" />
     </Target>
     
 </Project>
