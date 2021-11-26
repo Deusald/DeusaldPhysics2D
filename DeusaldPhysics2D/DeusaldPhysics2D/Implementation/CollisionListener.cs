@@ -29,15 +29,15 @@ namespace DeusaldPhysics2D
     {
         #region Variables
 
-        private readonly Physics2DControl _Physics2DControl;
+        private readonly Physics2D _Physics2D;
 
         #endregion Private Variables
 
         #region Init Methods
 
-        public CollisionListener(Physics2DControl physics2DControl)
+        public CollisionListener(Physics2D physics2DControl)
         {
-            _Physics2DControl = physics2DControl;
+            _Physics2D = physics2DControl;
         }
 
         #endregion Init Methods
@@ -47,7 +47,7 @@ namespace DeusaldPhysics2D
         public override void BeginContact(b2Contact contact)
         {
             ICollisionData collisionData = GetCollisionData(contact);
-            _Physics2DControl.ExecuteOnCollisionEnter(collisionData);
+            _Physics2D.ExecuteOnCollisionEnter(collisionData);
             ((Collider) collisionData.ColliderA).ExecuteOnCollisionEnter(collisionData);
             ((CollisionData) collisionData).Swap();
             ((Collider) collisionData.ColliderA).ExecuteOnCollisionEnter(collisionData);
@@ -56,7 +56,7 @@ namespace DeusaldPhysics2D
         public override void EndContact(b2Contact contact)
         {
             ICollisionData collisionData = GetCollisionData(contact);
-            _Physics2DControl.ExecuteOnCollisionExit(collisionData);
+            _Physics2D.ExecuteOnCollisionExit(collisionData);
             ((Collider) collisionData.ColliderA).ExecuteOnCollisionExit(collisionData);
             ((CollisionData) collisionData).Swap();
             ((Collider) collisionData.ColliderA).ExecuteOnCollisionExit(collisionData);
@@ -65,7 +65,7 @@ namespace DeusaldPhysics2D
         public override void PreSolve(b2Contact contact, b2Manifold oldManifold)
         {
             ICollisionDataExtend collisionData = GetCollisionData(contact);
-            _Physics2DControl.ExecutePreCollision(collisionData);
+            _Physics2D.ExecutePreCollision(collisionData);
             contact.SetEnabled(!collisionData.ContactDisabled);
         }
 
@@ -82,9 +82,9 @@ namespace DeusaldPhysics2D
             int childIndexA      = contact.GetChildIndexA();
             int childIndexB      = contact.GetChildIndexB();
 
-            IPhysicsObject physicsObjectA = _Physics2DControl.GetPhysicsObject(physicsObjectAId);
+            IPhysicsObject physicsObjectA = _Physics2D.GetPhysicsObject(physicsObjectAId);
             ICollider      colliderA      = physicsObjectA.GetCollider(colliderAId);
-            IPhysicsObject physicsObjectB = _Physics2DControl.GetPhysicsObject(physicsObjectBId);
+            IPhysicsObject physicsObjectB = _Physics2D.GetPhysicsObject(physicsObjectBId);
             ICollider      colliderB      = physicsObjectB.GetCollider(colliderBId);
 
             return new CollisionData(contact, physicsObjectA, colliderA, childIndexA, physicsObjectB, colliderB, childIndexB);

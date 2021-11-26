@@ -21,24 +21,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using Box2D;
-using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    public static class SharpBox2D
+    internal class RaycastCallback : b2RayCastCallback
     {
-        public static readonly Version Version = new Version(0, 9, 1);
-        
-        internal static Vector2 ToVector2(this b2Vec2 vec2)
+        #region Variables
+
+        private readonly ushort                    _CollisionMask;
+        private readonly IPhysics2DControl         _Physics2DControl;
+        private readonly Delegates.RayCastCallback _Callback;
+
+        #endregion Variables
+
+        #region Init Methods
+
+        internal RaycastCallback(IPhysics2DControl physics2DControl, Delegates.RayCastCallback callback, ushort collisionMask)
         {
-            return new Vector2(vec2.x, vec2.y);
+            _Physics2DControl = physics2DControl;
+            _Callback         = callback;
+            _CollisionMask    = collisionMask;
         }
 
-        internal static b2Vec2 ToB2Vec2(this Vector2 vector2)
+        #endregion Init Methods
+
+        #region Public Methods
+
+        public override float ReportFixture(b2Fixture fixture, b2Vec2 point, b2Vec2 normal, float fraction)
         {
-            return new b2Vec2(vector2.x, vector2.y);
+            if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return -1f;
+            ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().data).GetCollider(fixture.GetUserData().data);
+            return _Callback.Invoke(collider, point.ToVector2(), normal.ToVector2(), fraction);
         }
+
+        #endregion Public Methods
     }
 }

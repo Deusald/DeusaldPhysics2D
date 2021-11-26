@@ -107,6 +107,8 @@ namespace Box2D
                 if (data.SequenceEqual(numArray))
                     needToRewriteLib = false;
             }
+            
+            DeusaldPhysics2D.DeusaldPhysics2D.IsInitialized = true;
 
             if (!needToRewriteLib)
                 return;

@@ -27,22 +27,8 @@ using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    public class PhysicsObject : IPhysicsObject
+    internal class PhysicsObject : IPhysicsObject
     {
-        #region Variables
-
-        private Vector2 _MovePositionTarget;
-        private bool    _MovePosition;
-        private Vector2 _PreviousLinearVelocity;
-        private int     _NextColliderId;
-
-        private readonly Physics2D                  _Physics2D;
-        private readonly b2Body                     _Body;
-        private readonly uint                       _PhysicsStepsPerSec;
-        private readonly Dictionary<int, ICollider> _Colliders;
-
-        #endregion Variables
-
         #region Properties
 
         #region Getters
@@ -144,13 +130,27 @@ namespace DeusaldPhysics2D
 
         public BodyType BodyType
         {
-            get => (BodyType) _Body.Type;
-            set => _Body.Type = (b2BodyType) value;
+            get => (BodyType)_Body.Type;
+            set => _Body.Type = (b2BodyType)value;
         }
 
         #endregion Getters And Setters
 
         #endregion Properties
+
+        #region Variables
+
+        private Vector2 _MovePositionTarget;
+        private bool    _MovePosition;
+        private Vector2 _PreviousLinearVelocity;
+        private int     _NextColliderId;
+
+        private readonly Physics2D                  _Physics2D;
+        private readonly b2Body                     _Body;
+        private readonly uint                       _PhysicsStepsPerSec;
+        private readonly Dictionary<int, ICollider> _Colliders;
+
+        #endregion Variables
 
         #region Init Methods
 
@@ -281,7 +281,7 @@ namespace DeusaldPhysics2D
         {
             if (!_Colliders.ContainsKey(colliderId)) return;
 
-            Collider collider = (Collider) _Colliders[colliderId];
+            Collider collider = (Collider)_Colliders[colliderId];
             _Body.DestroyFixture(collider.Fixture);
             _Colliders.Remove(colliderId);
         }

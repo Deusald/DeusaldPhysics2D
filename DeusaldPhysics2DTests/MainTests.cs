@@ -24,6 +24,7 @@
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 
+using System;
 using Box2D;
 using DeusaldSharp;
 using NUnit.Framework;
@@ -39,7 +40,8 @@ namespace DeusaldPhysics2DTests
         {
             // Arrange
             Box2dNativeLoader.LoadNativeLibrary(Box2dNativeLoader.System.Windows);
-            Physics2DControl physics2D = new Physics2DControl(20, Vector2.Down);
+            Console.Write(DeusaldPhysics2D.DeusaldPhysics2D.IsInitialized);
+            IPhysics2DControl physics2D = DeusaldPhysics2D.DeusaldPhysics2D.CreateNewPhysics(20, Vector2.Down);
 
             int collisionObjectAId = -1;
             int collisionObjectBId = -1;

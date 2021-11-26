@@ -1,4 +1,4 @@
-// MIT License
+﻿// MIT License
 
 // DeusaldPhysics2D:
 // Copyright (c) 2020 Adam "Deusald" Orliński
@@ -21,40 +21,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Box2D;
+using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    internal class OverlapCallback : b2QueryCallback
+    public interface IOverlapShapeInput
     {
-        #region Variables
+        void SetAsCircle(float radius);
 
-        private readonly ushort                        _CollisionMask;
-        private readonly IPhysics2DControl             _Physics2DControl;
-        private readonly Physics2D.OverlapAreaCallback _Callback;
+        void SetAsBox(float width, float height);
 
-        #endregion Variables
+        void SetAsPolygon(Vector2[] vertices);
 
-        #region Init Methods
+        void SetTransform(Vector2 position, float rotation);
 
-        internal OverlapCallback(IPhysics2DControl physics2DControl, Physics2D.OverlapAreaCallback callback, ushort collisionMask)
-        {
-            _Physics2DControl = physics2DControl;
-            _CollisionMask    = collisionMask;
-            _Callback         = callback;
-        }
+        void SetPosition(Vector2 position);
 
-        #endregion Init Methods
-
-        #region Public Methods
-
-        public override bool ReportFixture(b2Fixture fixture)
-        {
-            if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return true;
-            ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().data).GetCollider(fixture.GetUserData().data);
-            return _Callback.Invoke(collider);
-        }
-
-        #endregion Public Methods
+        void SetRotation(float rotation);
     }
 }

@@ -28,65 +28,58 @@ using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    public class Physics2D : IPhysics2D
+    internal class Physics2D : IPhysics2D, IPhysics2DControl
     {
-        #region Types
+        #region Properties
 
-        public delegate float RayCastCallback(ICollider collider, Vector2 point, Vector2 normal, float fraction);
+        public Vector2 Gravity
+        {
+            get
+            {
+                b2Vec2 gravity = _World.GetGravity();
+                return new Vector2(gravity.x, gravity.y);
+            }
+            set => _World.SetGravity(new b2Vec2(value.x, value.y));
+        }
 
-        public delegate void SingleRayCastCallback(bool hit, Vector2 point, Vector2 normal, float fraction);
+        public Dictionary<int, IPhysicsObject>.Enumerator PhysicsObjects => _PhysicsObjects.GetEnumerator();
 
-        public delegate bool OverlapAreaCallback(ICollider collider);
-
-        public delegate DistanceOutput CalculateDistanceCallback();
-
-        public delegate void OverlapPointCallback(bool hit, CalculateDistanceCallback distanceCallback);
-
-        public delegate bool OverlapShapeCallback(ICollider collider, int childIndex);
-
-        public delegate void SingleOverlapShapeCallback(bool hit, DistanceOutput distanceOutput);
-
-        public delegate bool ShapeCastCallback(ICollider collider, Vector2 point, Vector2 normal, float t, int childIndex);
-
-        public delegate void SingleShapeCastCallback(bool hit, Vector2 point, Vector2 normal, float t);
-
-        public delegate void PreCollisionEvent(ICollisionDataExtend collisionData);
-
-        public delegate void OnCollisionEvent(ICollisionData collisionData);
-
-        #endregion Types
+        #endregion Properties
 
         #region Variables
 
-        public event PreCollisionEvent PreCollision;
-        public event OnCollisionEvent  OnCollisionEnter;
-        public event OnCollisionEvent  OnCollisionExit;
+        public event Delegates.PreCollisionEvent PreCollision;
+        public event Delegates.OnCollisionEvent  OnCollisionEnter;
+        public event Delegates.OnCollisionEvent  OnCollisionExit;
 
         private int _NextPhysicsObjectId;
 
-        // ReSharper disable InconsistentNaming
+        private readonly float _PhysicsTimeStep;
 
-        private protected          Action                          _UpdateLinearVelocity;
-        private protected readonly b2World                         _World;
-        private protected readonly Dictionary<int, IPhysicsObject> _PhysicsObjects;
+        private const int _VelocityIterations = 8;
+        private const int _PositionIterations = 3;
 
-        // ReSharper restore InconsistentNaming
+        private Action _UpdateLinearVelocity;
 
-        private readonly b2BodyDef _BodyDef;
-        private readonly uint      _PhysicsStepsPerSec;
-        private readonly Vector2   _PointExtends;
+        private readonly b2World                         _World;
+        private readonly Dictionary<int, IPhysicsObject> _PhysicsObjects;
+        private readonly b2BodyDef                       _BodyDef;
+        private readonly uint                            _PhysicsStepsPerSec;
+        private readonly Vector2                         _PointExtends;
 
         #endregion Variables
 
         #region Init Methods
 
-        protected Physics2D(uint physicsStepsPerSec, Vector2 gravity)
+        internal Physics2D(uint physicsStepsPerSec, Vector2 gravity)
         {
             _World               = new b2World(new b2Vec2(gravity.x, gravity.y));
             _PhysicsObjects      = new Dictionary<int, IPhysicsObject>();
             _PhysicsStepsPerSec  = physicsStepsPerSec;
             _NextPhysicsObjectId = 1;
-            _PointExtends        = new Vector2((float) Box2d.b2_linearSlop, (float) Box2d.b2_linearSlop);
+            _PointExtends        = new Vector2((float)Box2d.b2_linearSlop, (float)Box2d.b2_linearSlop);
+            _PhysicsTimeStep     = 1f / physicsStepsPerSec;
+            _World.SetContactListener(new CollisionListener(this));
 
             _BodyDef = new b2BodyDef
             {
@@ -107,11 +100,32 @@ namespace DeusaldPhysics2D
 
         #region Public Methods
 
+        public IOverlapShapeInput GetNewOverlapShapeInput()
+        {
+            return new OverlapShapeInput();
+        }
+
+        public IShapeCastInput GetNewShapeCastInput()
+        {
+            return new ShapeCastInput();
+        }
+        
+        public void Step()
+        {
+            _UpdateLinearVelocity?.Invoke();
+            _World.Step(_PhysicsTimeStep, _VelocityIterations, _PositionIterations);
+        }
+
+        public IPhysicsObject GetPhysicsObject(int physicsObjectId)
+        {
+            return !_PhysicsObjects.ContainsKey(physicsObjectId) ? null : _PhysicsObjects[physicsObjectId];
+        }
+
         public IPhysicsObject CreatePhysicsObject(BodyType bodyType, Vector2 position, float rotation)
         {
             int newId = _NextPhysicsObjectId++;
-            _BodyDef.type          = (b2BodyType) bodyType;
-            _BodyDef.position      = SharpBox2D.ToB2Vec2(position);
+            _BodyDef.type          = (b2BodyType)bodyType;
+            _BodyDef.position      = position.ToB2Vec2();
             _BodyDef.angle         = rotation;
             _BodyDef.userData.data = newId;
 
@@ -124,14 +138,14 @@ namespace DeusaldPhysics2D
 
         internal static b2Transform GetNewTransform(Vector2 position, float rotation)
         {
-            return new b2Transform(SharpBox2D.ToB2Vec2(position), new b2Rot(rotation));
+            return new b2Transform(position.ToB2Vec2(), new b2Rot(rotation));
         }
 
         internal static b2Shape GetCircleShape(float radius, Vector2 offset)
         {
             return new b2CircleShape
             {
-                m_p      = SharpBox2D.ToB2Vec2(offset),
+                m_p      = offset.ToB2Vec2(),
                 m_radius = radius
             };
         }
@@ -139,7 +153,7 @@ namespace DeusaldPhysics2D
         internal static b2Shape GetBoxShape(float width, float height, Vector2 offset, float rotation)
         {
             b2PolygonShape shape = new b2PolygonShape();
-            shape.SetAsBox(width, height, SharpBox2D.ToB2Vec2(offset), rotation);
+            shape.SetAsBox(width, height, offset.ToB2Vec2(), rotation);
             return shape;
         }
 
@@ -149,7 +163,7 @@ namespace DeusaldPhysics2D
             b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
 
             for (int i = 0; i < vertices.Length; ++i)
-                Box2d.b2Vec2Array_setitem(array, i, SharpBox2D.ToB2Vec2(vertices[i]));
+                Box2d.b2Vec2Array_setitem(array, i, vertices[i].ToB2Vec2());
 
             shape.Set(array, vertices.Length);
             return shape;
@@ -159,7 +173,7 @@ namespace DeusaldPhysics2D
         {
             if (!_PhysicsObjects.ContainsKey(objectId)) return;
 
-            PhysicsObject physicsObject = (PhysicsObject) _PhysicsObjects[objectId];
+            PhysicsObject physicsObject = (PhysicsObject)_PhysicsObjects[objectId];
             _UpdateLinearVelocity -= physicsObject.UpdateLinearVelocity;
             _World.DestroyBody(physicsObject.Body);
             _PhysicsObjects.Remove(objectId);
@@ -182,16 +196,16 @@ namespace DeusaldPhysics2D
 
         public DistanceOutput GetDistanceBetweenColliders(ICollider colliderA, ICollider colliderB, int childIndexA = 0, int childIndexB = 0)
         {
-            Collider colliderACast = (Collider) colliderA;
-            Collider colliderBCast = (Collider) colliderB;
+            Collider colliderACast = (Collider)colliderA;
+            Collider colliderBCast = (Collider)colliderB;
             return GetDistance(colliderACast.Fixture.GetShape(), childIndexA, colliderACast.Fixture.GetBody().GetTransform(),
-                colliderBCast.Fixture.GetShape(),                childIndexB, colliderBCast.Fixture.GetBody().GetTransform());
+                colliderBCast.Fixture.GetShape(), childIndexB, colliderBCast.Fixture.GetBody().GetTransform());
         }
 
         internal DistanceOutput GetDistance(b2Shape shapeA, int childIndexA, b2Transform transformA, b2Shape shapeB, int childIndexB, b2Transform transformB)
         {
             b2DistanceOutput output = new b2DistanceOutput();
-            b2SimplexCache   cache  = new b2SimplexCache {count = 0};
+            b2SimplexCache   cache  = new b2SimplexCache { count = 0 };
             b2DistanceProxy  proxyA = new b2DistanceProxy();
             proxyA.Set(shapeA, childIndexA);
             b2DistanceProxy proxyB = new b2DistanceProxy();
@@ -208,37 +222,37 @@ namespace DeusaldPhysics2D
 
             Box2d.b2Distance(output, cache, input);
             DistanceOutput finalOutput =
-                new DistanceOutput(output.distance, SharpBox2D.ToVector2(output.pointA), SharpBox2D.ToVector2(output.pointB));
+                new DistanceOutput(output.distance, output.pointA.ToVector2(), output.pointB.ToVector2());
             return finalOutput;
         }
 
-        public void RayCast(RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
+        public void RayCast(Delegates.RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
         {
-            RaycastCallback raycastCallback = new RaycastCallback((IPhysics2DControl) this, callback, collisionMask);
-            _World.RayCast(raycastCallback, SharpBox2D.ToB2Vec2(origin), SharpBox2D.ToB2Vec2(end));
+            RaycastCallback raycastCallback = new RaycastCallback(this, callback, collisionMask);
+            _World.RayCast(raycastCallback, origin.ToB2Vec2(), end.ToB2Vec2());
         }
 
-        public void RayCast(RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF)
+        public void RayCast(Delegates.RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF)
         {
             Vector2 endPoint = origin + direction * distance;
             RayCast(callback, origin, endPoint, collisionMask);
         }
 
-        public void OverlapArea(OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF)
+        public void OverlapArea(Delegates.OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF)
         {
-            OverlapArea(callback, SharpBox2D.ToB2Vec2(lowerBound), SharpBox2D.ToB2Vec2(upperBound), collisionMask);
+            OverlapArea(callback, lowerBound.ToB2Vec2(), upperBound.ToB2Vec2(), collisionMask);
         }
 
-        public void OverlapPoint(OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
+        public void OverlapPoint(Delegates.OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF)
         {
-            b2Vec2      vec2Point      = SharpBox2D.ToB2Vec2(point);
+            b2Vec2      vec2Point      = point.ToB2Vec2();
             b2Transform pointTransform = new b2Transform(vec2Point, new b2Rot(0f));
 
             OverlapArea(delegate(ICollider collider)
             {
                 bool goNext = true;
 
-                ((Collider) collider).OverlapPoint(delegate(bool hit, CalculateDistanceCallback distanceCallback)
+                ((Collider)collider).OverlapPoint(delegate(bool hit, Delegates.CalculateDistanceCallback distanceCallback)
                 {
                     if (hit)
                         goNext = callback.Invoke(collider);
@@ -248,8 +262,10 @@ namespace DeusaldPhysics2D
             }, point - _PointExtends, point + _PointExtends, collisionMask);
         }
 
-        public void OverlapShape(OverlapShapeCallback callback, OverlapShapeInput input, ushort collisionMask = 0xFFFF)
+        public void OverlapShape(Delegates.OverlapShapeCallback callback, IOverlapShapeInput input, ushort collisionMask = 0xFFFF)
         {
+            OverlapShapeInput overlapShapeInputUnpacked = (OverlapShapeInput)input;
+            
             OverlapArea(delegate(ICollider collider)
             {
                 bool goNext = true;
@@ -257,7 +273,7 @@ namespace DeusaldPhysics2D
                 for (int i = 0; i < collider.ChildCount; ++i)
                 {
                     int innerI = i;
-                    ((Collider) collider).OverlapShape(delegate(bool hit, DistanceOutput output)
+                    ((Collider)collider).OverlapShape(delegate(bool hit, DistanceOutput output)
                     {
                         if (hit)
                             goNext = goNext && callback.Invoke(collider, innerI);
@@ -267,11 +283,13 @@ namespace DeusaldPhysics2D
                 }
 
                 return goNext;
-            }, input.aabb.lowerBound, input.aabb.upperBound, collisionMask);
+            }, overlapShapeInputUnpacked.aabb.lowerBound, overlapShapeInputUnpacked.aabb.upperBound, collisionMask);
         }
 
-        public void ShapeCast(ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF)
+        public void ShapeCast(Delegates.ShapeCastCallback callback, IShapeCastInput input, ushort collisionMask = 0xFFFF)
         {
+            ShapeCastInput overlapShapeInputUnpacked = (ShapeCastInput)input;
+            
             OverlapArea(delegate(ICollider collider)
             {
                 bool goNext = true;
@@ -280,7 +298,7 @@ namespace DeusaldPhysics2D
                 {
                     int innerI = i;
 
-                    ((Collider) collider).ShapeCast(delegate(bool hit, Vector2 point, Vector2 normal, float t)
+                    ((Collider)collider).ShapeCast(delegate(bool hit, Vector2 point, Vector2 normal, float t)
                     {
                         if (hit)
                             goNext = goNext && callback.Invoke(collider, point, normal, t, innerI);
@@ -290,16 +308,16 @@ namespace DeusaldPhysics2D
                 }
 
                 return goNext;
-            }, input.aabb.lowerBound, input.aabb.upperBound, collisionMask);
+            }, overlapShapeInputUnpacked.aabb.lowerBound, overlapShapeInputUnpacked.aabb.upperBound, collisionMask);
         }
 
         #endregion Public Methods
 
         #region Private Methods
 
-        private void OverlapArea(OverlapAreaCallback callback, b2Vec2 lowerBound, b2Vec2 upperBound, ushort collisionMask = 0xFFFF)
+        private void OverlapArea(Delegates.OverlapAreaCallback callback, b2Vec2 lowerBound, b2Vec2 upperBound, ushort collisionMask = 0xFFFF)
         {
-            OverlapCallback overlapCallback = new OverlapCallback((IPhysics2DControl) this, callback, collisionMask);
+            OverlapCallback overlapCallback = new OverlapCallback(this, callback, collisionMask);
             b2AABB aabb = new b2AABB
             {
                 lowerBound = lowerBound,

@@ -31,6 +31,16 @@ namespace DeusaldPhysics2D
     public interface IPhysics2D
     {
         /// <summary>
+        /// Create new input for overlap shape method
+        /// </summary>
+        IOverlapShapeInput GetNewOverlapShapeInput();
+
+        /// <summary>
+        /// Create new input for shape cast method
+        /// </summary>
+        IShapeCastInput GetNewShapeCastInput();
+        
+        /// <summary>
         /// Create new physics object in the world
         /// </summary>
         IPhysicsObject CreatePhysicsObject(BodyType bodyType, Vector2 position, float rotation);
@@ -45,18 +55,18 @@ namespace DeusaldPhysics2D
         /// You have opportunity to disable the collision
         /// For example by making one side platform
         /// </summary>
-        event Physics2D.PreCollisionEvent PreCollision;
+        event Delegates.PreCollisionEvent PreCollision;
 
         /// <summary>
         /// This event will be triggered in the first frame of collision
         /// </summary>
-        event Physics2D.OnCollisionEvent OnCollisionEnter;
+        event Delegates.OnCollisionEvent OnCollisionEnter;
 
         /// <summary>
         /// This event will be triggered at the moment when the colliders stop colliding
         /// Will be also triggered when colliders were colliding and one of them has been destroyed
         /// </summary>
-        event Physics2D.OnCollisionEvent OnCollisionExit;
+        event Delegates.OnCollisionEvent OnCollisionExit;
 
         /// <summary>
         /// Return the distance and closest points between two colliders
@@ -75,7 +85,7 @@ namespace DeusaldPhysics2D
         /// return fraction: clip the ray to this point;
         /// return 1: don't clip the ray and continue;
         /// </param>
-        void RayCast(Physics2D.RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF);
+        void RayCast(Delegates.RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Raycast the world
@@ -90,29 +100,29 @@ namespace DeusaldPhysics2D
         /// return fraction: clip the ray to this point;
         /// return 1: don't clip the ray and continue;
         /// </param>
-        void RayCast(Physics2D.RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF);
+        void RayCast(Delegates.RayCastCallback callback, Vector2 origin, Vector2 direction, float distance, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Get colliders that are in defined area
         /// In callback return false to end the search
         /// </summary>
-        void OverlapArea(Physics2D.OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF);
+        void OverlapArea(Delegates.OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Get all colliders that have given points inside their shape
         /// In callback return false to end the search
         /// </summary>
-        void OverlapPoint(Physics2D.OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
+        void OverlapPoint(Delegates.OverlapAreaCallback callback, Vector2 point, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Get all colliders that would collide with defined shape
         /// In callback return false to end the search
         /// </summary>
-        void OverlapShape(Physics2D.OverlapShapeCallback callback, OverlapShapeInput input, ushort collisionMask = 0xFFFF);
+        void OverlapShape(Delegates.OverlapShapeCallback callback, IOverlapShapeInput input, ushort collisionMask = 0xFFFF);
 
         /// <summary>
         /// Shoot a shape in given direction and return in callback all hit colliders
         /// </summary>
-        void ShapeCast(Physics2D.ShapeCastCallback callback, ShapeCastInput input, ushort collisionMask = 0xFFFF);
+        void ShapeCast(Delegates.ShapeCastCallback callback, IShapeCastInput input, ushort collisionMask = 0xFFFF);
     }
 }

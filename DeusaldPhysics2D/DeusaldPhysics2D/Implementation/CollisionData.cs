@@ -26,7 +26,7 @@ using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    public class CollisionData : ICollisionData, ICollisionDataExtend
+    internal class CollisionData : ICollisionData, ICollisionDataExtend
     {
         #region Variables
 
@@ -122,9 +122,9 @@ namespace DeusaldPhysics2D
             b2WorldManifold worldManifold = new b2WorldManifold();
             _Contact.GetWorldManifold(worldManifold);
 
-            _Normal          = SharpBox2D.ToVector2(worldManifold.normal);
-            _ContactPoints.x = SharpBox2D.ToVector2(Box2d.b2Vec2Array_getitem(worldManifold.points, 0));
-            _ContactPoints.y = SharpBox2D.ToVector2(Box2d.b2Vec2Array_getitem(worldManifold.points, 1));
+            _Normal          = worldManifold.normal.ToVector2();
+            _ContactPoints.x = Box2d.b2Vec2Array_getitem(worldManifold.points, 0).ToVector2();
+            _ContactPoints.y = Box2d.b2Vec2Array_getitem(worldManifold.points, 1).ToVector2();
         }
 
         #endregion Private Methods

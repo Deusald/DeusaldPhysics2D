@@ -25,34 +25,34 @@ using Box2D;
 
 namespace DeusaldPhysics2D
 {
-    internal class RaycastCallback : b2RayCastCallback
+    internal class OverlapCallback : b2QueryCallback
     {
         #region Variables
 
-        private readonly ushort                    _CollisionMask;
-        private readonly IPhysics2DControl         _Physics2DControl;
-        private readonly Physics2D.RayCastCallback _Callback;
+        private readonly ushort                        _CollisionMask;
+        private readonly IPhysics2DControl             _Physics2DControl;
+        private readonly Delegates.OverlapAreaCallback _Callback;
 
         #endregion Variables
 
         #region Init Methods
 
-        internal RaycastCallback(IPhysics2DControl physics2DControl, Physics2D.RayCastCallback callback, ushort collisionMask)
+        internal OverlapCallback(IPhysics2DControl physics2DControl, Delegates.OverlapAreaCallback callback, ushort collisionMask)
         {
             _Physics2DControl = physics2DControl;
-            _Callback         = callback;
             _CollisionMask    = collisionMask;
+            _Callback         = callback;
         }
 
         #endregion Init Methods
 
         #region Public Methods
 
-        public override float ReportFixture(b2Fixture fixture, b2Vec2 point, b2Vec2 normal, float fraction)
+        public override bool ReportFixture(b2Fixture fixture)
         {
-            if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return -1f;
+            if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return true;
             ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().data).GetCollider(fixture.GetUserData().data);
-            return _Callback.Invoke(collider, SharpBox2D.ToVector2(point), SharpBox2D.ToVector2(normal), fraction);
+            return _Callback.Invoke(collider);
         }
 
         #endregion Public Methods

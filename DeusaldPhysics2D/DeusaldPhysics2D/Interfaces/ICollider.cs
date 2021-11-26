@@ -103,24 +103,24 @@ namespace DeusaldPhysics2D
         /// This event will be triggered in the first frame of collision
         /// The ColliderA is always this collider
         /// </summary>
-        event Physics2D.OnCollisionEvent OnCollisionEnter;
+        event Delegates.OnCollisionEvent OnCollisionEnter;
 
         /// <summary>
         /// This event will be triggered at the moment when the colliders stop colliding
         /// Will be also triggered when colliders were colliding and one of them has been destroyed
         /// The ColliderA is always this collider
         /// </summary>
-        event Physics2D.OnCollisionEvent OnCollisionExit;
+        event Delegates.OnCollisionEvent OnCollisionExit;
 
         /// <summary>
         /// RayCast this collider
         /// </summary>
-        void RayCast(Physics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 end, int childIndex = 0);
+        void RayCast(Delegates.SingleRayCastCallback callback, Vector2 origin, Vector2 end, int childIndex = 0);
 
         /// <summary>
         /// RayCast this collider
         /// </summary>
-        void RayCast(Physics2D.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0);
+        void RayCast(Delegates.SingleRayCastCallback callback, Vector2 origin, Vector2 direction, float distance, int childIndex = 0);
 
         /// <summary>
         /// Test if this collider aabb overlap with given aabb
@@ -131,17 +131,17 @@ namespace DeusaldPhysics2D
         /// Test if given point is inside the collider
         /// CalculateDistanceCallback should be called only when there was no hit
         /// </summary>
-        void OverlapPoint(Physics2D.OverlapPointCallback callback, Vector2 point, int childIndex = 0);
+        void OverlapPoint(Delegates.OverlapPointCallback callback, Vector2 point, int childIndex = 0);
 
         /// <summary>
         /// Test if given collider would overlap with given shape
         /// CalculateDistanceCallback should be called only when there was no hit
         /// </summary>
-        void OverlapShape(Physics2D.SingleOverlapShapeCallback callback, OverlapShapeInput input, int childIndex = 0);
+        void OverlapShape(Delegates.SingleOverlapShapeCallback callback, IOverlapShapeInput input, int childIndex = 0);
 
         /// <summary>
         /// Shoot a shape in given direction and return if it would collide with this collider
         /// </summary>
-        void ShapeCast(Physics2D.SingleShapeCastCallback callback, ShapeCastInput input, int childIndex = 0);
+        void ShapeCast(Delegates.SingleShapeCastCallback callback, IShapeCastInput input, int childIndex = 0);
     }
 }

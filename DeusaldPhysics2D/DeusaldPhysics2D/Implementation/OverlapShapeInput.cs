@@ -26,28 +26,22 @@ using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    public class ShapeCastInput
+    internal class OverlapShapeInput : IOverlapShapeInput
     {
-        #region Variables
+        #region Public Variables
 
         internal          b2Shape     shape;
-        internal          b2Vec2      translation;
         internal readonly b2Transform transform;
         internal readonly b2AABB      aabb;
 
-        private readonly b2Transform _EndTransform;
-        private readonly b2AABB      _End;
-
-        #endregion Variables
+        #endregion Public Variables
 
         #region Init Methods
 
-        public ShapeCastInput()
+        public OverlapShapeInput()
         {
-            transform     = Physics2D.GetNewTransform(Vector2.Zero, 0f);
-            _EndTransform = Physics2D.GetNewTransform(Vector2.Zero, 0f);
-            aabb          = new b2AABB();
-            _End          = new b2AABB();
+            transform = Physics2D.GetNewTransform(Vector2.Zero, 0f);
+            aabb      = new b2AABB();
         }
 
         #endregion Init Methods
@@ -69,45 +63,22 @@ namespace DeusaldPhysics2D
             shape = Physics2D.GetPolygonShape(vertices);
         }
 
-        public void SetTranslation(Vector2 origin, float rotation, Vector2 end)
+        public void SetTransform(Vector2 position, float rotation)
         {
-            transform.p = SharpBox2D.ToB2Vec2(origin);
+            transform.p = position.ToB2Vec2();
             transform.q.Set(rotation);
-            _EndTransform.p = SharpBox2D.ToB2Vec2(end);
-            _EndTransform.q.Set(rotation);
-            translation = SharpBox2D.ToB2Vec2(end - origin);
             FillAabb();
         }
 
-        public void SetTranslation(Vector2 origin, float rotation, Vector2 direction, float distance)
+        public void SetPosition(Vector2 position)
         {
-            transform.p = SharpBox2D.ToB2Vec2(origin);
+            transform.p = position.ToB2Vec2();
+            FillAabb();
+        }
+
+        public void SetRotation(float rotation)
+        {
             transform.q.Set(rotation);
-            Vector2 trans = direction * distance;
-            _EndTransform.p = SharpBox2D.ToB2Vec2(origin + trans);
-            _EndTransform.q.Set(rotation);
-            translation = SharpBox2D.ToB2Vec2(trans);
-            FillAabb();
-        }
-
-        public void SetTranslation(Vector2 origin, Vector2 end)
-        {
-            transform.p = SharpBox2D.ToB2Vec2(origin);
-            transform.q.Set(0f);
-            _EndTransform.p = SharpBox2D.ToB2Vec2(end);
-            _EndTransform.q.Set(0f);
-            translation = SharpBox2D.ToB2Vec2(end - origin);
-            FillAabb();
-        }
-
-        public void SetTranslation(Vector2 origin, Vector2 direction, float distance)
-        {
-            transform.p = SharpBox2D.ToB2Vec2(origin);
-            transform.q.Set(0f);
-            Vector2 trans = direction * distance;
-            _EndTransform.p = SharpBox2D.ToB2Vec2(origin + trans);
-            _EndTransform.q.Set(0f);
-            translation = SharpBox2D.ToB2Vec2(trans);
             FillAabb();
         }
 
@@ -117,9 +88,7 @@ namespace DeusaldPhysics2D
 
         private void FillAabb()
         {
-            shape.ComputeAABB(aabb, transform,     0);
-            shape.ComputeAABB(_End, _EndTransform, 0);
-            aabb.Combine(_End);
+            shape.ComputeAABB(aabb, transform, 0);
         }
 
         #endregion Private Methods
