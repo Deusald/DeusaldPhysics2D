@@ -3,14 +3,14 @@
     <PropertyGroup>
         <TargetFrameworks>net48;netcoreapp3.1;netstandard2.0</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.9.1</PackageVersion>
-        <Title>SharpBox2D</Title>
+        <PackageVersion>0.9.2</PackageVersion>
+        <Title>DeusaldPhysics2D</Title>
         <Authors>Adam "Deusald" Orliński</Authors>
-        <Description>Box2d C# port using native C++ library. This port is more like an interface to interact with box2d. Interface is build to be eazy in use.</Description>
+        <Description>2D physics engine based on native Box2D dll.</Description>
         <Copyright>Copyright ©Adam "Deusald" Orliński 2020</Copyright>
-        <PackageProjectUrl>https://github.com/Deusald/SharpBox2D</PackageProjectUrl>
-        <PackageLicenseUrl>https://github.com/Deusald/SharpBox2D/blob/master/LICENSE</PackageLicenseUrl>
-        <RepositoryUrl>https://github.com/Deusald/SharpBox2D</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/Deusald/DeusaldPhysics2D</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/Deusald/DeusaldPhysics2D/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/Deusald/DeusaldPhysics2D</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>C# Box2d Physics</PackageTags>
         <AssemblyVersion>0.9.1</AssemblyVersion>
