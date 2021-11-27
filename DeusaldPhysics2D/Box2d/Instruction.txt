@@ -20,3 +20,12 @@ BEFORE BUILD
 WINDOWS
 1. Build the Dll using CLion or other method (To make 64 bit library choose Architecture x64 under CLion Settings/Build, Execution, Deployment/Toolchains)
 2. Replace the appropriate library in this project
+
+DOTNET CORE RUNTIME
+1. Remove what is inside box2d/cmake-build-debug folder
+2. Comment out method body -> Box2D_wrap.css/CSharp_Box2D_b2Log_Default
+3. Put box2dBuilder.Dockerfile outside box2d folder
+4. Run command: docker build -t box2dbuilder:1.0 -f box2dBuilder.Dockerfile ./
+5. Run created container
+6. Execute command: docker cp <containerId>:/app/bin .
+7. Replace the appropriate library in this project

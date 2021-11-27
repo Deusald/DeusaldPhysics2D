@@ -34,7 +34,7 @@ namespace Box2D
     {
         public enum System
         {
-            Windows
+            Windows, DotnetCoreRuntime
         }
         
         public static readonly Version Version = new Version(2, 4, 1);
@@ -48,6 +48,11 @@ namespace Box2D
                 case System.Windows:
                 {
                     libName = "box2d.dll";
+                    break;
+                }
+                case System.DotnetCoreRuntime:
+                {
+                    libName = "libbox2d.so";
                     break;
                 }
             }
@@ -73,7 +78,7 @@ namespace Box2D
 
             string       bits     = Environment.Is64BitProcess ? "x64" : "x86";
             AssemblyName name     = Assembly.GetExecutingAssembly().GetName();
-            string       tempPath = Path.Combine(Path.GetTempPath(), $"{(object) name.Name}.{(object) bits}.{(object) name.Version}");
+            string       tempPath = Path.Combine(Path.GetTempPath(), $"{name.Name}.{bits}.{name.Version}");
 
             if (!Directory.Exists(tempPath))
                 Directory.CreateDirectory(tempPath);

@@ -26,12 +26,18 @@
 
     <ItemGroup>
       <Folder Include="Box2d\Generated" />
+      <Folder Include="Box2d\Libs\DotnetCoreRuntime\x86" />
+      <Folder Include="Box2d\Libs\DotnetCoreRuntime\x86_64" />
       <Folder Include="Box2d\Libs\Windows" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="Box2d\Libs\Windows\x86_64\box2d.dll" />
       <EmbeddedResource Include="Box2d\Libs\Windows\x86\box2d.dll" />
+      <None Remove="Box2d\Libs\DotnetCoreRuntime\x86\libbox2d.so" />
+      <EmbeddedResource Include="Box2d\Libs\DotnetCoreRuntime\x86\libbox2d.so" />
+      <None Remove="Box2d\Libs\DotnetCoreRuntime\x86_64\libbox2d.so" />
+      <EmbeddedResource Include="Box2d\Libs\DotnetCoreRuntime\x86_64\libbox2d.so" />
     </ItemGroup>
 
     <ItemGroup>
