@@ -26,7 +26,7 @@ using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    internal class ShapeCastInput : IShapeCastInput
+    internal class ShapeCastInputNative : IShapeCastInput
     {
         #region Variables
 
@@ -42,10 +42,10 @@ namespace DeusaldPhysics2D
 
         #region Init Methods
 
-        public ShapeCastInput()
+        public ShapeCastInputNative()
         {
-            transform     = Physics2D.GetNewTransform(Vector2.Zero, 0f);
-            _EndTransform = Physics2D.GetNewTransform(Vector2.Zero, 0f);
+            transform     = Physics2DNative.GetNewTransform(Vector2.Zero, 0f);
+            _EndTransform = Physics2DNative.GetNewTransform(Vector2.Zero, 0f);
             aabb          = new b2AABB();
             _End          = new b2AABB();
         }
@@ -56,17 +56,17 @@ namespace DeusaldPhysics2D
 
         public void SetAsCircle(float radius)
         {
-            shape = Physics2D.GetCircleShape(radius, Vector2.Zero);
+            shape = Physics2DNative.GetCircleShape(radius, Vector2.Zero);
         }
 
         public void SetAsBox(float width, float height)
         {
-            shape = Physics2D.GetBoxShape(width, height, Vector2.Zero, 0f);
+            shape = Physics2DNative.GetBoxShape(width, height, Vector2.Zero, 0f);
         }
 
         public void SetAsPolygon(Vector2[] vertices)
         {
-            shape = Physics2D.GetPolygonShape(vertices);
+            shape = Physics2DNative.GetPolygonShape(vertices);
         }
 
         public void SetTranslation(Vector2 origin, float rotation, Vector2 end)

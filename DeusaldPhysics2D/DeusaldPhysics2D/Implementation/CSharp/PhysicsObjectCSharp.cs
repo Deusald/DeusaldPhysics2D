@@ -22,27 +22,28 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using Box2D;
+using Box2DSharp.Collision.Shapes;
+using Box2DSharp.Dynamics;
 using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    internal class PhysicsObject : IPhysicsObject
+    internal class PhysicsObjectCSharp : IPhysicsObject
     {
         #region Properties
 
         #region Getters
 
         public   int                                   PhysicsObjectId { get; }
-        public   bool                                  IsStatic        => _Body.Type == b2BodyType.b2_staticBody;
-        public   bool                                  IsKinematic     => _Body.Type == b2BodyType.b2_kinematicBody;
-        public   bool                                  IsDynamic       => _Body.Type == b2BodyType.b2_dynamicBody;
-        public   Vector2                               WorldCenter     => _Body.GetWorldCenter().ToVector2();
-        public   Vector2                               LocalCenter     => _Body.GetLocalCenter().ToVector2();
-        public   float                                 Mass            => _Body.GetMass();
-        public   float                                 Inertia         => _Body.GetInertia();
+        public   bool                                  IsStatic        => _Body.BodyType == Box2DSharp.Dynamics.BodyType.StaticBody;
+        public   bool                                  IsKinematic     => _Body.BodyType == Box2DSharp.Dynamics.BodyType.KinematicBody;
+        public   bool                                  IsDynamic       => _Body.BodyType == Box2DSharp.Dynamics.BodyType.DynamicBody;
+        public   Vector2                               WorldCenter     => _Body.GetWorldCenter();
+        public   Vector2                               LocalCenter     => _Body.GetLocalCenter();
+        public   float                                 Mass            => _Body.Mass;
+        public   float                                 Inertia         => _Body.Inertia;
         public   Dictionary<int, ICollider>.Enumerator Colliders       => _Colliders.GetEnumerator();
-        internal b2Body                                Body            => _Body;
+        internal Body                                  Body            => _Body;
 
         #endregion Getters
 
@@ -50,8 +51,8 @@ namespace DeusaldPhysics2D
 
         public Vector2 Position
         {
-            get => _Body.GetPosition().ToVector2();
-            set => _Body.SetTransform(value.ToB2Vec2(), _Body.GetAngle());
+            get => _Body.GetPosition();
+            set => _Body.SetTransform(value, _Body.GetAngle());
         }
 
         public float Rotation
@@ -62,76 +63,76 @@ namespace DeusaldPhysics2D
 
         public Vector2 LinearVelocity
         {
-            get => _MovePosition ? _PreviousLinearVelocity : _Body.GetLinearVelocity().ToVector2();
+            get => _MovePosition ? _PreviousLinearVelocity : _Body.LinearVelocity;
             set
             {
                 if (_MovePosition)
                     _PreviousLinearVelocity = value;
                 else
-                    _Body.SetLinearVelocity(value.ToB2Vec2());
+                    _Body.SetLinearVelocity(value);
             }
         }
 
         public float AngularVelocity
         {
-            get => _Body.GetAngularVelocity();
+            get => _Body.AngularVelocity;
             set => _Body.SetAngularVelocity(value);
         }
 
         public float LinearDamping
         {
-            get => _Body.GetLinearDamping();
-            set => _Body.SetLinearDamping(value);
+            get => _Body.LinearDamping;
+            set => _Body.LinearDamping = value;
         }
 
         public float AngularDamping
         {
-            get => _Body.GetAngularDamping();
-            set => _Body.SetAngularDamping(value);
+            get => _Body.AngularDamping;
+            set => _Body.AngularDamping = value;
         }
 
         public float GravityScale
         {
-            get => _Body.GetGravityScale();
-            set => _Body.SetGravityScale(value);
+            get => _Body.GravityScale;
+            set => _Body.GravityScale = value;
         }
 
         public bool IsBullet
         {
-            get => _Body.IsBullet();
-            set => _Body.SetBullet(value);
+            get => _Body.IsBullet;
+            set => _Body.IsBullet = value;
         }
 
         public bool SleepingAllowed
         {
-            get => _Body.IsSleepingAllowed();
-            set => _Body.SetSleepingAllowed(value);
+            get => _Body.IsSleepingAllowed;
+            set => _Body.IsSleepingAllowed = value;
         }
 
         public bool IsAwake
         {
-            get => _Body.IsAwake();
-            set => _Body.SetAwake(value);
+            get => _Body.IsAwake;
+            set => _Body.IsAwake = value;
         }
 
         public bool Enabled
         {
-            get => _Body.IsEnabled();
-            set => _Body.SetEnabled(value);
+            get => _Body.IsEnabled;
+            set => _Body.IsEnabled = value;
         }
 
         public bool FixedRotation
         {
-            get => _Body.IsFixedRotation();
-            set => _Body.SetFixedRotation(value);
+            get => _Body.IsFixedRotation;
+            set => _Body.IsFixedRotation = value;
         }
 
         public object UserData { get; set; }
 
         public BodyType BodyType
         {
-            get => (BodyType)_Body.Type;
-            set => _Body.Type = (b2BodyType)value;
+            get => (BodyType)_Body.BodyType;
+            set => _Body.BodyType = (Box2DSharp.Dynamics.BodyType)value;
         }
 
         #endregion Getters And Setters
@@ -145,8 +146,8 @@ namespace DeusaldPhysics2D
         private Vector2 _PreviousLinearVelocity;
         private int     _NextColliderId;
 
-        private readonly Physics2D                  _Physics2D;
-        private readonly b2Body                     _Body;
+        private readonly Physics2DCSharp            _Physics2D;
+        private readonly Body                       _Body;
         private readonly uint                       _PhysicsStepsPerSec;
         private readonly Dictionary<int, ICollider> _Colliders;
 
@@ -154,7 +155,7 @@ namespace DeusaldPhysics2D
 
         #region Init Methods
 
-        internal PhysicsObject(Physics2D physics2D, b2Body body, int myId, uint physicsStepsPerSec)
+        internal PhysicsObjectCSharp(Physics2DCSharp physics2D, Body body, int myId, uint physicsStepsPerSec)
         {
             _Physics2D          = physics2D;
             _Body               = body;
@@ -182,7 +183,7 @@ namespace DeusaldPhysics2D
 
         public void SetTransform(Vector2 position, float angle)
         {
-            _Body.SetTransform(position.ToB2Vec2(), angle);
+            _Body.SetTransform(position, angle);
         }
 
         public void MovePosition(Vector2 position)
@@ -191,18 +192,18 @@ namespace DeusaldPhysics2D
 
             if (_MovePosition) return;
 
-            _PreviousLinearVelocity = _Body.GetLinearVelocity().ToVector2();
+            _PreviousLinearVelocity = _Body.LinearVelocity;
             _MovePosition           = true;
         }
 
         public void ApplyForce(Vector2 force, Vector2 point)
         {
-            _Body.ApplyForce(force.ToB2Vec2(), point.ToB2Vec2(), true);
+            _Body.ApplyForce(force, point, true);
         }
 
         public void ApplyForceToCenter(Vector2 force)
         {
-            _Body.ApplyForceToCenter(force.ToB2Vec2(), true);
+            _Body.ApplyForceToCenter(force, true);
         }
 
         public void ApplyTorque(float torque)
@@ -212,12 +213,12 @@ namespace DeusaldPhysics2D
 
         public void ApplyLinearImpulse(Vector2 impulse, Vector2 point)
         {
-            _Body.ApplyLinearImpulse(impulse.ToB2Vec2(), point.ToB2Vec2(), true);
+            _Body.ApplyLinearImpulse(impulse, point, true);
         }
 
         public void ApplyLinearImpulseToCenter(Vector2 impulse)
         {
-            _Body.ApplyLinearImpulseToCenter(impulse.ToB2Vec2(), true);
+            _Body.ApplyLinearImpulseToCenter(impulse, true);
         }
 
         public void ApplyAngularImpulse(float impulse)
@@ -227,32 +228,32 @@ namespace DeusaldPhysics2D
 
         public Vector2 GetWorldPoint(Vector2 localPoint)
         {
-            return _Body.GetWorldPoint(localPoint.ToB2Vec2()).ToVector2();
+            return _Body.GetWorldPoint(localPoint);
         }
 
         public Vector2 GetWorldVector(Vector2 localVector)
         {
-            return _Body.GetWorldVector(localVector.ToB2Vec2()).ToVector2();
+            return _Body.GetWorldVector(localVector);
         }
 
         public Vector2 GetLocalPoint(Vector2 worldPoint)
         {
-            return _Body.GetLocalPoint(worldPoint.ToB2Vec2()).ToVector2();
+            return _Body.GetLocalPoint(worldPoint);
         }
 
         public Vector2 GetLocalVector(Vector2 worldVector)
         {
-            return _Body.GetLocalVector(worldVector.ToB2Vec2()).ToVector2();
+            return _Body.GetLocalVector(worldVector);
         }
 
         public Vector2 GetLinearVelocityFromWorldPoint(Vector2 worldPoint)
         {
-            return _Body.GetLinearVelocityFromWorldPoint(worldPoint.ToB2Vec2()).ToVector2();
+            return _Body.GetLinearVelocityFromWorldPoint(worldPoint);
         }
 
         public Vector2 GetLinearVelocityFromLocalPoint(Vector2 localPoint)
         {
-            return _Body.GetLinearVelocityFromWorldPoint(localPoint.ToB2Vec2()).ToVector2();
+            return _Body.GetLinearVelocityFromWorldPoint(localPoint);
         }
 
         internal void UpdateLinearVelocity()
@@ -264,13 +265,13 @@ namespace DeusaldPhysics2D
             if (position == _MovePositionTarget)
             {
                 _MovePosition = false;
-                _Body.SetLinearVelocity(_PreviousLinearVelocity.ToB2Vec2());
+                _Body.SetLinearVelocity(_PreviousLinearVelocity);
                 return;
             }
 
             Vector2 moveToPointVelocity = _MovePositionTarget - position;
             moveToPointVelocity *= _PhysicsStepsPerSec;
-            _Body.SetLinearVelocity(moveToPointVelocity.ToB2Vec2());
+            _Body.SetLinearVelocity(moveToPointVelocity);
         }
 
         #endregion Movement, Rotation and Position
@@ -281,51 +282,47 @@ namespace DeusaldPhysics2D
         {
             if (!_Colliders.ContainsKey(colliderId)) return;
 
-            Collider collider = (Collider)_Colliders[colliderId];
+            ColliderCSharp collider = (ColliderCSharp)_Colliders[colliderId];
             _Body.DestroyFixture(collider.Fixture);
             _Colliders.Remove(colliderId);
         }
 
         public ICollider AddEdgeCollider(Vector2 start, Vector2 end)
         {
-            b2EdgeShape shape = new b2EdgeShape();
-            shape.SetTwoSided(start.ToB2Vec2(), end.ToB2Vec2());
-            b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
-            int       colliderId = _NextColliderId++;
-            fixture.GetUserData().data = colliderId;
-            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
+            EdgeShape shape = new EdgeShape();
+            shape.SetTwoSided(start, end);
+            Fixture fixture    = _Body.CreateFixture(shape, 1f);
+            int     colliderId = _NextColliderId++;
+            fixture.UserData = colliderId;
+            ICollider collider = new ColliderCSharp(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
 
         public ICollider AddChainCollider(Vector2[] vertices, bool loop)
         {
-            b2ChainShape shape = new b2ChainShape();
-            b2Vec2       array = Box2d.new_b2Vec2Array(vertices.Length);
-
-            for (int i = 0; i < vertices.Length; ++i)
-                Box2d.b2Vec2Array_setitem(array, i, vertices[i].ToB2Vec2());
+            ChainShape shape = new ChainShape();
 
             if (loop)
-                shape.CreateLoop(array, vertices.Length);
+                shape.CreateLoop(vertices, vertices.Length);
             else
-                shape.CreateChain(array, vertices.Length, vertices[0].ToB2Vec2(), vertices[vertices.Length - 1].ToB2Vec2());
+                shape.CreateChain(vertices, vertices.Length, vertices[0], vertices[vertices.Length - 1]);
 
-            b2Fixture fixture    = _Body.CreateFixture(shape, 1f);
-            int       colliderId = _NextColliderId++;
-            fixture.GetUserData().data = colliderId;
-            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
+            Fixture fixture    = _Body.CreateFixture(shape, 1f);
+            int     colliderId = _NextColliderId++;
+            fixture.UserData = colliderId;
+            ICollider collider = new ColliderCSharp(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
 
         public ICollider AddBoxCollider(float width, float height, Vector2 offset, float angle, float density)
         {
-            b2Shape   shape      = Physics2D.GetBoxShape(width, height, offset, angle);
-            b2Fixture fixture    = _Body.CreateFixture(shape, density);
-            int       colliderId = _NextColliderId++;
-            fixture.GetUserData().data = colliderId;
-            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
+            Shape   shape      = Physics2DCSharp.GetBoxShape(width, height, offset, angle);
+            Fixture fixture    = _Body.CreateFixture(shape, density);
+            int     colliderId = _NextColliderId++;
+            fixture.UserData = colliderId;
+            ICollider collider = new ColliderCSharp(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -337,11 +334,11 @@ namespace DeusaldPhysics2D
 
         public ICollider AddCircleCollider(float radius, Vector2 offset, float density)
         {
-            b2Shape   shape      = Physics2D.GetCircleShape(radius, offset);
-            b2Fixture fixture    = _Body.CreateFixture(shape, density);
-            int       colliderId = _NextColliderId++;
-            fixture.GetUserData().data = colliderId;
-            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
+            Shape   shape      = Physics2DCSharp.GetCircleShape(radius, offset);
+            Fixture fixture    = _Body.CreateFixture(shape, density);
+            int     colliderId = _NextColliderId++;
+            fixture.UserData = colliderId;
+            ICollider collider = new ColliderCSharp(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }
@@ -353,11 +350,11 @@ namespace DeusaldPhysics2D
 
         public ICollider AddPolygonCollider(Vector2[] vertices, float density)
         {
-            b2Shape   shape      = Physics2D.GetPolygonShape(vertices);
-            b2Fixture fixture    = _Body.CreateFixture(shape, density);
-            int       colliderId = _NextColliderId++;
-            fixture.GetUserData().data = colliderId;
-            ICollider collider = new Collider(fixture, this, colliderId, _Physics2D);
+            Shape   shape      = Physics2DCSharp.GetPolygonShape(vertices);
+            Fixture fixture    = _Body.CreateFixture(shape, density);
+            int     colliderId = _NextColliderId++;
+            fixture.UserData = colliderId;
+            ICollider collider = new ColliderCSharp(fixture, this, colliderId, _Physics2D);
             _Colliders.Add(colliderId, collider);
             return collider;
         }

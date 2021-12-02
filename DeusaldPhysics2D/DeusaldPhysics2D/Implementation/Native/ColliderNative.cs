@@ -26,7 +26,7 @@ using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    internal class Collider : ICollider
+    internal class ColliderNative : ICollider
     {
         #region Properties
 
@@ -105,13 +105,13 @@ namespace DeusaldPhysics2D
         #region Variables
 
         private readonly b2Shape   _PointShape;
-        private readonly Physics2D _Physics2D;
+        private readonly Physics2DNative _Physics2D;
 
         #endregion Variables
         
         #region Init Methods
 
-        internal Collider(b2Fixture fixture, IPhysicsObject physicsObject, int colliderId, Physics2D physics2D)
+        internal ColliderNative(b2Fixture fixture, IPhysicsObject physicsObject, int colliderId, Physics2DNative physics2D)
         {
             ShapeType     = (ShapeType) fixture.GetShapeType();
             PhysicsObject = physicsObject;
@@ -202,7 +202,7 @@ namespace DeusaldPhysics2D
 
         public void OverlapShape(Delegates.SingleOverlapShapeCallback callback, IOverlapShapeInput input, int childIndex = 0)
         {
-            OverlapShapeInput inputUnpacked = (OverlapShapeInput)input;
+            OverlapShapeInputNative inputUnpacked = (OverlapShapeInputNative)input;
             DistanceOutput distanceOutput = _Physics2D.GetDistance(inputUnpacked.shape, 0, inputUnpacked.transform,
                 Fixture.GetShape(), childIndex, Fixture.GetBody().GetTransform());
 
@@ -211,7 +211,7 @@ namespace DeusaldPhysics2D
 
         public void ShapeCast(Delegates.SingleShapeCastCallback callback, IShapeCastInput input, int childIndex = 0)
         {
-            ShapeCastInput inputUnpacked = (ShapeCastInput)input;
+            ShapeCastInputNative inputUnpacked = (ShapeCastInputNative)input;
             
             b2DistanceProxy proxyFixed = new b2DistanceProxy();
             proxyFixed.Set(Fixture.GetShape(), childIndex);

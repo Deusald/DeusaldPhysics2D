@@ -21,11 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Box2D;
+using Box2DSharp.Dynamics;
 
 namespace DeusaldPhysics2D
 {
-    internal class OverlapCallback : b2QueryCallback
+    internal class OverlapCallbackCSharp : IQueryCallback
     {
         #region Variables
 
@@ -37,7 +37,7 @@ namespace DeusaldPhysics2D
 
         #region Init Methods
 
-        internal OverlapCallback(IPhysics2DControl physics2DControl, Delegates.OverlapAreaCallback callback, ushort collisionMask)
+        internal OverlapCallbackCSharp(IPhysics2DControl physics2DControl, Delegates.OverlapAreaCallback callback, ushort collisionMask)
         {
             _Physics2DControl = physics2DControl;
             _CollisionMask    = collisionMask;
@@ -48,10 +48,10 @@ namespace DeusaldPhysics2D
 
         #region Public Methods
 
-        public override bool ReportFixture(b2Fixture fixture)
+        public bool QueryCallback(Fixture fixture)
         {
-            if ((fixture.GetFilterData().categoryBits & _CollisionMask) == 0) return true;
-            ICollider collider = _Physics2DControl.GetPhysicsObject(fixture.GetBody().GetUserData().data).GetCollider(fixture.GetUserData().data);
+            if ((fixture.Filter.CategoryBits & _CollisionMask) == 0) return true;
+            ICollider collider = _Physics2DControl.GetPhysicsObject((int)fixture.Body.UserData).GetCollider((int)fixture.UserData);
             return _Callback.Invoke(collider);
         }
 

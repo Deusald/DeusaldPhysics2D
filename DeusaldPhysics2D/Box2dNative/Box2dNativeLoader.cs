@@ -32,14 +32,14 @@ namespace Box2D
 
     public static class Box2dNativeLoader
     {
-        public enum System
+        internal enum System
         {
             Windows, Mac, DotnetCoreRuntime
         }
         
         public static readonly Version Version = new Version(2, 4, 1);
         
-        public static void LoadNativeLibrary(System system)
+        internal static void LoadNativeLibrary(System system)
         {
             string libName = "";
 
@@ -92,8 +92,6 @@ namespace Box2D
                 if (data.SequenceEqual(numArray))
                     needToRewriteLib = false;
             }
-            
-            DeusaldPhysics2D.DeusaldPhysics2D.IsInitialized = true;
 
             if (!needToRewriteLib)
                 return;

@@ -25,7 +25,6 @@
 // ReSharper disable IdentifierTypo
 
 using System.Runtime.InteropServices;
-using Box2D;
 using DeusaldSharp;
 using NUnit.Framework;
 using DeusaldPhysics2D;
@@ -41,11 +40,11 @@ namespace DeusaldPhysics2DTests
             // Arrange
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Box2dNativeLoader.LoadNativeLibrary(Box2dNativeLoader.System.Windows);
+                DeusaldPhysics2D.DeusaldPhysics2D.InitPhysics(InitSystemType.WindowsNative);
             }
             else
             {
-                Box2dNativeLoader.LoadNativeLibrary(Box2dNativeLoader.System.Mac);
+                DeusaldPhysics2D.DeusaldPhysics2D.InitPhysics(InitSystemType.MacNative);
             }
             
             IPhysics2DControl physics2D = DeusaldPhysics2D.DeusaldPhysics2D.CreateNewPhysics(20, Vector2.Down);
@@ -53,6 +52,46 @@ namespace DeusaldPhysics2DTests
             int collisionObjectAId = -1;
             int collisionObjectBId = -1;
             Vector2 collisionNormal = Vector2.Zero;
+
+            physics2D.OnCollisionEnter += data =>
+            {
+                collisionObjectAId = data.PhysicsObjectA.PhysicsObjectId;
+                collisionObjectBId = data.PhysicsObjectB.PhysicsObjectId;
+                collisionNormal    = data.Normal;
+            };
+
+            IPhysicsObject objOne = physics2D.CreatePhysicsObject(BodyType.Dynamic, Vector2.Zero, 0f);
+            objOne.AddBoxCollider(1, 1);
+
+            IPhysicsObject objTwo = physics2D.CreatePhysicsObject(BodyType.Static, new Vector2(0, -25f), 0f);
+            objTwo.AddBoxCollider(1, 1);
+
+            // Act
+            for (int i = 0; i < 1000; ++i)
+            {
+                physics2D.Step();
+            }
+            
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(1, collisionObjectAId);
+                Assert.AreEqual(2, collisionObjectBId);
+                Assert.AreEqual(new Vector2(0, -1), collisionNormal);
+            });
+        }
+        
+        [Test]
+        [TestOf(nameof(Box2D))]
+        public void XTTGN()
+        {
+            // Arrange
+            DeusaldPhysics2D.DeusaldPhysics2D.InitPhysics(InitSystemType.CSharp);
+            IPhysics2DControl physics2D = DeusaldPhysics2D.DeusaldPhysics2D.CreateNewPhysics(20, Vector2.Down);
+
+            int     collisionObjectAId = -1;
+            int     collisionObjectBId = -1;
+            Vector2 collisionNormal    = Vector2.Zero;
 
             physics2D.OnCollisionEnter += data =>
             {

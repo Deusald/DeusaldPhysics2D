@@ -33,6 +33,42 @@ namespace DeusaldPhysics2D
         
         public static readonly Version Version = new Version(0, 9, 2);
 
+        private static bool _IsBox2dNative;
+
+        public static void InitPhysics(InitSystemType initSystemType)
+        {
+            switch (initSystemType)
+            {
+                case InitSystemType.CSharp:
+                {
+                    _IsBox2dNative = false;
+                    IsInitialized  = true;
+                    break;
+                }
+                case InitSystemType.WindowsNative:
+                {
+                    _IsBox2dNative = true;
+                    Box2dNativeLoader.LoadNativeLibrary(Box2dNativeLoader.System.Windows);
+                    IsInitialized = true;
+                    break;
+                }
+                case InitSystemType.MacNative:
+                {
+                    _IsBox2dNative = true;
+                    Box2dNativeLoader.LoadNativeLibrary(Box2dNativeLoader.System.Mac);
+                    IsInitialized = true;
+                    break;
+                }
+                case InitSystemType.DotnetCoreRuntimeNative:
+                {
+                    _IsBox2dNative = true;
+                    Box2dNativeLoader.LoadNativeLibrary(Box2dNativeLoader.System.DotnetCoreRuntime);
+                    IsInitialized = true;
+                    break;
+                }
+            }
+        }
+        
         public static IPhysics2DControl CreateNewPhysics(uint physicsStepsPerSec, Vector2 gravity)
         {
             if (!IsInitialized)
@@ -40,7 +76,12 @@ namespace DeusaldPhysics2D
                 throw new Exception("Can't create new physics if plugin is not initialized. Execute Box2dNativeLoader method first.");
             }
 
-            return new Physics2D(physicsStepsPerSec, gravity);
+            if (_IsBox2dNative)
+            {
+                return new Physics2DNative(physicsStepsPerSec, gravity);
+            }
+            
+            return new Physics2DCSharp(physicsStepsPerSec, gravity);
         }
 
         internal static Vector2 ToVector2(this b2Vec2 vec2)

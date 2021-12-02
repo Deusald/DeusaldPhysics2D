@@ -21,27 +21,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Box2D;
+using Box2DSharp.Collision;
+using Box2DSharp.Collision.Shapes;
+using Box2DSharp.Common;
 using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    internal class OverlapShapeInput : IOverlapShapeInput
+    internal class OverlapShapeInputCSharp : IOverlapShapeInput
     {
         #region Public Variables
 
-        internal          b2Shape     shape;
-        internal readonly b2Transform transform;
-        internal readonly b2AABB      aabb;
+        internal Shape     shape;
+        internal Transform transform;
+        internal AABB      aabb;
 
         #endregion Public Variables
 
         #region Init Methods
 
-        public OverlapShapeInput()
+        public OverlapShapeInputCSharp()
         {
-            transform = Physics2D.GetNewTransform(Vector2.Zero, 0f);
-            aabb      = new b2AABB();
+            transform = Physics2DCSharp.GetNewTransform(Vector2.Zero, 0f);
+            aabb      = new AABB();
         }
 
         #endregion Init Methods
@@ -50,35 +52,35 @@ namespace DeusaldPhysics2D
 
         public void SetAsCircle(float radius)
         {
-            shape = Physics2D.GetCircleShape(radius, Vector2.Zero);
+            shape = Physics2DCSharp.GetCircleShape(radius, Vector2.Zero);
         }
 
         public void SetAsBox(float width, float height)
         {
-            shape = Physics2D.GetBoxShape(width, height, Vector2.Zero, 0f);
+            shape = Physics2DCSharp.GetBoxShape(width, height, Vector2.Zero, 0f);
         }
 
         public void SetAsPolygon(Vector2[] vertices)
         {
-            shape = Physics2D.GetPolygonShape(vertices);
+            shape = Physics2DCSharp.GetPolygonShape(vertices);
         }
 
         public void SetTransform(Vector2 position, float rotation)
         {
-            transform.p = position.ToB2Vec2();
-            transform.q.Set(rotation);
+            transform.Position = position;
+            transform.Rotation.Set(rotation);
             FillAabb();
         }
 
         public void SetPosition(Vector2 position)
         {
-            transform.p = position.ToB2Vec2();
+            transform.Position = position;
             FillAabb();
         }
 
         public void SetRotation(float rotation)
         {
-            transform.q.Set(rotation);
+            transform.Rotation.Set(rotation);
             FillAabb();
         }
 
@@ -88,7 +90,7 @@ namespace DeusaldPhysics2D
 
         private void FillAabb()
         {
-            shape.ComputeAABB(aabb, transform, 0);
+            shape.ComputeAABB(out aabb, transform, 0);
         }
 
         #endregion Private Methods

@@ -25,7 +25,7 @@ using Box2D;
 
 namespace DeusaldPhysics2D
 {
-    internal class RaycastCallback : b2RayCastCallback
+    internal class RaycastCallbackNative : b2RayCastCallback
     {
         #region Variables
 
@@ -37,7 +37,7 @@ namespace DeusaldPhysics2D
 
         #region Init Methods
 
-        internal RaycastCallback(IPhysics2DControl physics2DControl, Delegates.RayCastCallback callback, ushort collisionMask)
+        internal RaycastCallbackNative(IPhysics2DControl physics2DControl, Delegates.RayCastCallback callback, ushort collisionMask)
         {
             _Physics2DControl = physics2DControl;
             _Callback         = callback;

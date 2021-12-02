@@ -28,7 +28,7 @@ using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    internal class Physics2D : IPhysics2D, IPhysics2DControl
+    internal class Physics2DNative : IPhysics2DControl
     {
         #region Properties
 
@@ -71,7 +71,7 @@ namespace DeusaldPhysics2D
 
         #region Init Methods
 
-        internal Physics2D(uint physicsStepsPerSec, Vector2 gravity)
+        internal Physics2DNative(uint physicsStepsPerSec, Vector2 gravity)
         {
             _World               = new b2World(new b2Vec2(gravity.x, gravity.y));
             _PhysicsObjects      = new Dictionary<int, IPhysicsObject>();
@@ -79,7 +79,7 @@ namespace DeusaldPhysics2D
             _NextPhysicsObjectId = 1;
             _PointExtends        = new Vector2((float)Box2d.b2_linearSlop, (float)Box2d.b2_linearSlop);
             _PhysicsTimeStep     = 1f / physicsStepsPerSec;
-            _World.SetContactListener(new CollisionListener(this));
+            _World.SetContactListener(new CollisionListenerNative(this));
 
             _BodyDef = new b2BodyDef
             {
@@ -102,12 +102,12 @@ namespace DeusaldPhysics2D
 
         public IOverlapShapeInput GetNewOverlapShapeInput()
         {
-            return new OverlapShapeInput();
+            return new OverlapShapeInputNative();
         }
 
         public IShapeCastInput GetNewShapeCastInput()
         {
-            return new ShapeCastInput();
+            return new ShapeCastInputNative();
         }
         
         public void Step()
@@ -130,7 +130,7 @@ namespace DeusaldPhysics2D
             _BodyDef.userData.data = newId;
 
             b2Body        body      = _World.CreateBody(_BodyDef);
-            PhysicsObject newObject = new PhysicsObject(this, body, newId, _PhysicsStepsPerSec);
+            PhysicsObjectNative newObject = new PhysicsObjectNative(this, body, newId, _PhysicsStepsPerSec);
             _UpdateLinearVelocity += newObject.UpdateLinearVelocity;
             _PhysicsObjects.Add(newId, newObject);
             return newObject;
@@ -173,7 +173,7 @@ namespace DeusaldPhysics2D
         {
             if (!_PhysicsObjects.ContainsKey(objectId)) return;
 
-            PhysicsObject physicsObject = (PhysicsObject)_PhysicsObjects[objectId];
+            PhysicsObjectNative physicsObject = (PhysicsObjectNative)_PhysicsObjects[objectId];
             _UpdateLinearVelocity -= physicsObject.UpdateLinearVelocity;
             _World.DestroyBody(physicsObject.Body);
             _PhysicsObjects.Remove(objectId);
@@ -196,8 +196,8 @@ namespace DeusaldPhysics2D
 
         public DistanceOutput GetDistanceBetweenColliders(ICollider colliderA, ICollider colliderB, int childIndexA = 0, int childIndexB = 0)
         {
-            Collider colliderACast = (Collider)colliderA;
-            Collider colliderBCast = (Collider)colliderB;
+            ColliderNative colliderACast = (ColliderNative)colliderA;
+            ColliderNative colliderBCast = (ColliderNative)colliderB;
             return GetDistance(colliderACast.Fixture.GetShape(), childIndexA, colliderACast.Fixture.GetBody().GetTransform(),
                 colliderBCast.Fixture.GetShape(), childIndexB, colliderBCast.Fixture.GetBody().GetTransform());
         }
@@ -228,7 +228,7 @@ namespace DeusaldPhysics2D
 
         public void RayCast(Delegates.RayCastCallback callback, Vector2 origin, Vector2 end, ushort collisionMask = 0xFFFF)
         {
-            RaycastCallback raycastCallback = new RaycastCallback(this, callback, collisionMask);
+            RaycastCallbackNative raycastCallback = new RaycastCallbackNative(this, callback, collisionMask);
             _World.RayCast(raycastCallback, origin.ToB2Vec2(), end.ToB2Vec2());
         }
 
@@ -252,7 +252,7 @@ namespace DeusaldPhysics2D
             {
                 bool goNext = true;
 
-                ((Collider)collider).OverlapPoint(delegate(bool hit, Delegates.CalculateDistanceCallback distanceCallback)
+                ((ColliderNative)collider).OverlapPoint(delegate(bool hit, Delegates.CalculateDistanceCallback distanceCallback)
                 {
                     if (hit)
                         goNext = callback.Invoke(collider);
@@ -264,7 +264,7 @@ namespace DeusaldPhysics2D
 
         public void OverlapShape(Delegates.OverlapShapeCallback callback, IOverlapShapeInput input, ushort collisionMask = 0xFFFF)
         {
-            OverlapShapeInput overlapShapeInputUnpacked = (OverlapShapeInput)input;
+            OverlapShapeInputNative overlapShapeInputUnpacked = (OverlapShapeInputNative)input;
             
             OverlapArea(delegate(ICollider collider)
             {
@@ -273,7 +273,7 @@ namespace DeusaldPhysics2D
                 for (int i = 0; i < collider.ChildCount; ++i)
                 {
                     int innerI = i;
-                    ((Collider)collider).OverlapShape(delegate(bool hit, DistanceOutput output)
+                    ((ColliderNative)collider).OverlapShape(delegate(bool hit, DistanceOutput output)
                     {
                         if (hit)
                             goNext = goNext && callback.Invoke(collider, innerI);
@@ -288,7 +288,7 @@ namespace DeusaldPhysics2D
 
         public void ShapeCast(Delegates.ShapeCastCallback callback, IShapeCastInput input, ushort collisionMask = 0xFFFF)
         {
-            ShapeCastInput overlapShapeInputUnpacked = (ShapeCastInput)input;
+            ShapeCastInputNative overlapShapeInputUnpacked = (ShapeCastInputNative)input;
             
             OverlapArea(delegate(ICollider collider)
             {
@@ -298,7 +298,7 @@ namespace DeusaldPhysics2D
                 {
                     int innerI = i;
 
-                    ((Collider)collider).ShapeCast(delegate(bool hit, Vector2 point, Vector2 normal, float t)
+                    ((ColliderNative)collider).ShapeCast(delegate(bool hit, Vector2 point, Vector2 normal, float t)
                     {
                         if (hit)
                             goNext = goNext && callback.Invoke(collider, point, normal, t, innerI);
@@ -317,7 +317,7 @@ namespace DeusaldPhysics2D
 
         private void OverlapArea(Delegates.OverlapAreaCallback callback, b2Vec2 lowerBound, b2Vec2 upperBound, ushort collisionMask = 0xFFFF)
         {
-            OverlapCallback overlapCallback = new OverlapCallback(this, callback, collisionMask);
+            OverlapCallbackNative overlapCallback = new OverlapCallbackNative(this, callback, collisionMask);
             b2AABB aabb = new b2AABB
             {
                 lowerBound = lowerBound,

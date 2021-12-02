@@ -21,12 +21,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Box2D;
+using Box2DSharp.Dynamics.Contacts;
 using DeusaldSharp;
 
 namespace DeusaldPhysics2D
 {
-    internal class CollisionData : ICollisionData, ICollisionDataExtend
+    internal class CollisionDataCSharp : ICollisionData, ICollisionDataExtend
     {
         #region Variables
 
@@ -35,7 +35,7 @@ namespace DeusaldPhysics2D
         private Vector2              _Normal;
         private bool                 _Swapped;
 
-        private readonly b2Contact      _Contact;
+        private readonly Contact      _Contact;
         private readonly IPhysicsObject _PhysicsObjectA;
         private readonly ICollider      _ColliderA;
         private readonly int            _ChildIndexA;
@@ -81,7 +81,7 @@ namespace DeusaldPhysics2D
 
         #region Init Methods
 
-        internal CollisionData(b2Contact contact, IPhysicsObject physicsObjectA, ICollider colliderA, int childIndexA,
+        internal CollisionDataCSharp(Contact contact, IPhysicsObject physicsObjectA, ICollider colliderA, int childIndexA,
                                IPhysicsObject physicsObjectB, ICollider colliderB, int childIndexB)
         {
             _Contact           = contact;
@@ -119,12 +119,11 @@ namespace DeusaldPhysics2D
             _DetailsCalculated = true;
             _ContactPoints     = new TypeVector2<Vector2>();
 
-            b2WorldManifold worldManifold = new b2WorldManifold();
-            _Contact.GetWorldManifold(worldManifold);
+            _Contact.GetWorldManifold(out var worldManifold);
 
-            _Normal          = worldManifold.normal.ToVector2();
-            _ContactPoints.x = Box2d.b2Vec2Array_getitem(worldManifold.points, 0).ToVector2();
-            _ContactPoints.y = Box2d.b2Vec2Array_getitem(worldManifold.points, 1).ToVector2();
+            _Normal          = worldManifold.Normal;
+            _ContactPoints.x = worldManifold.Points[0];
+            _ContactPoints.y = worldManifold.Points[1];
         }
 
         #endregion Private Methods
