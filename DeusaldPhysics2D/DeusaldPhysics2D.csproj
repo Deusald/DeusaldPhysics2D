@@ -25,18 +25,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Box2d\Generated" />
-      <Folder Include="Box2d\Libs\DotnetCoreRuntime" />
-      <Folder Include="Box2d\Libs\Windows" />
+      <Folder Include="Box2dNative\Generated" />
+      <Folder Include="Box2dNative\Libs\DotnetCoreRuntime" />
+      <Folder Include="Box2dNative\Libs\Windows" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Box2d\Libs\Windows\x86_64\box2d.dll" />
-      <EmbeddedResource Include="Box2d\Libs\Windows\x86\box2d.dll" />
-      <EmbeddedResource Include="Box2d\Libs\DotnetCoreRuntime\x86\libbox2d.so" />
-      <EmbeddedResource Include="Box2d\Libs\DotnetCoreRuntime\x86_64\libbox2d.so" />
-      <EmbeddedResource Include="Box2d\Libs\Mac\x86\libbox2d.dylib" />
-      <EmbeddedResource Include="Box2d\Libs\Mac\x86_64\libbox2d.dylib" />
+      <EmbeddedResource Include="Box2dNative\Libs\Windows\x86_64\box2d.dll" />
+      <EmbeddedResource Include="Box2dNative\Libs\Windows\x86\box2d.dll" />
+      <EmbeddedResource Include="Box2dNative\Libs\DotnetCoreRuntime\x86\libbox2d.so" />
+      <EmbeddedResource Include="Box2dNative\Libs\DotnetCoreRuntime\x86_64\libbox2d.so" />
+      <EmbeddedResource Include="Box2dNative\Libs\Mac\x86\libbox2d.dylib" />
+      <EmbeddedResource Include="Box2dNative\Libs\Mac\x86_64\libbox2d.dylib" />
     </ItemGroup>
 
     <ItemGroup>

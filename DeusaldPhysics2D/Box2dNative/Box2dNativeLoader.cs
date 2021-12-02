@@ -62,7 +62,7 @@ namespace Box2D
                 }
             }
             
-            string       embeddedResource = "DeusaldPhysics2D.Box2d.Libs.";
+            string       embeddedResource = "DeusaldPhysics2D.Box2dNative.Libs.";
             embeddedResource += system + ".";
             embeddedResource += Environment.Is64BitProcess ? "x86_64." : "x86.";
             embeddedResource += libName;
