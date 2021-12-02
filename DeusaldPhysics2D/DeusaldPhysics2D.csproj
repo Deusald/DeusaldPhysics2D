@@ -35,6 +35,8 @@
       <EmbeddedResource Include="Box2d\Libs\Windows\x86\box2d.dll" />
       <EmbeddedResource Include="Box2d\Libs\DotnetCoreRuntime\x86\libbox2d.so" />
       <EmbeddedResource Include="Box2d\Libs\DotnetCoreRuntime\x86_64\libbox2d.so" />
+      <EmbeddedResource Include="Box2d\Libs\Mac\x86\libbox2d.dylib" />
+      <EmbeddedResource Include="Box2d\Libs\Mac\x86_64\libbox2d.dylib" />
     </ItemGroup>
 
     <ItemGroup>

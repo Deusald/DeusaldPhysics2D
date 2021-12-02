@@ -34,7 +34,7 @@ namespace Box2D
     {
         public enum System
         {
-            Windows, DotnetCoreRuntime
+            Windows, Mac, DotnetCoreRuntime
         }
         
         public static readonly Version Version = new Version(2, 4, 1);
@@ -48,6 +48,11 @@ namespace Box2D
                 case System.Windows:
                 {
                     libName = "box2d.dll";
+                    break;
+                }
+                case System.Mac:
+                {
+                    libName = "libbox2d.dylib";
                     break;
                 }
                 case System.DotnetCoreRuntime:

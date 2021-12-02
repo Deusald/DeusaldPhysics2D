@@ -21,6 +21,12 @@ WINDOWS
 1. Build the Dll using CLion or other method (To make 64 bit library choose Architecture x64 under CLion Settings/Build, Execution, Deployment/Toolchains)
 2. Replace the appropriate library in this project
 
+MAC
+1. Comment out method body -> Box2D_wrap.css/CSharp_Box2D_b2Log_Default
+2. Add SHARED to add_library method execution after box2d in box2d/src/CMakeLists.txt
+3. Build the Dll
+4. Replace the appropriate library in this project
+
 DOTNET CORE RUNTIME
 1. Remove what is inside box2d/cmake-build-debug folder
 2. Comment out method body -> Box2D_wrap.css/CSharp_Box2D_b2Log_Default
