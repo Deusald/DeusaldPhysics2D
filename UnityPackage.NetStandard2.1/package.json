@@ -1,0 +1,16 @@
+{
+  "name": "com.deusald.deusaldphysics2d",
+  "version": "0.9.2",
+  "displayName": "Deusald Physics 2D",
+  "description": "Deusald Physics 2D unity package.",
+  "documentationUrl": "https://github.com/Deusald/DeusaldPhysics2D",
+  "changelogUrl": "https://github.com/Deusald/DeusaldPhysics2D",
+  "licensesUrl": "https://github.com/Deusald/DeusaldPhysics2D",
+  "keywords": [],
+  "author": {
+    "name": "Adam Deusald Orli\u0144ski",
+    "email": "deusald@gmail.com",
+    "url": "https://www.deusald.com"
+  },
+  "type": "library"
+}
