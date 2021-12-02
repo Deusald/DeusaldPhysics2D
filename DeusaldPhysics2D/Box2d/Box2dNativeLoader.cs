@@ -75,33 +75,8 @@ namespace Box2D
                 data = new byte[(int) stream.Length];
                 stream.Read(data, 0, (int) stream.Length);
             }
-
-            string       bits     = Environment.Is64BitProcess ? "x64" : "x86";
-            AssemblyName name     = Assembly.GetExecutingAssembly().GetName();
-            string       tempPath = Path.Combine(Path.GetTempPath(), $"{name.Name}.{bits}.{name.Version}");
-
-            if (!Directory.Exists(tempPath))
-                Directory.CreateDirectory(tempPath);
-
-            string environmentVariable = Environment.GetEnvironmentVariable("PATH");
-
-            // ReSharper disable once PossibleNullReferenceException
-            string[] envVariables = environmentVariable.Split(';');
-            bool     exist        = false;
-
-            foreach (string singlePath in envVariables)
-            {
-                if (singlePath == tempPath)
-                {
-                    exist = true;
-                    break;
-                }
-            }
-
-            if (!exist)
-                Environment.SetEnvironmentVariable("PATH", tempPath + ";" + environmentVariable);
             
-            string path  = Path.Combine(tempPath, libName);
+            string path  = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, libName);
             
             bool   needToRewriteLib = true;
             
