@@ -61,8 +61,8 @@ namespace DeusaldPhysics2D
 
         private readonly float _PhysicsTimeStep;
 
-        private const int _VelocityIterations = 8;
-        private const int _PositionIterations = 3;
+        private const int _VELOCITY_ITERATIONS = 8;
+        private const int _POSITION_ITERATIONS = 3;
 
         private Action _UpdateLinearVelocity;
 
@@ -117,7 +117,7 @@ namespace DeusaldPhysics2D
         public void Step()
         {
             _UpdateLinearVelocity?.Invoke();
-            _World.Step(_PhysicsTimeStep, _VelocityIterations, _PositionIterations);
+            _World.Step(_PhysicsTimeStep, _VELOCITY_ITERATIONS, _POSITION_ITERATIONS);
         }
 
         public IPhysicsObject GetPhysicsObject(int physicsObjectId)
