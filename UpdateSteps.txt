@@ -1,0 +1,4 @@
+﻿1. Update version in DeusaldPhysics2D.cs
+2. Update version under project properties for NuGet and Assembly.
+3. Update version for all Unity packages
+4. Rebuild libraries
