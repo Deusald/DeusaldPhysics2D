@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFrameworks>net48;netcoreapp3.1;netstandard2.0;netstandard2.1</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.2</PackageVersion>
+        <PackageVersion>1.0.3</PackageVersion>
         <Title>DeusaldPhysics2D</Title>
         <Authors>Adam "Deusald" Orliński</Authors>
         <Description>2D physics engine based on native Box2D dll.</Description>
@@ -13,7 +13,7 @@
         <RepositoryUrl>https://github.com/Deusald/DeusaldPhysics2D</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>C# Box2d Physics</PackageTags>
-        <AssemblyVersion>1.0.2</AssemblyVersion>
+        <AssemblyVersion>1.0.3</AssemblyVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
@@ -43,6 +43,7 @@
     <ItemGroup>
       <PackageReference Include="DeusaldSharp" Version="5.1.1" />
       <PackageReference Include="System.Memory" Version="4.5.4" />
+      <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     </ItemGroup>
 
     <Target Name="CopyToUnityPackageNet48" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release' And '$(TargetFramework)' == 'net48'">
