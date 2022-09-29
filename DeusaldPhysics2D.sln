@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeusaldPhysics2D", "Deusald
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeusaldPhysics2DTests", "DeusaldPhysics2DTests\DeusaldPhysics2DTests.csproj", "{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionBumper", "VersionBumper\VersionBumper.csproj", "{EAE458C3-ECCF-4273-A1A8-13710F463F49}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1454DDF8-E79B-4097-9A7E-5BD35DBE410D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAE458C3-ECCF-4273-A1A8-13710F463F49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAE458C3-ECCF-4273-A1A8-13710F463F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAE458C3-ECCF-4273-A1A8-13710F463F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAE458C3-ECCF-4273-A1A8-13710F463F49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
