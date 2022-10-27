@@ -31,7 +31,7 @@ namespace DeusaldPhysics2D
     {
         public static bool IsInitialized { get; internal set; }
         
-        public static readonly Version Version = new Version(1, 0, 4);
+        public static readonly Version Version = new Version(1, 0, 5);
 
         private static bool _IsBox2dNative;
 
