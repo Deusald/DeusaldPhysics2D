@@ -1,0 +1,37 @@
+How to rebuild the dlls and generated C# files.
+
+BEFORE BUILD
+1. Download and install SWIG (http://www.swig.org/)
+2. Download the Box2d repo for official github (https://github.com/erincatto/box2d)
+3. Put the "box2d.i" file in "box2d/include/box2d" directory
+4. Create folder "Generated" in the same place
+5. Open the box2d project
+6. In box2d.h file add #include "b2_distance.h" after #include "b2_world_callbacks.h" line
+7. In b2_settings.h file add "int data;" to all b2*UserData (Body/Fixture/Joint). Init data in constructor to 0.
+8. Open terminal/console nad navigate to that folder (ex. cd Documents/Projects/C++/box2d/include/box2d)
+9. Execute the command: swig -csharp -includeall -ignoremissing -namespace Box2D -dllimport box2d -outdir Generated -c++ Box2D.i
+10. Move "Box2D_wrap.cxx" file from box2d/include/box2d to box2d/src
+11. In "src/CMakeList.txt" add the Box2D_wrap.cxx to the BOX2D_SOURCE_FILES and add ../include/box2d/Box2D_wrap.h to the BOX2D_HEADER_FILES
+12. In CMakeLists.txt (main folder) set to OFF options for building tests and testbed. Set to ON building as shared library.
+13. Delete all the files from Generated dictionary in this project
+14. Copy new generated files from "box2d/include/box2d/Generated" to this project Generated folder
+15. Change the access modifier in SWIGTYPE_p_float to internal
+
+WINDOWS
+1. Build the Dll using CLion or other method (To make 64 bit library choose Architecture x64 under CLion Settings/Build, Execution, Deployment/Toolchains)
+2. Replace the appropriate library in this project
+
+MAC
+1. Comment out method body -> Box2D_wrap.css/CSharp_Box2D_b2Log_Default
+2. Add SHARED to add_library method execution after box2d in box2d/src/CMakeLists.txt
+3. Build the Dll
+4. Replace the appropriate library in this project
+
+DOTNET CORE RUNTIME
+1. Remove what is inside box2d/cmake-build-debug folder
+2. Comment out method body -> Box2D_wrap.css/CSharp_Box2D_b2Log_Default
+3. Put box2dBuilder.Dockerfile outside box2d folder
+4. Run command: docker build -t box2dbuilder:1.0 -f box2dBuilder.Dockerfile ./
+5. Run created container
+6. Execute command: docker cp <containerId>:/app/bin .
+7. Replace the appropriate library in this project
