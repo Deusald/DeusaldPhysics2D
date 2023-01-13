@@ -24,7 +24,6 @@
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 
-using System.Runtime.InteropServices;
 using DeusaldSharp;
 using NUnit.Framework;
 using DeusaldPhysics2D;
@@ -34,19 +33,10 @@ namespace DeusaldPhysics2DTests
     public class MainTests
     {
         [Test]
-        [TestOf(nameof(Box2D))]
+        [TestOf(nameof(Box2DSharp))]
         public void XWTMN()
         {
             // Arrange
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                DeusaldPhysics2D.DeusaldPhysics2D.InitPhysics(InitSystemType.WindowsNative);
-            }
-            else
-            {
-                DeusaldPhysics2D.DeusaldPhysics2D.InitPhysics(InitSystemType.MacNative);
-            }
-            
             IPhysics2DControl physics2D = DeusaldPhysics2D.DeusaldPhysics2D.CreateNewPhysics(20, Vector2.Down);
 
             int collisionObjectAId = -1;
@@ -82,11 +72,10 @@ namespace DeusaldPhysics2DTests
         }
         
         [Test]
-        [TestOf(nameof(Box2D))]
+        [TestOf(nameof(Box2DSharp))]
         public void XTTGN()
         {
             // Arrange
-            DeusaldPhysics2D.DeusaldPhysics2D.InitPhysics(InitSystemType.CSharp);
             IPhysics2DControl physics2D = DeusaldPhysics2D.DeusaldPhysics2D.CreateNewPhysics(20, Vector2.Down);
 
             int     collisionObjectAId = -1;
