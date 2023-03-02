@@ -21,7 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Box2DSharp.Collision;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
 using DeusaldSharp;
@@ -32,13 +31,13 @@ namespace DeusaldPhysics2D
     {
         #region Variables
 
-        internal Shape     shape;
-        internal Vector2   translation;
-        internal Transform transform;
-        internal AABB      aabb;
+        internal Shape                     shape;
+        internal Vector2                   translation;
+        internal Transform                 transform;
+        internal Box2DSharp.Collision.AABB aabb;
 
-        private Transform _EndTransform;
-        private AABB      _End;
+        private Transform                 _EndTransform;
+        private Box2DSharp.Collision.AABB _End;
 
         #endregion Variables
 
@@ -48,8 +47,8 @@ namespace DeusaldPhysics2D
         {
             transform     = Physics2DCSharp.GetNewTransform(Vector2.Zero, 0f);
             _EndTransform = Physics2DCSharp.GetNewTransform(Vector2.Zero, 0f);
-            aabb          = new AABB();
-            _End          = new AABB();
+            aabb          = new Box2DSharp.Collision.AABB();
+            _End          = new Box2DSharp.Collision.AABB();
         }
 
         #endregion Init Methods

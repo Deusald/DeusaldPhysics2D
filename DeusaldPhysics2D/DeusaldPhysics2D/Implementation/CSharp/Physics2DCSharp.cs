@@ -198,13 +198,13 @@ namespace DeusaldPhysics2D
             ColliderCSharp colliderACast = (ColliderCSharp)colliderA;
             ColliderCSharp colliderBCast = (ColliderCSharp)colliderB;
             return GetDistance(colliderACast.Fixture.Shape, childIndexA, colliderACast.Fixture.Body.GetTransform(),
-                colliderBCast.Fixture.Shape, childIndexB, colliderBCast.Fixture.Body.GetTransform());
+                colliderBCast.Fixture.Shape,                childIndexB, colliderBCast.Fixture.Body.GetTransform());
         }
 
         internal DistanceOutput GetDistance(Shape shapeA, int childIndexA, Transform transformA, Shape shapeB, int childIndexB, Transform transformB)
         {
-            SimplexCache   cache  = new SimplexCache { Count = 0 };
-            DistanceProxy  proxyA = new DistanceProxy();
+            SimplexCache  cache  = new SimplexCache { Count = 0 };
+            DistanceProxy proxyA = new DistanceProxy();
             proxyA.Set(shapeA, childIndexA);
             DistanceProxy proxyB = new DistanceProxy();
             proxyB.Set(shapeB, childIndexB);
@@ -308,6 +308,47 @@ namespace DeusaldPhysics2D
             }, overlapShapeInputUnpacked.aabb.LowerBound, overlapShapeInputUnpacked.aabb.UpperBound, collisionMask);
         }
 
+        public AABB GetAABBOfCircleShape(float radius, Vector2 position)
+        {
+            Shape shape = new CircleShape
+            {
+                Radius = radius
+            };
+
+            shape.ComputeAABB(out Box2DSharp.Collision.AABB aabb, GetNewTransform(position, 0f), 0);
+            return new AABB
+            {
+                LowerBound = aabb.LowerBound,
+                UpperBound = aabb.UpperBound
+            };
+        }
+
+        public AABB GetAABBOfBoxShape(float width, float height, Vector2 position, float rotation)
+        {
+            PolygonShape shape = new PolygonShape();
+            shape.SetAsBox(width * 2, height * 2, Vector2.Zero, 0f);
+
+            shape.ComputeAABB(out Box2DSharp.Collision.AABB aabb, GetNewTransform(position, rotation), 0);
+            return new AABB
+            {
+                LowerBound = aabb.LowerBound,
+                UpperBound = aabb.UpperBound
+            };
+        }
+
+        public AABB GetAABBOfPolygonShape(Vector2[] vertices, Vector2 position, float rotation)
+        {
+            PolygonShape shape = new PolygonShape();
+            shape.Set(vertices, vertices.Length);
+
+            shape.ComputeAABB(out Box2DSharp.Collision.AABB aabb, GetNewTransform(position, rotation), 0);
+            return new AABB
+            {
+                LowerBound = aabb.LowerBound,
+                UpperBound = aabb.UpperBound
+            };
+        }
+
         #endregion Public Methods
 
         #region Private Methods
@@ -315,7 +356,7 @@ namespace DeusaldPhysics2D
         private void OverlapAreaInternal(Delegates.OverlapAreaCallback callback, Vector2 lowerBound, Vector2 upperBound, ushort collisionMask = 0xFFFF)
         {
             OverlapCallbackCSharp overlapCallback = new OverlapCallbackCSharp(this, callback, collisionMask);
-            AABB aabb = new AABB
+            Box2DSharp.Collision.AABB aabb = new Box2DSharp.Collision.AABB
             {
                 LowerBound = lowerBound,
                 UpperBound = upperBound

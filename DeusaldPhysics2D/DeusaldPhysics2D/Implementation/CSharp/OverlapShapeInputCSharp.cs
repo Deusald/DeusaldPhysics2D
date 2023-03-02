@@ -21,7 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Box2DSharp.Collision;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
 using DeusaldSharp;
@@ -32,9 +31,9 @@ namespace DeusaldPhysics2D
     {
         #region Public Variables
 
-        internal Shape     shape;
-        internal Transform transform;
-        internal AABB      aabb;
+        internal Shape                     shape;
+        internal Transform                 transform;
+        internal Box2DSharp.Collision.AABB aabb;
 
         #endregion Public Variables
 
@@ -43,7 +42,7 @@ namespace DeusaldPhysics2D
         public OverlapShapeInputCSharp()
         {
             transform = Physics2DCSharp.GetNewTransform(Vector2.Zero, 0f);
-            aabb      = new AABB();
+            aabb      = new Box2DSharp.Collision.AABB();
         }
 
         #endregion Init Methods

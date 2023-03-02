@@ -232,6 +232,17 @@ namespace DeusaldPhysics2D
             callback.Invoke(success, output.point.ToVector2(), output.normal.ToVector2(), output.lambda);
         }
 
+        public AABB GetAABB(int childIndex = 0)
+        {
+            b2AABB aabb = new b2AABB();
+            Fixture.GetShape().ComputeAABB(aabb, ((PhysicsObjectNative)PhysicsObject).Body.GetTransform(), childIndex);
+            return new AABB
+            {
+                LowerBound = aabb.lowerBound.ToVector2(),
+                UpperBound = aabb.upperBound.ToVector2()
+            };
+        }
+        
         #endregion Public Methods
     }
 }

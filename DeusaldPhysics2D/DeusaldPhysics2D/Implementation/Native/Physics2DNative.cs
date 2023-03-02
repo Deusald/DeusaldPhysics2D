@@ -311,6 +311,55 @@ namespace DeusaldPhysics2D
             }, overlapShapeInputUnpacked.aabb.lowerBound, overlapShapeInputUnpacked.aabb.upperBound, collisionMask);
         }
 
+        public AABB GetAABBOfCircleShape(float radius, Vector2 position)
+        {
+            b2Shape shape = new b2CircleShape
+            {
+                m_radius = radius
+            };
+
+            b2AABB aabb = new b2AABB();
+            shape.ComputeAABB(aabb, GetNewTransform(position, 0f), 0);
+            return new AABB
+            {
+                LowerBound = aabb.lowerBound.ToVector2(),
+                UpperBound = aabb.upperBound.ToVector2()
+            };
+        }
+
+        public AABB GetAABBOfBoxShape(float width, float height, Vector2 position, float rotation)
+        {
+            b2PolygonShape shape = new b2PolygonShape();
+            shape.SetAsBox(width * 2, height * 2, new b2Vec2(0f, 0f), 0f);
+
+            b2AABB aabb = new b2AABB();
+            shape.ComputeAABB(aabb, GetNewTransform(position, rotation), 0);
+            return new AABB
+            {
+                LowerBound = aabb.lowerBound.ToVector2(),
+                UpperBound = aabb.upperBound.ToVector2()
+            };
+        }
+
+        public AABB GetAABBOfPolygonShape(Vector2[] vertices, Vector2 position, float rotation)
+        {
+            b2PolygonShape shape = new b2PolygonShape();
+            b2Vec2         array = Box2d.new_b2Vec2Array(vertices.Length);
+
+            for (int i = 0; i < vertices.Length; ++i)
+                Box2d.b2Vec2Array_setitem(array, i, vertices[i].ToB2Vec2());
+
+            shape.Set(array, vertices.Length);
+
+            b2AABB aabb = new b2AABB();
+            shape.ComputeAABB(aabb, GetNewTransform(position, rotation), 0);
+            return new AABB
+            {
+                LowerBound = aabb.lowerBound.ToVector2(),
+                UpperBound = aabb.upperBound.ToVector2()
+            };
+        }
+        
         #endregion Public Methods
 
         #region Private Methods

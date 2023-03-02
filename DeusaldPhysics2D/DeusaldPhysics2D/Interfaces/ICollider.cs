@@ -143,5 +143,10 @@ namespace DeusaldPhysics2D
         /// Shoot a shape in given direction and return if it would collide with this collider
         /// </summary>
         void ShapeCast(Delegates.SingleShapeCastCallback callback, IShapeCastInput input, int childIndex = 0);
+
+        /// <summary>
+        /// Get AABB of this collider shape.
+        /// </summary>
+        AABB GetAABB(int childIndex = 0);
     }
 }

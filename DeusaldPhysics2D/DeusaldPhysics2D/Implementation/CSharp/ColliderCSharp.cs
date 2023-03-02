@@ -179,7 +179,7 @@ namespace DeusaldPhysics2D
         public bool OverlapArea(Vector2 lowerBound, Vector2 upperBound, int childIndex = 0)
         {
             Fixture.Shape.ComputeAABB(out var aabb, Fixture.Body.GetTransform(), childIndex);
-            AABB testAabb = new AABB
+            Box2DSharp.Collision.AABB testAabb = new Box2DSharp.Collision.AABB
             {
                 LowerBound = lowerBound,
                 UpperBound = upperBound
@@ -230,6 +230,16 @@ namespace DeusaldPhysics2D
 
             bool success = DistanceAlgorithm.ShapeCast(out var output, castInput);
             callback.Invoke(success, output.Point, output.Normal, output.Lambda);
+        }
+
+        public AABB GetAABB(int childIndex = 0)
+        {
+            Fixture.Shape.ComputeAABB(out Box2DSharp.Collision.AABB aabb, ((PhysicsObjectCSharp)PhysicsObject).Body.GetTransform(), childIndex);
+            return new AABB
+            {
+                LowerBound = aabb.LowerBound,
+                UpperBound = aabb.UpperBound
+            };
         }
 
         #endregion Public Methods

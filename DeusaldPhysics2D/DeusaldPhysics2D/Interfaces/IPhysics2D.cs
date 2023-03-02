@@ -124,5 +124,20 @@ namespace DeusaldPhysics2D
         /// Shoot a shape in given direction and return in callback all hit colliders
         /// </summary>
         void ShapeCast(Delegates.ShapeCastCallback callback, IShapeCastInput input, ushort collisionMask = 0xFFFF);
+
+        /// <summary>
+        /// Get AABB of given circle shape at given position
+        /// </summary>
+        AABB GetAABBOfCircleShape(float radius, Vector2 position);
+
+        /// <summary>
+        /// Get AABB of given box shape at given position and rotation
+        /// </summary>
+        AABB GetAABBOfBoxShape(float width, float height, Vector2 position, float rotation);
+
+        /// <summary>
+        /// Get AABB of given polygon shape at given position and rotation
+        /// </summary>
+        AABB GetAABBOfPolygonShape(Vector2[] vertices, Vector2 position, float rotation);
     }
 }
