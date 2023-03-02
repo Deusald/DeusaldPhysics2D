@@ -157,7 +157,7 @@ namespace DeusaldPhysics2D
         internal static Shape GetBoxShape(float width, float height, Vector2 offset, float rotation)
         {
             PolygonShape shape = new PolygonShape();
-            shape.SetAsBox(width, height, offset, rotation);
+            shape.SetAsBox(width * 2, height * 2, offset, rotation);
             return shape;
         }
 
