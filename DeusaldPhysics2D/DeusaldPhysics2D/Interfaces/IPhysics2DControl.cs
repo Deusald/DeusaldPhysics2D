@@ -34,7 +34,7 @@ namespace DeusaldPhysics2D
         /// <summary>
         /// Get the enumerator for all PhysicsObjects that are present in the world
         /// </summary>
-        Dictionary<int, IPhysicsObject>.Enumerator PhysicsObjects { get; }
+        IReadOnlyDictionary<int, IPhysicsObject> PhysicsObjects { get; }
 
         /// <summary>
         /// Get or Set the world gravity

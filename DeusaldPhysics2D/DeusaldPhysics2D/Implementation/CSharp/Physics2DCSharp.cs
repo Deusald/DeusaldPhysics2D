@@ -46,7 +46,7 @@ namespace DeusaldPhysics2D
             set => _World.Gravity = new Vector2(value.x, value.y);
         }
 
-        public Dictionary<int, IPhysicsObject>.Enumerator PhysicsObjects => _PhysicsObjects.GetEnumerator();
+        public IReadOnlyDictionary<int, IPhysicsObject> PhysicsObjects => _PhysicsObjects;
 
         #endregion Properties
 
