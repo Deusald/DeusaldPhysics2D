@@ -83,9 +83,9 @@ namespace DeusaldPhysics2D
         float Inertia { get; }
 
         /// <summary>
-        /// Get the enumerator for all colliders attached to this physical object
+        /// Get all colliders attached to this physical object
         /// </summary>
-        Dictionary<int, ICollider>.Enumerator Colliders { get; }
+        IReadOnlyDictionary<int, ICollider> Colliders { get; }
 
         #endregion Getters
 

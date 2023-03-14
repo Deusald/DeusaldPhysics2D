@@ -32,7 +32,7 @@ namespace DeusaldPhysics2D
     public interface IPhysics2DControl : IPhysics2D
     {
         /// <summary>
-        /// Get the enumerator for all PhysicsObjects that are present in the world
+        /// Get all PhysicsObjects that are present in the world
         /// </summary>
         IReadOnlyDictionary<int, IPhysicsObject> PhysicsObjects { get; }
 

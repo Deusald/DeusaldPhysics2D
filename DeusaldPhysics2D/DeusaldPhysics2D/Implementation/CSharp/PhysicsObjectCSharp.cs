@@ -34,16 +34,16 @@ namespace DeusaldPhysics2D
 
         #region Getters
 
-        public   int                                   PhysicsObjectId { get; }
-        public   bool                                  IsStatic        => _Body.BodyType == Box2DSharp.Dynamics.BodyType.StaticBody;
-        public   bool                                  IsKinematic     => _Body.BodyType == Box2DSharp.Dynamics.BodyType.KinematicBody;
-        public   bool                                  IsDynamic       => _Body.BodyType == Box2DSharp.Dynamics.BodyType.DynamicBody;
-        public   Vector2                               WorldCenter     => _Body.GetWorldCenter();
-        public   Vector2                               LocalCenter     => _Body.GetLocalCenter();
-        public   float                                 Mass            => _Body.Mass;
-        public   float                                 Inertia         => _Body.Inertia;
-        public   Dictionary<int, ICollider>.Enumerator Colliders       => _Colliders.GetEnumerator();
-        internal Body                                  Body            => _Body;
+        public   int                                 PhysicsObjectId { get; }
+        public   bool                                IsStatic        => _Body.BodyType == Box2DSharp.Dynamics.BodyType.StaticBody;
+        public   bool                                IsKinematic     => _Body.BodyType == Box2DSharp.Dynamics.BodyType.KinematicBody;
+        public   bool                                IsDynamic       => _Body.BodyType == Box2DSharp.Dynamics.BodyType.DynamicBody;
+        public   Vector2                             WorldCenter     => _Body.GetWorldCenter();
+        public   Vector2                             LocalCenter     => _Body.GetLocalCenter();
+        public   float                               Mass            => _Body.Mass;
+        public   float                               Inertia         => _Body.Inertia;
+        public   IReadOnlyDictionary<int, ICollider> Colliders       => _Colliders;
+        internal Body                                Body            => _Body;
 
         #endregion Getters
 

@@ -33,16 +33,16 @@ namespace DeusaldPhysics2D
 
         #region Getters
 
-        public   int                                   PhysicsObjectId { get; }
-        public   bool                                  IsStatic        => _Body.Type == b2BodyType.b2_staticBody;
-        public   bool                                  IsKinematic     => _Body.Type == b2BodyType.b2_kinematicBody;
-        public   bool                                  IsDynamic       => _Body.Type == b2BodyType.b2_dynamicBody;
-        public   Vector2                               WorldCenter     => _Body.GetWorldCenter().ToVector2();
-        public   Vector2                               LocalCenter     => _Body.GetLocalCenter().ToVector2();
-        public   float                                 Mass            => _Body.GetMass();
-        public   float                                 Inertia         => _Body.GetInertia();
-        public   Dictionary<int, ICollider>.Enumerator Colliders       => _Colliders.GetEnumerator();
-        internal b2Body                                Body            => _Body;
+        public   int                                 PhysicsObjectId { get; }
+        public   bool                                IsStatic        => _Body.Type == b2BodyType.b2_staticBody;
+        public   bool                                IsKinematic     => _Body.Type == b2BodyType.b2_kinematicBody;
+        public   bool                                IsDynamic       => _Body.Type == b2BodyType.b2_dynamicBody;
+        public   Vector2                             WorldCenter     => _Body.GetWorldCenter().ToVector2();
+        public   Vector2                             LocalCenter     => _Body.GetLocalCenter().ToVector2();
+        public   float                               Mass            => _Body.GetMass();
+        public   float                               Inertia         => _Body.GetInertia();
+        public   IReadOnlyDictionary<int, ICollider> Colliders       => _Colliders;
+        internal b2Body                              Body            => _Body;
 
         #endregion Getters
 
@@ -145,7 +145,7 @@ namespace DeusaldPhysics2D
         private Vector2 _PreviousLinearVelocity;
         private int     _NextColliderId;
 
-        private readonly Physics2DNative                  _Physics2D;
+        private readonly Physics2DNative            _Physics2D;
         private readonly b2Body                     _Body;
         private readonly uint                       _PhysicsStepsPerSec;
         private readonly Dictionary<int, ICollider> _Colliders;
